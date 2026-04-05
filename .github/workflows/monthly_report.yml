@@ -2,7 +2,7 @@ name: Monthly Market Intelligence Report
 
 on:
   schedule:
-    - cron: "0 13 15 * *"   # día 15, 8am Colombia
+    - cron: "0 13 15 * *"
   workflow_dispatch:
     inputs:
       dry_run:
@@ -29,16 +29,36 @@ jobs:
           pip install requests pandas numpy plotly nbconvert jupyter-client ipykernel
           python -m ipykernel install --user --name python3
 
-      - name: Execute notebook (genera sfc_dashboard.html)
+      - name: Find and execute notebook
         run: |
-          jupyter nbconvert \
+          # Buscar el notebook en cualquier ubicación del repo
+          NOTEBOOK=$(find . -name "SFC_Analytics.ipynb" | head -1)
+          if [ -z "$NOTEBOOK" ]; then
+            echo "ERROR: SFC_Analytics.ipynb no encontrado"
+            find . -name "*.ipynb" | head -10
+            exit 1
+          fi
+          echo "Notebook encontrado: $NOTEBOOK"
+          NOTEBOOK_DIR=$(dirname "$NOTEBOOK")
+          NOTEBOOK_FILE=$(basename "$NOTEBOOK")
+          cd "$NOTEBOOK_DIR"
+          python -m nbconvert \
             --to notebook \
-            --execute SFC_Analytics.ipynb \
-            --output SFC_Analytics_executed.ipynb \
+            --execute "$NOTEBOOK_FILE" \
+            --output "${NOTEBOOK_FILE%.ipynb}_executed.ipynb" \
             --ExecutePreprocessor.timeout=600 \
             --ExecutePreprocessor.kernel_name=python3
-          echo "Notebook ejecutado"
-          ls -lh *.html || echo "Sin HTML generado"
+          echo "Notebook ejecutado exitosamente"
+          ls -lh *.html 2>/dev/null || echo "Sin HTML en directorio del notebook"
+          # Mover el dashboard a la raíz si está en subcarpeta
+          if [ "$NOTEBOOK_DIR" != "." ]; then
+            cp sfc_dashboard.html "$GITHUB_WORKSPACE/" 2>/dev/null || true
+          fi
+
+      - name: Verify dashboard was generated
+        run: |
+          ls -lh *.html 2>/dev/null || echo "Sin HTML en raíz"
+          find . -name "sfc_dashboard.html" | head -5
 
       - name: Generate email report
         run: python report/generate_report.py report/output_report.html
