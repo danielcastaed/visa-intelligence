@@ -1,0 +1,38 @@
+name: Visa Market Intelligence Report
+
+on:
+  schedule:
+    # Día 1 de cada mes a las 7:00am hora Colombia (GMT-5 = 12:00 UTC)
+    - cron: '0 12 1 * *'
+  workflow_dispatch:
+    # Permite correr manualmente desde GitHub con un clic
+
+jobs:
+  generar-reporte:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Instalar dependencias
+        run: |
+          pip install feedparser requests beautifulsoup4 transformers torch pandas --quiet
+
+      - name: Ejecutar Visa Intelligence
+        env:
+          GMAIL_USER:     ${{ secrets.GMAIL_USER }}
+          GMAIL_PASSWORD: ${{ secrets.GMAIL_PASSWORD }}
+          EMAIL_DESTINO:  ${{ secrets.EMAIL_DESTINO }}
+        run: python visa_intelligence.py
+
+      - name: Confirmar ejecución
+        if: success()
+        run: echo "✅ Reporte enviado exitosamente — $(date)"
