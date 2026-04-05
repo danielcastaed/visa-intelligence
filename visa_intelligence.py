@@ -809,6 +809,30 @@ for d in scores["eco"]:
 
 
 # ── Punto de entrada ──────────────────────────────────────────────────
+def enviar_reporte_email(html_content, gmail_user, gmail_password, email_destino):
+    mes_str = HOY.strftime('%B %Y').capitalize()
+    asunto = f"📊 Visa Market Intelligence Report — {mes_str}"
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = asunto
+    msg['From']    = gmail_user
+    msg['To']      = email_destino
+    texto_plano = f"Visa Market Intelligence Report — {mes_str}"
+    msg.attach(MIMEText(texto_plano, 'plain', 'utf-8'))
+    msg.attach(MIMEText(html_content, 'html', 'utf-8'))
+    try:
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+            server.login(gmail_user, gmail_password)
+            server.sendmail(gmail_user, email_destino, msg.as_string())
+        print(f"✅ Email enviado exitosamente a {email_destino}")
+        print(f"   Asunto: {asunto}")
+    except smtplib.SMTPAuthenticationError:
+        print("❌ Error de autenticación Gmail.")
+        print("   → Verifica GMAIL_USER y GMAIL_PASSWORD en GitHub Secrets")
+    except Exception as e:
+        print(f"❌ Error enviando email: {e}")
+        raise
+
+
 if __name__ == "__main__":
     print(f"\n🚀 Visa Market Intelligence — {HOY.strftime('%B %Y')}")
     print(f"   Período: {SEMANA_ATRAS.strftime('%d/%m/%Y')} → {HOY.strftime('%d/%m/%Y')}")
