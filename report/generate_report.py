@@ -35,24 +35,52 @@ def download_data():
 def clean_data(df):
     df.columns = [c.strip().upper().replace(" ", "_") for c in df.columns]
 
+    # Imprimir columnas reales para diagnóstico
+    print("Columnas disponibles en el CSV:")
+    for c in df.columns:
+        print(f"  '{c}'")
+
     # Mapear columnas clave con nombres posibles en el CSV
     col_map = {
-        "MES":                  ["MES", "PERIODO", "FECHA"],
-        "ENTIDAD":              ["ENTIDAD", "BANCO", "INSTITUCION"],
-        "FRANQUICIA":           ["FRANQUICIA", "MARCA"],
-        "MTO_COMPRAS_NAL":      ["MTO_COMPRAS_NAL", "COMPRAS_NAL", "MONTO_NAL"],
-        "MTO_COMPRAS_EXT":      ["MTO_COMPRAS_EXT", "COMPRAS_EXT", "MONTO_EXT"],
-        "MTO_COMPRAS_CREDITO":  ["MTO_COMPRAS_CREDITO", "COMPRAS_CREDITO", "MONTO_TOTAL"],
-        "NUM_COMPRAS_NAL":      ["NUM_COMPRAS_NAL", "NUM_TRANSACCIONES_NAL"],
-        "VIGENTES_FECHA_CORTE": ["VIGENTES_FECHA_CORTE", "TARJETAS_VIGENTES"],
-        "CANCELADAS":           ["CANCELADAS"],
+        "MES":                  ["MES", "PERIODO", "FECHA", "MES_CORTE", "CORTE"],
+        "ENTIDAD":              ["ENTIDAD", "BANCO", "INSTITUCION", "ENTIDAD_VIGILADA",
+                                 "NOMBRE_ENTIDAD"],
+        "FRANQUICIA":           ["FRANQUICIA", "MARCA", "FRANQUICIA_TARJETA",
+                                 "MARCA_TARJETA", "FRANQUICIAS"],
+        "MTO_COMPRAS_NAL":      ["MTO_COMPRAS_NAL", "COMPRAS_NAL", "MONTO_NAL",
+                                 "VR_COMPRAS_NAL", "VALOR_COMPRAS_NAL"],
+        "MTO_COMPRAS_EXT":      ["MTO_COMPRAS_EXT", "COMPRAS_EXT", "MONTO_EXT",
+                                 "VR_COMPRAS_EXT", "VALOR_COMPRAS_EXT"],
+        "MTO_COMPRAS_CREDITO":  ["MTO_COMPRAS_CREDITO", "COMPRAS_CREDITO", "MONTO_TOTAL",
+                                 "VR_COMPRAS_CREDITO", "VALOR_COMPRAS_CREDITO",
+                                 "TOTAL_COMPRAS"],
+        "NUM_COMPRAS_NAL":      ["NUM_COMPRAS_NAL", "NUM_TRANSACCIONES_NAL",
+                                 "NUMERO_COMPRAS_NAL", "CANT_COMPRAS_NAL"],
+        "VIGENTES_FECHA_CORTE": ["VIGENTES_FECHA_CORTE", "TARJETAS_VIGENTES",
+                                 "NUM_TARJETAS_VIGENTES", "VIGENTES"],
+        "CANCELADAS":           ["CANCELADAS", "NUM_CANCELADAS", "TARJETAS_CANCELADAS"],
     }
     rename = {}
     for canonical, candidates in col_map.items():
         for c in candidates:
             if c in df.columns and canonical not in df.columns:
                 rename[c] = canonical
+                break
     df = df.rename(columns=rename)
+
+    # Si aún falta FRANQUICIA, intentar detectarla por contenido
+    if "FRANQUICIA" not in df.columns:
+        for col in df.columns:
+            sample = df[col].dropna().astype(str).str.upper()
+            if sample.str.contains("VISA|MASTERCARD", na=False).mean() > 0.1:
+                print(f"  → Detectada columna FRANQUICIA como '{col}'")
+                df = df.rename(columns={col: "FRANQUICIA"})
+                break
+
+    if "FRANQUICIA" not in df.columns:
+        raise ValueError(
+            f"No se encontró columna FRANQUICIA. Columnas disponibles: {list(df.columns)}"
+        )
 
     # Solo crédito
     if "TIPO_TARJETA" in df.columns:
