@@ -1,0 +1,52 @@
+name: Monthly Market Intelligence Report
+
+on:
+  # Corre el día 15 de cada mes a las 8am hora Colombia (UTC-5 → 13:00 UTC)
+  schedule:
+    - cron: "0 13 15 * *"
+
+  # También permite correrlo manualmente desde GitHub Actions
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (genera el reporte pero NO envía el email)"
+        required: false
+        default: "false"
+
+jobs:
+  generate-and-send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install requests pandas
+
+      - name: Generate report
+        run: |
+          python report/generate_report.py report/output_report.html
+
+      - name: Upload report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: market-report-${{ github.run_id }}
+          path: report/output_report.html
+          retention-days: 90
+
+      - name: Send email
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        env:
+          GMAIL_USER:     ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASS: ${{ secrets.GMAIL_APP_PASS }}
+          REPORT_TO:      ${{ secrets.REPORT_TO }}
+        run: |
+          python report/send_email.py report/output_report.html
