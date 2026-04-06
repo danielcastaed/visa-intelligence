@@ -18,7 +18,7 @@ def send_report(html_path: str):
         html_body = f.read()
 
     periodo = datetime.now().strftime("%Y-%m")
-    subject = f"Visa Market Intelligence — Tarjetas de Crédito Colombia · {periodo}"
+    subject = f"Visa Market Intelligence — Tarjetas de Pago Colombia · {periodo}"
 
     msg = MIMEMultipart("mixed")
     msg["Subject"] = subject
