@@ -189,7 +189,7 @@ def _fmt_bank(raw):
     if "CITIBANK"   in up: return "Citibank"
     if "GNB"        in up: return "GNB Sudameris"
     if "TUYA"       in up: return "Tuya"
-    if "COLPATRIA"  in up or "SCOTIABANK" in up: return "DAVIbank"
+    if "SCOTIABANK" in up or "COLPATRIA"  in up: return "Scotiabank Colpatria"
     if "FALABELLA"  in up: return "Falabella"
     if "OCCIDENTE"  in up: return "Occidente"
     if "AV VILLAS"  in up: return "Av Villas"
