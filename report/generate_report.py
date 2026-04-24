@@ -69,6 +69,9 @@ def download_data():
     df['MES_DT'] = pd.to_datetime(df['MES'], format='%d/%m/%Y', dayfirst=True, errors='coerce')
     df = df.dropna(subset=['MES_DT'])
     df['MES'] = df['MES_DT'].dt.strftime('%Y-%m')
+    # Limpiar ENTIDADs con comillas literales desde la SFC (ej. '"RAPPIPAY"', '"BOLD C.F.", ...')
+    df['ENTIDAD'] = df['ENTIDAD'].str.strip('"').str.strip("'")
+    df['ENTIDAD'] = df['ENTIDAD'].str.replace(r'^BOLD.*', 'BOLD', regex=True)
     print(f"  {len(df):,} registros · {df['MES'].min()} → {df['MES'].max()}")
     return df
 
