@@ -2,7 +2,7 @@ name: Monthly Market Intelligence Report
 
 on:
   schedule:
-    - cron: "0 13 15 * *"   # Día 15, 8am Colombia (UTC-5)
+    - cron: "0 13 1-7 * 2"  # Martes de la primera semana del mes, 8am Colombia (UTC-5)
   workflow_dispatch:
     inputs:
       dry_run:
