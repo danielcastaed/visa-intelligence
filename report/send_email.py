@@ -30,7 +30,7 @@ def send_report(html_path: str):
         '    <div style="font-size:10px;color:#94A3B8;margin-top:8px">' + PAGES_URL + '</div>\n'
         '  </div>\n'
     )
-    html_body = html_body.replace("</body>", link_block + "</body>", 1)
+    html_body = html_body.replace("<body>", "<body>" + link_block, 1)
 
     periodo = datetime.now().strftime("%Y-%m")
     subject = f"Visa Market Intelligence — Tarjetas de Pago Colombia · {periodo}"
