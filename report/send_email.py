@@ -3,7 +3,7 @@ send_email.py
 Envía el reporte mensual por email con link al dashboard en GitHub Pages.
 El dashboard ya no se adjunta — se publica en GitHub Pages y el email incluye el link.
 """
-import os, sys, smtplib
+import os, sys, smtplib, re
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from datetime import datetime
@@ -30,7 +30,7 @@ def send_report(html_path: str):
         '    <div style="font-size:10px;color:#94A3B8;margin-top:8px">' + PAGES_URL + '</div>\n'
         '  </div>\n'
     )
-    html_body = html_body.replace("<body>", "<body>" + link_block, 1)
+    html_body = re.sub(r"<body[^>]*>", lambda m: m.group(0) + link_block, html_body, count=1)
 
     periodo = datetime.now().strftime("%Y-%m")
     subject = f"Visa Market Intelligence — Tarjetas de Pago Colombia · {periodo}"
