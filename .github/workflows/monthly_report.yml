@@ -26,7 +26,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install requests pandas numpy nbconvert jupyter-client ipykernel
+          pip install requests pandas numpy nbconvert jupyter-client ipykernel plotly
           python -m ipykernel install --user --name python3
 
       - name: Execute notebook
