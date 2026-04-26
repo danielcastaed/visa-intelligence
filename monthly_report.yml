@@ -1,93 +1,54 @@
-name: Monthly Market Intelligence Report
+"""
+send_email.py
+Envía el reporte mensual por email con link al dashboard en GitHub Pages.
+El dashboard ya no se adjunta — se publica en GitHub Pages y el email incluye el link.
+"""
+import os, sys, smtplib, re
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from datetime import datetime
 
-on:
-  schedule:
-    - cron: "0 13 25-31 * 2"  # Martes de la última semana del mes, 8am Colombia (UTC-5)
-  workflow_dispatch:
-    inputs:
-      dry_run:
-        description: "Dry run (genera sin enviar email)"
-        required: false
-        default: "false"
+PAGES_URL = "https://danielcastaed.github.io/visa-intelligence/"
 
-# Permissions needed for GitHub Pages deploy
-permissions:
-  contents: write
-  pages: write
-  id-token: write
+def send_report(html_path: str):
+    gmail_user = os.environ["GMAIL_USER"]
+    gmail_pass = os.environ["GMAIL_APP_PASS"]
+    to_addr    = os.environ.get("REPORT_TO", "dacastan@visa.com")
 
-jobs:
-  generate-and-send:
-    runs-on: ubuntu-latest
-    timeout-minutes: 45
+    with open(html_path, "r", encoding="utf-8") as f:
+        html_body = f.read()
 
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+    # Inject dashboard link button before closing tag
+    link_block = (
+        '\n  <div style="text-align:center;padding:20px 0 12px">\n'
+        '    <a href="' + PAGES_URL + '"\n'
+        '       style="display:inline-block;padding:12px 32px;background:#1A1F71;color:#fff;\n'
+        '              font-size:14px;font-weight:700;border-radius:8px;text-decoration:none;\n'
+        '              letter-spacing:.3px">\n'
+        '      Ver dashboard interactivo\n'
+        '    </a>\n'
+        '    <div style="font-size:10px;color:#94A3B8;margin-top:8px">' + PAGES_URL + '</div>\n'
+        '  </div>\n'
+    )
+    html_body = re.sub(r"<body[^>]*>", lambda m: m.group(0) + link_block, html_body, count=1)
 
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+    periodo = datetime.now().strftime("%Y-%m")
+    subject = f"Visa Market Intelligence — Tarjetas de Pago Colombia · {periodo}"
 
-      - name: Install dependencies
-        run: |
-          pip install requests pandas numpy nbconvert jupyter-client ipykernel plotly
-          python -m ipykernel install --user --name python3
+    msg = MIMEMultipart("mixed")
+    msg["Subject"] = subject
+    msg["From"]    = f"Market Intelligence <{gmail_user}>"
+    msg["To"]      = to_addr
 
-      - name: Execute notebook
-        run: |
-          NOTEBOOK=$(find . -name "SFC_Analytics.ipynb" | head -1)
-          if [ -z "$NOTEBOOK" ]; then
-            echo "ERROR: SFC_Analytics.ipynb no encontrado"
-            exit 1
-          fi
-          echo "Notebook: $NOTEBOOK"
-          NOTEBOOK_DIR=$(dirname "$NOTEBOOK")
-          NOTEBOOK_FILE=$(basename "$NOTEBOOK")
-          cd "$NOTEBOOK_DIR"
-          python -m nbconvert \
-            --to notebook \
-            --execute "$NOTEBOOK_FILE" \
-            --output "${NOTEBOOK_FILE%.ipynb}_executed.ipynb" \
-            --ExecutePreprocessor.timeout=1200 \
-            --ExecutePreprocessor.kernel_name=python3
-          echo "Notebook ejecutado ✅"
-          ls -lh sfc_dashboard.html 2>/dev/null || echo "Aviso: dashboard no generado"
-          [ "$NOTEBOOK_DIR" != "." ] && cp sfc_dashboard.html "$GITHUB_WORKSPACE/" 2>/dev/null || true
+    msg.attach(MIMEText(html_body, "html", "utf-8"))
 
-      - name: Generate email report
-        run: python report/generate_report.py report/output_report.html
+    print(f"  Dashboard publicado en: {PAGES_URL}")
+    print(f"Enviando a {to_addr}...")
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+        server.login(gmail_user, gmail_pass)
+        server.sendmail(gmail_user, to_addr, msg.as_string())
+    print("✅ Email enviado correctamente.")
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: market-report-${{ github.run_id }}
-          path: |
-            report/output_report.html
-            sfc_dashboard.html
-          retention-days: 90
-          if-no-files-found: warn
-
-      - name: Deploy dashboard to GitHub Pages
-        run: |
-          # Prepare docs/ folder for Pages
-          mkdir -p docs
-          cp sfc_dashboard.html docs/index.html
-
-          # Commit and push to main
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/index.html
-          git commit -m "chore: update dashboard $(date +'%Y-%m')" || echo "No changes to commit"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Send email
-        if: ${{ github.event.inputs.dry_run != 'true' }}
-        env:
-          GMAIL_USER:     ${{ secrets.GMAIL_USER }}
-          GMAIL_APP_PASS: ${{ secrets.GMAIL_APP_PASS }}
-          REPORT_TO:      ${{ secrets.REPORT_TO }}
-        run: python report/send_email.py report/output_report.html
+if __name__ == "__main__":
+    html_path = sys.argv[1] if len(sys.argv) > 1 else "report/output_report.html"
+    send_report(html_path)
