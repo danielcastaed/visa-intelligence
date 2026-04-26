@@ -2,7 +2,7 @@ name: Monthly Market Intelligence Report
 
 on:
   schedule:
-    - cron: "0 13 15 * *"
+    - cron: "0 13 25-31 * 2"  # Martes de la última semana del mes, 8am Colombia (UTC-5)
   workflow_dispatch:
     inputs:
       dry_run:
@@ -13,7 +13,7 @@ on:
 jobs:
   generate-and-send:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     steps:
       - name: Checkout repo
@@ -26,19 +26,17 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install requests pandas numpy plotly nbconvert jupyter-client ipykernel
+          pip install requests pandas numpy nbconvert jupyter-client ipykernel
           python -m ipykernel install --user --name python3
 
-      - name: Find and execute notebook
+      - name: Execute notebook
         run: |
-          # Buscar el notebook en cualquier ubicación del repo
           NOTEBOOK=$(find . -name "SFC_Analytics.ipynb" | head -1)
           if [ -z "$NOTEBOOK" ]; then
             echo "ERROR: SFC_Analytics.ipynb no encontrado"
-            find . -name "*.ipynb" | head -10
             exit 1
           fi
-          echo "Notebook encontrado: $NOTEBOOK"
+          echo "Notebook: $NOTEBOOK"
           NOTEBOOK_DIR=$(dirname "$NOTEBOOK")
           NOTEBOOK_FILE=$(basename "$NOTEBOOK")
           cd "$NOTEBOOK_DIR"
@@ -46,19 +44,11 @@ jobs:
             --to notebook \
             --execute "$NOTEBOOK_FILE" \
             --output "${NOTEBOOK_FILE%.ipynb}_executed.ipynb" \
-            --ExecutePreprocessor.timeout=600 \
+            --ExecutePreprocessor.timeout=1200 \
             --ExecutePreprocessor.kernel_name=python3
-          echo "Notebook ejecutado exitosamente"
-          ls -lh *.html 2>/dev/null || echo "Sin HTML en directorio del notebook"
-          # Mover el dashboard a la raíz si está en subcarpeta
-          if [ "$NOTEBOOK_DIR" != "." ]; then
-            cp sfc_dashboard.html "$GITHUB_WORKSPACE/" 2>/dev/null || true
-          fi
-
-      - name: Verify dashboard was generated
-        run: |
-          ls -lh *.html 2>/dev/null || echo "Sin HTML en raíz"
-          find . -name "sfc_dashboard.html" | head -5
+          echo "Notebook ejecutado ✅"
+          ls -lh sfc_dashboard.html 2>/dev/null || echo "Aviso: dashboard no generado"
+          [ "$NOTEBOOK_DIR" != "." ] && cp sfc_dashboard.html "$GITHUB_WORKSPACE/" 2>/dev/null || true
 
       - name: Generate email report
         run: python report/generate_report.py report/output_report.html
@@ -71,6 +61,7 @@ jobs:
             report/output_report.html
             sfc_dashboard.html
           retention-days: 90
+          if-no-files-found: warn
 
       - name: Send email
         if: ${{ github.event.inputs.dry_run != 'true' }}
