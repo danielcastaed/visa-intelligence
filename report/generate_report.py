@@ -347,11 +347,13 @@ def build_report(df_cred, df_deb):
     def pd_(f): return map_d.get(pm_d,{}).get(f,{"mto_tot":0,"mto_nal":0,"mto_ext":0,"num_nal":0,"vigentes":0,"ms":0})
 
     # Total — crédito completo + débito
+    # Total: crédito completo (V+MC+Amex+Diners+Otras) + débito (V+MC)
+    # Denominador = DASH_FRANQS — igual que el dashboard en modo total
     df_tot = pd.concat([
         df_cred[['MES','ENTIDAD','FRANQUICIA','MTO_TOT','MTO_NAL','MTO_EXT','NUM_NAL','VIGENTES']],
         df_deb[['MES','ENTIDAD','FRANQUICIA','MTO_TOT','MTO_NAL','MTO_EXT','NUM_NAL','VIGENTES']],
     ], ignore_index=True)
-    map_t, per_t = aggregate(df_tot, DASH_FRANQS)
+    map_t, per_t = aggregate(df_tot, DASH_FRANQS)  # V+MC+Amex+Diners+Otras — igual que dashboard modo total
     um_t = per_t[-1]; pm_t = find_prior(um_t, per_t)
     def ut(f): return map_t.get(um_t,{}).get(f,{"mto_tot":0,"mto_nal":0,"mto_ext":0,"num_nal":0,"vigentes":0,"ms":0})
     def pt(f): return map_t.get(pm_t,{}).get(f,{"mto_tot":0,"mto_nal":0,"mto_ext":0,"num_nal":0,"vigentes":0,"ms":0})
