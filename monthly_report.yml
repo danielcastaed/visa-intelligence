@@ -2,7 +2,7 @@ name: Monthly Market Intelligence Report
 
 on:
   schedule:
-    - cron: "0 13 25-31 * 2"  # Martes de la última semana del mes, 8am Colombia (UTC-5)
+    - cron: "0 13 * * 2"  # Todos los martes — el step verifica si es el último del mes
   workflow_dispatch:
     inputs:
       dry_run:
@@ -34,6 +34,19 @@ jobs:
         run: |
           pip install requests pandas numpy nbconvert jupyter-client ipykernel plotly
           python -m ipykernel install --user --name python3
+
+      - name: Check if last Tuesday of month
+        run: |
+          # Exit early if today is NOT the last Tuesday of the month
+          TODAY=$(date +%d)
+          NEXT_TUESDAY=$(date -d "next tuesday" +%d 2>/dev/null || date -v+7d +%d)
+          DAYS_IN_MONTH=$(date -d "$(date +%Y-%m-01) +1 month -1 day" +%d 2>/dev/null || date -v1d -v+1m -v-1d +%d)
+          # If next Tuesday is still in this month, today is not the last Tuesday
+          if [ "$NEXT_TUESDAY" -le "$DAYS_IN_MONTH" ] && [ "$NEXT_TUESDAY" -gt "$TODAY" ]; then
+            echo "Not the last Tuesday of the month (next Tuesday: $NEXT_TUESDAY, days in month: $DAYS_IN_MONTH). Skipping."
+            exit 0
+          fi
+          echo "Last Tuesday of the month confirmed. Proceeding."
 
       - name: Execute notebook
         run: |
