@@ -190,9 +190,9 @@ def find_prior(period, periods):
 
 # ── Formato ───────────────────────────────────────────────────────────────────
 def fmt_cop(v):
-    if v >= 1e12: return f"${v/1e9:.0f}MM COP"
-    if v >= 1e9:  return f"${v/1e9:.1f}MM COP"
-    return f"${v/1e6:.0f}M COP"
+    if v >= 1e12: return f"${v/1e12:,.3f} MM COP"
+    if v >= 1e6:  return f"${v/1e6:,.0f} M COP"
+    return f"${v:,.0f} COP"
 
 def fmt_pct(v): return f"{'+'if v>0 else ''}{v:.1f}%"
 def fmt_pp(v):  return f"{'+'if v>0 else ''}{v:.2f}pp"
