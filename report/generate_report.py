@@ -190,9 +190,9 @@ def find_prior(period, periods):
 
 # ── Formato ───────────────────────────────────────────────────────────────────
 def fmt_cop(v):
-    if v >= 1e12: return f"${v/1e12:,.3f} MM COP"
-    if v >= 1e6:  return f"${v/1e6:,.0f} M COP"
-    return f"${v:,.0f} COP"
+    if v >= 1e12: return f"${v/1e9:.0f}MM COP"
+    if v >= 1e9:  return f"${v/1e9:.1f}MM COP"
+    return f"${v/1e6:.0f}M COP"
 
 def fmt_pct(v): return f"{'+'if v>0 else ''}{v:.1f}%"
 def fmt_pp(v):  return f"{'+'if v>0 else ''}{v:.2f}pp"
@@ -295,6 +295,10 @@ def contrib_banco_html(df, um, pm, franq, color, mto_col="MTO_TOT"):
         return g/mkt*100 if mkt>0 else g*0
     ms_u = bank_ms(df_u, mkt_u)
     ms_p = bank_ms(df_p, mkt_p)
+    # Total de la marca: market share y variación YoY (encima de los bancos)
+    franq_ms_u = float(ms_u.sum())
+    franq_ms_p = float(ms_p.sum())
+    franq_diff = franq_ms_u - franq_ms_p
     entries = []
     for b in ms_u.index.union(ms_p.index):
         u_v = ms_u.get(b,0); p_v = ms_p.get(b,0)
@@ -325,8 +329,12 @@ def contrib_banco_html(df, um, pm, franq, color, mto_col="MTO_TOT"):
     return (
         f'<div style="border:1px solid #E2E8F0;border-top:3px solid {color};'
         f'border-radius:8px;padding:14px;flex:1;min-width:220px">'
-        f'<div style="font-size:12px;font-weight:700;color:{color};margin-bottom:2px">{label}</div>'
-        f'<div style="font-size:10px;color:#94A3B8;margin-bottom:8px">Δ pp vs {pm}</div>'
+        f'<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px">'
+        f'<span style="font-size:13px;font-weight:800;color:{color}">{label}</span>'
+        f'<span style="font-size:13px;font-weight:800;color:#0F172A">{franq_ms_u:.1f}% '
+        f'<span style="font-size:11px;font-weight:700;color:{"#059669" if franq_diff>0 else "#DC2626" if franq_diff<0 else "#64748B"}">'
+        f'{"+" if franq_diff>0 else ""}{franq_diff:.1f}pp</span></span></div>'
+        f'<div style="font-size:10px;color:#94A3B8;margin-bottom:8px">Δ pp YoY vs {pm}</div>'
         f'<table style="width:100%;border-collapse:collapse">{trs}</table></div>'
     )
 
