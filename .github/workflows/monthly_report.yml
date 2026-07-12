@@ -2,7 +2,7 @@ name: Monthly Market Intelligence Report
 
 on:
   schedule:
-    - cron: "0 13 25-31 * 2"  # Martes de la última semana del mes, 8am Colombia (UTC-5)
+    - cron: "0 13 * * 2"  # Todos los martes 13:00 UTC (8:00 AM Colombia) — el gate deja pasar SOLO el primer martes del mes
   workflow_dispatch:
     inputs:
       dry_run:
@@ -25,17 +25,38 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      # ── GATE: solo continuar si es el PRIMER martes del mes ────────────────────
+      # (o si se dispara manualmente con workflow_dispatch). El resultado se expone
+      # como output y cada step pesado lo consulta con `if:`. Un `exit 0` NO habría
+      # frenado el job — por eso antes el reporte salía todos los martes.
+      - name: Check if first Tuesday of month
+        id: gate
+        run: |
+          DOM=$(date +%d)   # día del mes: 01-31
+          DOW=$(date +%u)   # día de semana: 1=Lun ... 7=Dom (martes=2)
+          # El primer martes es el único martes cuyo día del mes está entre 1 y 7.
+          if [ "$DOW" -eq 2 ] && [ "$DOM" -ge 1 ] && [ "$DOM" -le 7 ]; then
+            echo "Primer martes del mes confirmado (día $DOM). Continuando."
+            echo "proceed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No es el primer martes (día del mes=$DOM, día semana=$DOW). Se omite."
+            echo "proceed=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Set up Python 3.11
+        if: steps.gate.outputs.proceed == 'true' || github.event_name == 'workflow_dispatch'
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Install dependencies
+        if: steps.gate.outputs.proceed == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           pip install requests pandas numpy nbconvert jupyter-client ipykernel plotly
           python -m ipykernel install --user --name python3
 
       - name: Execute notebook
+        if: steps.gate.outputs.proceed == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           NOTEBOOK=$(find . -name "SFC_Analytics.ipynb" | head -1)
           if [ -z "$NOTEBOOK" ]; then
@@ -57,9 +78,11 @@ jobs:
           [ "$NOTEBOOK_DIR" != "." ] && cp sfc_dashboard.html "$GITHUB_WORKSPACE/" 2>/dev/null || true
 
       - name: Generate email report
+        if: steps.gate.outputs.proceed == 'true' || github.event_name == 'workflow_dispatch'
         run: python report/generate_report.py report/output_report.html
 
       - name: Upload artifacts
+        if: steps.gate.outputs.proceed == 'true' || github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v4
         with:
           name: market-report-${{ github.run_id }}
@@ -70,6 +93,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Deploy dashboard to GitHub Pages
+        if: steps.gate.outputs.proceed == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           # Prepare docs/ folder for Pages
           mkdir -p docs
@@ -86,7 +110,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Send email
-        if: ${{ github.event.inputs.dry_run != 'true' }}
+        if: ${{ (steps.gate.outputs.proceed == 'true' || github.event_name == 'workflow_dispatch') && github.event.inputs.dry_run != 'true' }}
         env:
           GMAIL_USER:     ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASS: ${{ secrets.GMAIL_APP_PASS }}
