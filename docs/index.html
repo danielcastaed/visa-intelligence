@@ -885,8 +885,13 @@ function setView(v, el) {
 function toggleBancos() {
   bancosShowAll = !bancosShowAll;
   const rows = filtered();
-  const {map, periods} = buildPeriod(rows, "mensual");
-  renderBancos(rows, periods[periods.length-1]);
+  const {periods:mPeriods} = buildPeriod(rows, "mensual");
+  // Usar la MISMA clave de período que renderAll: año en vista anual, mes en mensual.
+  // (Antes pasaba siempre el mes → en vista anual descartaba todo y el gráfico salía vacío.)
+  const ultimo = currentView==="anual"
+    ? (getPillVals("ano")?.[0] || mPeriods[mPeriods.length-1].slice(0,4))
+    : mPeriods[mPeriods.length-1];
+  renderBancos(rows, ultimo);
 }
 
 function setVolTab(t, el) {
