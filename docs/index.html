@@ -449,7 +449,7 @@ button.tab.active{background:var(--visa);color:#fff;border-color:var(--visa)}
 <div class="card" style="margin-top:0;grid-column:1/-1">
   <div class="card-title">Rentabilidad / Tarjeta</div>
   <div class="card-sub">Facturación / vigentes por franquicia · COP miles por tarjeta</div>
-
+  
   <div class="chart-wrap" style="height:220px"><canvas id="cohortRentChart"></canvas></div>
 </div>
 <div class="card" style="margin-top:0;grid-column:1/-1">
@@ -1833,10 +1833,14 @@ function renderYoY(rows) {
     const activeFranqs = Object.keys(fullMap[p]||{});
     const totN = activeFranqs.reduce((s,f) => { const v=keyFn(fullMap[p]?.[f]||{}); return s+(v||0); }, 0);
     const totO = activeFranqs.reduce((s,f) => { const v=keyFn(fullMap[p12]?.[f]||{}); return s+(v||0); }, 0);
-    if (vO>0 && mO>0) {
+    // Cada serie se evalúa de forma INDEPENDIENTE: basta con que alguna tenga
+    // base del año anterior. (Antes se exigía vO>0 && mO>0, lo que dejaba el
+    // gráfico vacío para emisores monofranquicia como Banco Agrario —solo Visa—
+    // descartando también los puntos válidos de la franquicia que sí tenía datos.)
+    if (vO>0 || mO>0 || totO>0) {
       labels.push(p.slice(0,7));
-      vY.push((vN/vO-1)*100);
-      mY.push((mN/mO-1)*100);
+      vY.push(vO>0 ? (vN/vO-1)*100 : null);
+      mY.push(mO>0 ? (mN/mO-1)*100 : null);
       totY.push(totO>0 ? (totN/totO-1)*100 : null);
     }
   }
@@ -1848,9 +1852,9 @@ function renderYoY(rows) {
   mkChart("yoyChart", {
     type:"line",
     data:{labels:last, datasets:[
-      {label:"Visa",         data:vD, borderColor:VISA,     backgroundColor:"transparent", pointRadius:2, tension:0.3, borderWidth:2},
-      {label:"Mastercard",   data:mD, borderColor:MC,       backgroundColor:"transparent", pointRadius:2, tension:0.3, borderWidth:2},
-      {label:"Total mercado",data:tD, borderColor:"#94A3B8",backgroundColor:"transparent", pointRadius:0, tension:0.3, borderWidth:1.5, borderDash:[5,4]},
+      {label:"Visa",         data:vD, borderColor:VISA,     backgroundColor:"transparent", pointRadius:2, tension:0.3, borderWidth:2, spanGaps:true},
+      {label:"Mastercard",   data:mD, borderColor:MC,       backgroundColor:"transparent", pointRadius:2, tension:0.3, borderWidth:2, spanGaps:true},
+      {label:"Total mercado",data:tD, borderColor:"#94A3B8",backgroundColor:"transparent", pointRadius:0, tension:0.3, borderWidth:1.5, borderDash:[5,4], spanGaps:true},
     ]},
     options: lineOpts("%")
   });
