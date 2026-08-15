@@ -214,6 +214,12 @@ button.tab.active{background:var(--visa);color:#fff;border-color:var(--visa)}
 <button class="filters-toggle" onclick="toggleFiltersBar()" id="filters-toggle-btn">&#9776; Filtros</button>
 <div class="filters" id="filters-panel">
 
+  <!-- Vista de página -->
+  <span class="filter-label">Vista</span>
+  <button class="tab active" id="page-tab-dashboard" onclick="setPageTab('dashboard',this)">Dashboard</button>
+  <button class="tab" id="page-tab-projection" onclick="setPageTab('projection',this)">Deep Dive</button>
+  <span class="sep"></span>
+
   <!-- Banco -->
   <span class="filter-label">Banco</span>
   <div class="msel" id="msel-banco">
@@ -289,11 +295,6 @@ button.tab.active{background:var(--visa);color:#fff;border-color:var(--visa)}
   </div>
 </div><!-- /filters -->
 </div><!-- /filters-bar -->
-
-<div class="page-tabs" style="display:flex;gap:6px;margin:0 0 20px">
-  <button class="tab active" id="page-tab-dashboard" onclick="setPageTab('dashboard',this)">Dashboard</button>
-  <button class="tab" id="page-tab-projection" onclick="setPageTab('projection',this)">Deep Dive</button>
-</div>
 
 <div id="view-dashboard">
 <!-- VIZ 1 — MS 100% Horizontal Bar -->
@@ -424,13 +425,13 @@ button.tab.active{background:var(--visa);color:#fff;border-color:var(--visa)}
     <div class="card-title">Top bancos por ganancia/pérdida de MS — Visa</div>
     <div class="card-sub" id="contrib-banco-visa-sub">Δpp vs período anterior</div>
     <div id="contrib-banco-visa"></div>
-    <div class="chart-wrap" style="height:200px;margin-top:14px"><canvas id="waterfallVisaChart"></canvas></div>
+    <div class="chart-wrap" style="height:320px;margin-top:14px"><canvas id="waterfallVisaChart"></canvas></div>
   </div>
   <div class="card">
     <div class="card-title">Top bancos por ganancia/pérdida de MS — Mastercard</div>
     <div class="card-sub" id="contrib-banco-mc-sub">Δpp vs período anterior</div>
     <div id="contrib-banco-mc"></div>
-    <div class="chart-wrap" style="height:200px;margin-top:14px"><canvas id="waterfallMcChart"></canvas></div>
+    <div class="chart-wrap" style="height:320px;margin-top:14px"><canvas id="waterfallMcChart"></canvas></div>
   </div>
 </div>
 
@@ -1220,7 +1221,8 @@ function renderAll() {
 // ── Pestañas de página (Dashboard / Proyección) ─────────────────────────────────
 function setPageTab(view, el) {
   currentPageTab = view;
-  document.querySelectorAll(".page-tabs .tab").forEach(b => b.classList.remove("active"));
+  document.getElementById("page-tab-dashboard")?.classList.remove("active");
+  document.getElementById("page-tab-projection")?.classList.remove("active");
   el.classList.add("active");
   document.getElementById("view-dashboard").style.display = view === "dashboard" ? "" : "none";
   document.getElementById("view-projection").style.display = view === "projection" ? "" : "none";
@@ -2951,7 +2953,7 @@ function renderContribWaterfall(canvasId, franq, color, startVal, top, endVal, u
     },
     options: {
       responsive:true, maintainAspectRatio:false,
-      layout:{ padding:{ top:22, right:6, bottom:2, left:2 } },
+      layout:{ padding:{ top:70, right:6, bottom:2, left:2 } },
       plugins:{
         legend:{ display:false },
         tooltip:{ callbacks:{
@@ -2965,7 +2967,7 @@ function renderContribWaterfall(canvasId, franq, color, startVal, top, endVal, u
         }}
       },
       scales:{
-        x:{ ticks:{font:{size:8.5},maxRotation:42,minRotation:42,autoSkip:false}, grid:{display:false} },
+        x:{ ticks:{font:{size:8.5},maxRotation:90,minRotation:90,autoSkip:false}, grid:{display:false} },
         y:{ min:axisMin, max:axisMax, ticks:{callback:v=>v.toFixed(2)+"%",font:{size:9}}, grid:{color:"#F2F4F7"} }
       },
       animation:{duration:300}
@@ -2977,16 +2979,21 @@ function renderContribWaterfall(canvasId, franq, color, startVal, top, endVal, u
         const meta = chart.getDatasetMeta(0);
         ctx.save();
         ctx.font = "700 9px "+getComputedStyle(document.body).fontFamily;
-        ctx.textAlign = "center";
-        // Solo se rotula el inicio y el fin (el total) — el detalle por banco ya
-        // está en la lista de arriba y en el tooltip; rotular cada barra aquí
-        // encima de columnas tan angostas se vuelve ilegible.
-        [0, bars.length-1].forEach(i=>{
-          const b = bars[i];
+        ctx.textBaseline = "middle";
+        // Texto vertical (igual orientación que los nombres de banco del eje X)
+        // sobre cada barra, no solo inicio/fin — así cabe sin solaparse aunque
+        // las columnas sean angostas.
+        bars.forEach((b,i)=>{
+          const isEdge = i===0 || i===bars.length-1;
           const top2 = y.getPixelForValue(Math.max(b[0],b[1]));
-          const txt = b[1].toFixed(1)+"%";
-          ctx.fillStyle = "#334155";
-          ctx.fillText(txt, meta.data[i].x, top2-6);
+          const txt = isEdge ? b[1].toFixed(2)+"%" : (top[i-1].diff>=0?"+":"")+top[i-1].diff.toFixed(2)+"pp";
+          ctx.fillStyle = isEdge ? "#334155" : (top[i-1].diff>=0 ? color : "#98A2B3");
+          ctx.save();
+          ctx.translate(meta.data[i].x, top2-6);
+          ctx.rotate(-Math.PI/2);
+          ctx.textAlign = "left";
+          ctx.fillText(txt, 0, 0);
+          ctx.restore();
         });
         ctx.restore();
       }
