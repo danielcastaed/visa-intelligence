@@ -124,7 +124,7 @@ button.tab.active{background:var(--visa);color:#fff;border-color:var(--visa)}
 .filters-bar { position: relative; }
 .filters-toggle { display: none; }
 @media (max-width: 768px) {
-  #cartera-grid { grid-template-columns: 1fr !important; }
+  #cartera-grid, #cartera-grid-detail { grid-template-columns: 1fr !important; }
   .filters-toggle {
     display: flex;
     align-items: center;
@@ -291,7 +291,7 @@ button.tab.active{background:var(--visa);color:#fff;border-color:var(--visa)}
 
 <div class="page-tabs" style="display:flex;gap:6px;margin:0 0 20px">
   <button class="tab active" id="page-tab-dashboard" onclick="setPageTab('dashboard',this)">Dashboard</button>
-  <button class="tab" id="page-tab-projection" onclick="setPageTab('projection',this)">Proyección y Comparación</button>
+  <button class="tab" id="page-tab-projection" onclick="setPageTab('projection',this)">Deep Dive</button>
 </div>
 
 <div id="view-dashboard">
@@ -340,28 +340,26 @@ button.tab.active{background:var(--visa);color:#fff;border-color:var(--visa)}
   <div class="chart-wrap" style="height:190px"><canvas id="volChart"></canvas></div>
 </div>
 
-<!-- VIZ transacciones + tarjetas vigentes -->
+<!-- VIZ transacciones + tarjetas vigentes + ticket promedio (un solo card con tabs) -->
 <div class="card" style="margin-top:14px">
-  <div class="card-title">Transacciones</div>
-  <div class="card-sub" id="txn-sub">Transacciones crédito totales</div>
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:2px">
+    <div>
+      <div class="card-title" id="txnvigtkt-title">Transacciones</div>
+      <div class="card-sub" id="txnvigtkt-sub">Transacciones crédito totales</div>
+    </div>
+    <div id="txnvigtkt-tabs" style="display:flex;gap:4px">
+      <button class="tab active" onclick="setTxnVigTab('txn',this)">Transacciones</button>
+      <button class="tab" onclick="setTxnVigTab('vig',this)">Tarjetas Vigentes</button>
+      <button class="tab" onclick="setTxnVigTab('tkt',this)">Ticket Promedio</button>
+    </div>
+  </div>
   <div class="leg-row">
     <span class="leg"><span class="leg-sq" style="background:var(--visa)"></span>Visa</span>
     <span class="leg"><span class="leg-sq" style="background:var(--mc)"></span>Mastercard</span>
-    <span class="leg" id="txn-yoy-visa" style="margin-left:auto"></span>
-    <span class="leg" id="txn-yoy-mc"></span>
+    <span class="leg" id="txnvigtkt-yoy-visa" style="margin-left:auto"></span>
+    <span class="leg" id="txnvigtkt-yoy-mc"></span>
   </div>
-  <div class="chart-wrap" style="height:220px"><canvas id="txnChart"></canvas></div>
-</div>
-<div class="card" style="margin-top:14px">
-  <div class="card-title">Tarjetas Vigentes</div>
-  <div class="card-sub" id="vig-sub">Stock al corte · crédito</div>
-  <div class="leg-row">
-    <span class="leg"><span class="leg-sq" style="background:var(--visa)"></span>Visa</span>
-    <span class="leg"><span class="leg-sq" style="background:var(--mc)"></span>Mastercard</span>
-    <span class="leg" id="vig-yoy-visa" style="margin-left:auto"></span>
-    <span class="leg" id="vig-yoy-mc"></span>
-  </div>
-  <div class="chart-wrap" style="height:220px"><canvas id="vigChart"></canvas></div>
+  <div class="chart-wrap" style="height:220px"><canvas id="txnVigTktChart"></canvas></div>
 </div>
 <div class="card" style="margin-top:14px">
   <div class="card-title">Exterior</div>
@@ -371,15 +369,6 @@ button.tab.active{background:var(--visa);color:#fff;border-color:var(--visa)}
     <span class="leg"><span class="leg-sq" style="background:var(--mc)"></span>Mastercard</span>
   </div>
   <div class="chart-wrap" style="height:220px"><canvas id="intlHistChart"></canvas></div>
-</div>
-<div class="card" style="margin-top:14px">
-  <div class="card-title">Ticket Promedio</div>
-  <div class="card-sub">Facturación nac. / transacciones · COP miles</div>
-  <div class="leg-row">
-    <span class="leg"><span class="leg-sq" style="background:var(--visa)"></span>Visa</span>
-    <span class="leg"><span class="leg-sq" style="background:var(--mc)"></span>Mastercard</span>
-  </div>
-  <div class="chart-wrap" style="height:220px"><canvas id="ticketChart"></canvas></div>
 </div>
 <div class="card" style="margin-top:14px">
   <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px">
@@ -454,27 +443,6 @@ button.tab.active{background:var(--visa);color:#fff;border-color:var(--visa)}
 <!-- VIZ salud de cartera -->
 <div class="slabel">Salud de Cartera</div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:0;align-items:start;grid-auto-rows:auto" id="cartera-grid">
-<div style="grid-column:1/-1;font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--faint);text-transform:uppercase;padding-top:8px;border-top:1px solid var(--border)">Actividad</div>
-<div class="card" style="margin-top:0;grid-column:1/-1">
-  <div class="card-title">Rentabilidad / Tarjeta</div>
-  <div class="card-sub">Facturación / vigentes por franquicia · COP miles por tarjeta</div>
-  
-  <div class="chart-wrap" style="height:220px"><canvas id="cohortRentChart"></canvas></div>
-</div>
-<div class="card" style="margin-top:0;grid-column:1/-1">
-  <div class="card-title">Utilización de Cupo</div>
-  <div class="card-sub">Saldo en uso / cupo total · crédito</div>
-  <div class="leg-row"><span class="leg"><span class="leg-sq" style="background:var(--visa)"></span>Visa</span><span class="leg"><span class="leg-sq" style="background:var(--mc)"></span>Mastercard</span></div>
-  <div class="chart-wrap" style="height:220px"><canvas id="utilizChart"></canvas></div>
-</div>
-<div class="card" style="margin-top:0;grid-column:1/-1">
-  <div class="card-title">ATM — Débito</div>
-  <div class="card-sub" id="retiros-sub">Retiros / (Retiros + Compras) · últimos 24 meses</div>
-
-  <div id="retiros-wrap" style="height:220px;position:relative">
-    <canvas id="retirosChart"></canvas>
-  </div>
-</div>
 <div style="grid-column:1/-1;font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--faint);text-transform:uppercase;padding-top:8px;border-top:1px solid var(--border)">Adquisición</div>
 <div class="card" style="margin-top:0;grid-column:1/-1">
   <div class="card-title">Adquisición Neta</div>
@@ -489,25 +457,6 @@ button.tab.active{background:var(--visa);color:#fff;border-color:var(--visa)}
   <div class="card-title">Ratio Vigentes V/MC</div>
   <div class="card-sub">Vigentes Visa ÷ MC · >1.0x Visa lidera · <1.0x MC lidera · indicador de brecha de portafolio</div>
   <div class="chart-wrap" style="height:300px"><canvas id="ratioVigChart"></canvas></div>
-</div>
-<div style="grid-column:1/-1;font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--faint);text-transform:uppercase;padding-top:8px;border-top:1px solid var(--border)">Riesgo y Cancelación</div>
-<div class="card" style="margin-top:0">
-  <div class="card-title">Ratio de mora</div>
-  <div class="card-sub">Intereses mora / intereses corrientes</div>
-  <div class="leg-row"><span class="leg"><span class="leg-sq" style="background:var(--visa)"></span>Visa</span><span class="leg"><span class="leg-sq" style="background:var(--mc)"></span>Mastercard</span></div>
-  <div class="chart-wrap" style="height:220px"><canvas id="moraChart"></canvas></div>
-</div>
-<div class="card" style="margin-top:0">
-  <div class="card-title">Tasa de castigo</div>
-  <div class="card-sub">Castigos / saldo de cartera</div>
-  <div class="leg-row"><span class="leg"><span class="leg-sq" style="background:var(--visa)"></span>Visa</span><span class="leg"><span class="leg-sq" style="background:var(--mc)"></span>Mastercard</span></div>
-  <div class="chart-wrap" style="height:220px"><canvas id="castigoChart"></canvas></div>
-</div>
-<div class="card" style="margin-top:0;grid-column:1/-1">
-  <div class="card-title">Churn rate implícito</div>
-  <div class="card-sub">Canceladas / vigentes del mes</div>
-  <div class="leg-row"><span class="leg"><span class="leg-sq" style="background:var(--visa)"></span>Visa</span><span class="leg"><span class="leg-sq" style="background:var(--mc)"></span>Mastercard</span></div>
-  <div class="chart-wrap" style="height:220px"><canvas id="churnChart"></canvas></div>
 </div>
 </div>
 <!-- /cartera-grid -->
@@ -531,15 +480,6 @@ button.tab.active{background:var(--visa);color:#fff;border-color:var(--visa)}
     <button class="tab" onclick="setHeatmapFranq('OTRAS TARJETAS DE CREDITO',this)">Otras</button>
   </div>
   <div id="heatmap-container" style="overflow-x:auto"></div>
-</div>
-
-<!-- VIZ 12b — Ranking de bancos en el tiempo -->
-<div class="slabel" style="margin-top:28px">Ranking de Bancos</div>
-<div class="card" style="margin-top:14px">
-  <div class="card-title">Ranking de Bancos en el Tiempo</div>
-  <div class="card-sub" id="ranking-sub">Posición por facturación · top emisores</div>
-  <div class="chart-wrap" id="chart-ranking" style="height:340px"></div>
-  <div class="legend" id="legend-ranking" style="display:flex;flex-wrap:wrap;gap:10px 16px;margin-top:12px;font-size:10.5px;color:var(--muted)"></div>
 </div>
 
 <!-- VIZ 13 — Cuadrante Competitivo -->
@@ -596,16 +536,18 @@ button.tab.active{background:var(--visa);color:#fff;border-color:var(--visa)}
         <button class="tab" onclick="setProjMetric('txn',this)">Transacciones</button>
         <button class="tab" onclick="setProjMetric('vig',this)">Tarjetas Vigentes</button>
         <button class="tab" onclick="setProjMetric('tkt',this)">Ticket Promedio</button>
+        <button class="tab" onclick="setProjMetric('ms',this)">Market Share</button>
       </div>
     </div>
+    <div class="leg-row" id="proj-legend"></div>
     <div class="chart-wrap" style="height:280px;margin-top:10px"><canvas id="projChart"></canvas></div>
-    <div class="concept-note" style="font-size:10.5px;color:var(--faint);margin-top:10px">Proyección lineal simple sobre el histórico filtrado; la banda refleja la dispersión de los últimos períodos, no un modelo estadístico formal.</div>
+    <div class="concept-note" id="proj-note" style="font-size:10.5px;color:var(--faint);margin-top:10px">Proyección lineal simple sobre el histórico filtrado; la banda refleja la dispersión de los últimos períodos, no un modelo estadístico formal.</div>
   </div>
 
   <div class="slabel" style="margin-top:28px">Comparador de Períodos</div>
   <div class="card" style="margin-top:14px">
     <div class="card-title">Comparador de Períodos Libre</div>
-    <div class="card-sub">Compara cualquier par de períodos con los filtros activos</div>
+    <div class="card-sub">Compara hasta 3 períodos con los filtros activos</div>
     <div style="display:flex;align-items:center;gap:10px;margin:14px 0 4px;flex-wrap:wrap">
       <div style="display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:8px 12px">
         <span style="font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">Período A</span>
@@ -616,9 +558,56 @@ button.tab.active{background:var(--visa);color:#fff;border-color:var(--visa)}
         <span style="font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">Período B</span>
         <select id="cmp-sel-b" onchange="renderComparador()" style="border:none;background:transparent;font:inherit;font-weight:700;font-size:13px;color:var(--text);cursor:pointer"></select>
       </div>
+      <span style="font-size:11px;color:var(--faint);font-weight:700">vs.</span>
+      <div style="display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:8px 12px">
+        <span style="font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">Período C</span>
+        <select id="cmp-sel-c" onchange="renderComparador()" style="border:none;background:transparent;font:inherit;font-weight:700;font-size:13px;color:var(--text);cursor:pointer"></select>
+      </div>
     </div>
     <div style="overflow-x:auto">
       <table style="width:100%;border-collapse:collapse;font-size:12.5px;margin-top:10px" id="cmp-table"></table>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:28px">Salud de Cartera — Detalle</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px;align-items:start;grid-auto-rows:auto" id="cartera-grid-detail">
+    <div style="grid-column:1/-1;font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--faint);text-transform:uppercase;padding-top:8px;border-top:1px solid var(--border)">Actividad</div>
+    <div class="card" style="margin-top:0;grid-column:1/-1">
+      <div class="card-title">Gasto por Tarjeta</div>
+      <div class="card-sub">Facturación / vigentes por franquicia · COP miles por tarjeta</div>
+      <div class="chart-wrap" style="height:220px"><canvas id="cohortRentChart"></canvas></div>
+    </div>
+    <div class="card" style="margin-top:0;grid-column:1/-1">
+      <div class="card-title">Utilización de Cupo</div>
+      <div class="card-sub">Saldo en uso / cupo total · crédito</div>
+      <div class="leg-row"><span class="leg"><span class="leg-sq" style="background:var(--visa)"></span>Visa</span><span class="leg"><span class="leg-sq" style="background:var(--mc)"></span>Mastercard</span></div>
+      <div class="chart-wrap" style="height:220px"><canvas id="utilizChart"></canvas></div>
+    </div>
+    <div class="card" style="margin-top:0;grid-column:1/-1">
+      <div class="card-title">ATM — Débito</div>
+      <div class="card-sub" id="retiros-sub">Retiros / (Retiros + Compras) · últimos 24 meses</div>
+      <div id="retiros-wrap" style="height:220px;position:relative">
+        <canvas id="retirosChart"></canvas>
+      </div>
+    </div>
+    <div style="grid-column:1/-1;font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--faint);text-transform:uppercase;padding-top:8px;border-top:1px solid var(--border)">Riesgo y Cancelación</div>
+    <div class="card" style="margin-top:0">
+      <div class="card-title">Ratio de mora</div>
+      <div class="card-sub">Intereses mora / intereses corrientes</div>
+      <div class="leg-row"><span class="leg"><span class="leg-sq" style="background:var(--visa)"></span>Visa</span><span class="leg"><span class="leg-sq" style="background:var(--mc)"></span>Mastercard</span></div>
+      <div class="chart-wrap" style="height:220px"><canvas id="moraChart"></canvas></div>
+    </div>
+    <div class="card" style="margin-top:0">
+      <div class="card-title">Tasa de castigo</div>
+      <div class="card-sub">Castigos / saldo de cartera</div>
+      <div class="leg-row"><span class="leg"><span class="leg-sq" style="background:var(--visa)"></span>Visa</span><span class="leg"><span class="leg-sq" style="background:var(--mc)"></span>Mastercard</span></div>
+      <div class="chart-wrap" style="height:220px"><canvas id="castigoChart"></canvas></div>
+    </div>
+    <div class="card" style="margin-top:0;grid-column:1/-1">
+      <div class="card-title">Churn rate implícito</div>
+      <div class="card-sub">Canceladas / vigentes del mes</div>
+      <div class="leg-row"><span class="leg"><span class="leg-sq" style="background:var(--visa)"></span>Visa</span><span class="leg"><span class="leg-sq" style="background:var(--mc)"></span>Mastercard</span></div>
+      <div class="chart-wrap" style="height:220px"><canvas id="churnChart"></canvas></div>
     </div>
   </div>
 </div><!-- /view-projection -->
@@ -770,8 +759,6 @@ const MC    = "#CC2200";
 const AMEX  = "#8E9296";
 const DINERS= "#334155";
 const C = {VISA, MASTERCARD: MC, "AMERICAN EXPRESS": AMEX, DINERS, "OTRAS TARJETAS DE CREDITO": "#94A3B8"};
-// Paleta ejecutiva para el ranking de bancos — tonos apagados, sin colores llamativos
-const RANK_COLORS = ["#1A1F71","#3E5C76","#6B7280","#8C6E4F","#4B6B58","#7A4B5C","#5B4B7A","#2E4756"];
 // ALL_F computed dynamically from current RAW so débito/total only sees VISA+MC
 function getActiveFranqs() {
   return [...new Set(RAW.map(r => r.FRANQUICIA))].filter(f =>
@@ -790,6 +777,7 @@ let bancosShowAll = false;
 let volTab = "tot";
 let volPeriod = "mensual";
 let yoyTab = "fact";
+let txnVigTktTab = "txn";
 let currentPageTab = "dashboard";
 let projMetric = "fact";
 let CHARTS = {};
@@ -1096,10 +1084,6 @@ function setTipo(tipo, el) {
   if (volSub) volSub.textContent = tipo !== "credito"
     ? "Facturación débito por franquicia · COP"
     : "Facturación crédito por franquicia · COP";
-  const txnSub = document.getElementById("txn-sub");
-  if (txnSub) txnSub.textContent = tipo === "credito" ? "Transacciones crédito" : tipo === "debito" ? "Transacciones débito" : "Transacciones crédito + débito";
-  const vigSub = document.getElementById("vig-sub");
-  if (vigSub) vigSub.textContent = tipo === "credito" ? "Stock al corte · crédito" : tipo === "debito" ? "Stock al corte · débito" : "Stock al corte · crédito + débito";
   updateYoySub();
   renderAll();
 }
@@ -1189,7 +1173,7 @@ function renderAll() {
   renderMSChart(map, periods);
   renderVolChart(vMap, vPeriods);
   renderYoY(rows);
-  renderTxnVig(cMap, cPeriods);
+  renderTxnVigTkt(cMap, cPeriods);
   // Contribución: comparar contra el MISMO período del año anterior (YoY),
   // no contra el período inmediatamente anterior (mes vs mes o año vs año previo).
   const _yoyContribKey = (key, m) => {
@@ -1200,7 +1184,6 @@ function renderAll() {
   const contribPrev = _yoyContribKey(ultimo, map);
   renderContrib(map, ultimo, contribPrev);
   renderIntl(mMap, mPeriods[mPeriods.length-1]);
-  renderTicket(cMap, cPeriods);
   renderBancos(rows, currentView==="anual"
     ? (getPillVals("ano")?.[0] || mPeriods[mPeriods.length-1].slice(0,4))
     : mPeriods[mPeriods.length-1]);
@@ -1233,7 +1216,6 @@ function renderAll() {
   renderSnapMkt(map, periods, yoyMap, yoyAM2Comp);
   renderRetiros();
   renderHeatmap(rows);
-  renderBumpRanking(rows);
   renderCohort(rows);
   renderHHI(rows);
   renderProjection();
@@ -1252,20 +1234,28 @@ function setPageTab(view, el) {
 
 // ── Proyección de métricas principales ──────────────────────────────────────────
 const PROJ_METRICS = {
-  fact: {label:"Facturación",      isCurrency:true},
-  txn:  {label:"Transacciones",    isCurrency:false},
-  vig:  {label:"Tarjetas Vigentes",isCurrency:false},
-  tkt:  {label:"Ticket Promedio",  isCurrency:true},
+  fact: {label:"Facturación",      isCurrency:true,  hasTotal:true,  annualize:true},
+  txn:  {label:"Transacciones",    isCurrency:false, hasTotal:true,  annualize:true},
+  vig:  {label:"Tarjetas Vigentes",isCurrency:false, hasTotal:true,  annualize:false},
+  tkt:  {label:"Ticket Promedio",  isCurrency:true,  hasTotal:true,  annualize:false},
+  ms:   {label:"Market Share",     isPct:true,       hasTotal:false, annualize:false},
 };
 
-function projMetricValue(map, p, metric) {
+// franq = "VISA" | "MASTERCARD" | null (null = agregado de ALL_F, i.e. "Total mercado")
+function projSeriesValue(map, p, metric, franq) {
+  const franqs = franq ? [franq] : ALL_F;
   if (metric === "tkt") {
     let amt=0, cnt=0;
-    for (const f of ALL_F) { const d = map[p]?.[f]; if (!d) continue; amt += d.mto_nal||0; cnt += d.num_nal||0; }
+    for (const f of franqs) { const d = map[p]?.[f]; if (!d) continue; amt += d.mto_nal||0; cnt += d.num_nal||0; }
     return cnt>0 ? amt/cnt : null;
   }
+  if (metric === "ms") {
+    const tot = ALL_F.reduce((s,f)=>s+(map[p]?.[f]?.mto_tot||0),0);
+    const v = map[p]?.[franq]?.mto_tot||0;
+    return tot>0 ? v/tot*100 : null;
+  }
   let s=0, has=false;
-  for (const f of ALL_F) {
+  for (const f of franqs) {
     const d = map[p]?.[f]; if (!d) continue;
     const v = metric==="fact" ? d.mto_tot : metric==="txn" ? (d.num_nal||0)+(d.num_ext||0) : d.vigentes;
     if (v!=null) { s += v; has = true; }
@@ -1306,25 +1296,42 @@ function renderProjection() {
   if (sub) sub.textContent = `Tendencia + banda de incertidumbre · ${cfg.label}`;
   const clearChart = () => { if (CHARTS["projChart"]) { CHARTS["projChart"].destroy(); delete CHARTS["projChart"]; } };
   const el = document.getElementById("projChart");
+  const legendEl = document.getElementById("proj-legend");
+  const noteEl = document.getElementById("proj-note");
   if (!el) return;
 
   const rows = filtered();
   const isAnual = currentView === "anual";
   const { map, periods: allPeriods } = buildPeriod(rows, currentView);
   const periods = viewPeriods(allPeriods).length ? viewPeriods(allPeriods) : allPeriods;
-  if (periods.length < 3) { clearChart(); return; }
+  if (periods.length < 3) { clearChart(); if (legendEl) legendEl.innerHTML=""; return; }
 
-  const hist = periods.map(p => projMetricValue(map, p, projMetric));
-  const validIdx = hist.map((v,i)=>v!=null?i:null).filter(v=>v!=null);
-  if (validIdx.length < 3) { clearChart(); return; }
+  // ── Año en curso incompleto → estimar cierre de año (regla de tres sobre los
+  // meses disponibles) para Facturación/Transacciones, que son sumas de flujo y
+  // por eso un año parcial se ve artificialmente bajo. Vigentes ya es un stock
+  // (buildPeriod usa el último mes disponible, no una suma) y Ticket/Market
+  // Share son razones — ninguno de los dos necesita este ajuste.
+  let closeFactor = 1, monthsElapsed = 12;
+  const lastPeriodKey = periods[periods.length-1];
+  if (isAnual && cfg.annualize) {
+    monthsElapsed = new Set(rows.filter(r=>r.MES.slice(0,4)===lastPeriodKey).map(r=>r.MES.slice(5,7))).size;
+    if (monthsElapsed > 0 && monthsElapsed < 12) closeFactor = 12/monthsElapsed;
+  }
+
+  const seriesDefs = cfg.hasTotal
+    ? [ {key:"VISA", label:"Visa", color:VISA},
+        {key:"MASTERCARD", label:"Mastercard", color:MC},
+        {key:null, label:"Total mercado", color:"#94A3B8", isTotal:true} ]
+    : [ {key:"VISA", label:"Visa", color:VISA},
+        {key:"MASTERCARD", label:"Mastercard", color:MC} ];
+
+  // Serie ancla: define hasta qué período hay data real (el total si existe, si no Visa)
+  const anchorKey = cfg.hasTotal ? null : "VISA";
+  const anchorHist = periods.map(p => projSeriesValue(map, p, projMetric, anchorKey));
+  const validIdx = anchorHist.map((v,i)=>v!=null?i:null).filter(v=>v!=null);
+  if (validIdx.length < 3) { clearChart(); if (legendEl) legendEl.innerHTML=""; return; }
   const lastIdx = validIdx[validIdx.length-1];
   const activePeriods = periods.slice(0, lastIdx+1);
-  const activeHist = hist.slice(0, lastIdx+1);
-
-  const windowN = isAnual ? validIdx.length : Math.min(24, validIdx.length);
-  const fitIdx = validIdx.slice(-windowN);
-  const fitVals = fitIdx.map(i=>hist[i]);
-  const { slope, intercept, residualStd } = linreg(fitVals);
 
   const H = isAnual ? 2 : 6;
   const projPeriods = [];
@@ -1341,47 +1348,83 @@ function renderProjection() {
     }
     projPeriods.push(lastP);
   }
-
-  const n0 = fitVals.length;
-  const projMean=[], projUp=[], projLo=[];
-  for (let h=1; h<=H; h++){
-    const val = intercept + slope*(n0-1+h);
-    const band = residualStd * Math.sqrt(1+h);
-    projMean.push(Math.max(0,val));
-    projUp.push(Math.max(0,val+band));
-    projLo.push(Math.max(0,val-band));
-  }
-
   const allPeriodsFull = activePeriods.concat(projPeriods);
   const dispLabels = allPeriodsFull.map(p => isAnual ? p : p.slice(0,7));
-  const histData = activeHist.concat(projPeriods.map(()=>null));
-  const lastVal = activeHist[activeHist.length-1];
-  const bridge = Array(activePeriods.length-1).fill(null).concat([lastVal]);
-  const projData = bridge.concat(projMean);
-  const bandUp = bridge.concat(projUp);
-  const bandLo = bridge.concat(projLo);
 
-  const fmtY = v => v==null ? "—" : cfg.isCurrency ? fmtB(v) : fmtCount(v);
+  const seriesResults = seriesDefs.map(sd => {
+    const hist = activePeriods.map(p => projSeriesValue(map, p, projMetric, sd.key));
+    if (closeFactor !== 1 && hist.length && hist[hist.length-1] != null) {
+      hist[hist.length-1] = hist[hist.length-1] * closeFactor;
+    }
+    const validI = hist.map((v,i)=>v!=null?i:null).filter(v=>v!=null);
+    let projMean = Array(H).fill(null), projUp = Array(H).fill(null), projLo = Array(H).fill(null);
+    if (validI.length >= 3) {
+      const windowN = isAnual ? validI.length : Math.min(24, validI.length);
+      const fitIdx = validI.slice(-windowN);
+      const fitVals = fitIdx.map(i=>hist[i]);
+      const { slope, intercept, residualStd } = linreg(fitVals);
+      const n0 = fitVals.length;
+      projMean = []; projUp = []; projLo = [];
+      for (let h=1; h<=H; h++){
+        const val = intercept + slope*(n0-1+h);
+        const band = residualStd * Math.sqrt(1+h);
+        projMean.push(Math.max(0,val));
+        projUp.push(Math.max(0,val+band));
+        projLo.push(Math.max(0,val-band));
+      }
+    }
+    const histData = hist.concat(projPeriods.map(()=>null));
+    const lastVal = hist[hist.length-1];
+    const bridge = Array(activePeriods.length-1).fill(null).concat([lastVal]);
+    const projData = bridge.concat(projMean);
+    return { sd, histData, projData, bridge, projUp, projLo };
+  });
 
+  const fmtY = v => v==null ? "—" : cfg.isCurrency ? fmtB(v) : cfg.isPct ? v.toFixed(1)+"%" : fmtCount(v);
+
+  const datasets = [];
+  const totalResult = seriesResults.find(r => r.sd.isTotal);
+  if (totalResult) {
+    const bandUp = totalResult.bridge.concat(totalResult.projUp);
+    const bandLo = totalResult.bridge.concat(totalResult.projLo);
+    datasets.push({label:"_lo", data:bandLo, borderWidth:0, pointRadius:0, fill:false, spanGaps:true});
+    datasets.push({label:"_hi", data:bandUp, borderWidth:0, pointRadius:0, fill:"-1", backgroundColor:"rgba(51,65,85,0.10)", spanGaps:true});
+  }
+  seriesResults.forEach(r => {
+    datasets.push({label:r.sd.label, data:r.histData, borderColor:r.sd.color, backgroundColor:"transparent", borderWidth:2.5, pointRadius:0, tension:0.25, spanGaps:false, _kind:"hist"});
+    datasets.push({label:r.sd.label, data:r.projData, borderColor:r.sd.color, backgroundColor:"transparent", borderWidth:2.5, borderDash:[6,4], pointRadius:0, tension:0.25, spanGaps:true, _kind:"proj"});
+  });
+
+  if (legendEl) legendEl.innerHTML = seriesDefs.map(sd =>
+    `<span class="leg"><span class="leg-sq" style="background:${sd.color}"></span>${sd.label}</span>`
+  ).join("");
+
+  if (noteEl) {
+    noteEl.textContent = closeFactor !== 1
+      ? `Proyección lineal simple sobre el histórico filtrado; la banda refleja la dispersión de los últimos períodos, no un modelo estadístico formal. El año en curso (${lastPeriodKey}) se anualizó a partir de ${monthsElapsed} ${monthsElapsed===1?"mes":"meses"} disponibles para no mostrar una caída artificial por año incompleto.`
+      : `Proyección lineal simple sobre el histórico filtrado; la banda refleja la dispersión de los últimos períodos, no un modelo estadístico formal.`;
+  }
+
+  const bridgeIdx = activePeriods.length-1;
   mkChart("projChart", {
     type:"line",
-    data:{
-      labels: dispLabels,
-      datasets:[
-        {label:"_lo", data:bandLo, borderWidth:0, pointRadius:0, fill:false, spanGaps:true},
-        {label:"_hi", data:bandUp, borderWidth:0, pointRadius:0, fill:"-1", backgroundColor:"rgba(51,65,85,0.10)", spanGaps:true},
-        {label:"Histórico", data:histData, borderColor:"#334155", backgroundColor:"transparent", borderWidth:2.5, pointRadius:0, tension:0.25, spanGaps:false},
-        {label:"Proyección", data:projData, borderColor:"#334155", backgroundColor:"transparent", borderWidth:2.5, borderDash:[6,4], pointRadius:0, tension:0.25, spanGaps:true},
-      ]
-    },
+    data:{ labels: dispLabels, datasets },
     options:{
       responsive:true, maintainAspectRatio:false,
       interaction:{mode:"index", intersect:false},
       plugins:{
         legend:{display:false},
         tooltip:{
-          filter: c => c.dataset.label === "Histórico" || c.dataset.label === "Proyección",
-          callbacks:{ label: c => `${c.dataset.label}: ${fmtY(c.parsed.y)}` }
+          filter: c => {
+            if (c.dataset.label === "_lo" || c.dataset.label === "_hi") return false;
+            if (c.parsed.y == null) return false;
+            if (c.dataset._kind === "proj" && c.dataIndex === bridgeIdx) return false;
+            return true;
+          },
+          callbacks:{ label: c => {
+            const suffix = (c.dataset._kind === "proj" && c.dataIndex !== bridgeIdx) ? " (proyectado)" : "";
+            return `${c.dataset.label}: ${fmtY(c.parsed.y)}${suffix}`;
+          }}
         }
       },
       scales:{
@@ -1395,7 +1438,7 @@ function renderProjection() {
       afterDraw(chart){
         const {ctx, chartArea:{top,bottom}, scales:{x}} = chart;
         if (!x) return;
-        const xPix = x.getPixelForValue(activePeriods.length-1);
+        const xPix = x.getPixelForValue(bridgeIdx);
         ctx.save();
         ctx.strokeStyle="#98A2B3"; ctx.lineWidth=1; ctx.setLineDash([2,4]);
         ctx.beginPath(); ctx.moveTo(xPix,top); ctx.lineTo(xPix,bottom); ctx.stroke();
@@ -1441,13 +1484,15 @@ function populateComparadorPeriods() {
   const { periods } = buildPeriod(rows, currentView);
   const selA = document.getElementById("cmp-sel-a");
   const selB = document.getElementById("cmp-sel-b");
-  if (!selA || !selB) return;
-  if (!periods.length) { selA.innerHTML=""; selB.innerHTML=""; return; }
-  const prevA = selA.value, prevB = selB.value;
+  const selC = document.getElementById("cmp-sel-c");
+  if (!selA || !selB || !selC) return;
+  if (!periods.length) { selA.innerHTML=""; selB.innerHTML=""; selC.innerHTML=""; return; }
+  const prevA = selA.value, prevB = selB.value, prevC = selC.value;
   const opts = periods.map(p => `<option value="${p}">${periodDisplayLabel(p)}</option>`).join("");
-  selA.innerHTML = opts; selB.innerHTML = opts;
-  selA.value = periods.includes(prevA) ? prevA : (periods[periods.length-2] || periods[0]);
-  selB.value = periods.includes(prevB) ? prevB : periods[periods.length-1];
+  selA.innerHTML = opts; selB.innerHTML = opts; selC.innerHTML = opts;
+  selA.value = periods.includes(prevA) ? prevA : (periods[periods.length-3] || periods[0]);
+  selB.value = periods.includes(prevB) ? prevB : (periods[periods.length-2] || periods[0]);
+  selC.value = periods.includes(prevC) ? prevC : periods[periods.length-1];
 }
 
 function renderComparador() {
@@ -1455,28 +1500,31 @@ function renderComparador() {
   const { map } = buildPeriod(rows, currentView);
   const selA = document.getElementById("cmp-sel-a");
   const selB = document.getElementById("cmp-sel-b");
+  const selC = document.getElementById("cmp-sel-c");
   const table = document.getElementById("cmp-table");
-  if (!selA || !selB || !table || !selA.value || !selB.value) { if (table) table.innerHTML=""; return; }
-  const pA = selA.value, pB = selB.value;
-  const labelA = periodDisplayLabel(pA), labelB = periodDisplayLabel(pB);
+  if (!selA || !selB || !selC || !table || !selA.value || !selB.value || !selC.value) { if (table) table.innerHTML=""; return; }
+  const periodsSel = [selA.value, selB.value, selC.value];
+  const labels = periodsSel.map(periodDisplayLabel);
   const th = (txt, align) => `<th style="text-align:${align};font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);padding:0 10px 8px;border-bottom:1px solid var(--border)">${txt}</th>`;
-  let html = `<tr>${th("Métrica","left")}${th(labelA,"right")}${th(labelB,"right")}${th("Δ","right")}</tr>`;
+  let html = `<tr>${th("Métrica","left")}${labels.map(l=>th(l,"right")).join("")}${th(`Δ ${labels[0]}→${labels[1]}`,"right")}${th(`Δ ${labels[1]}→${labels[2]}`,"right")}</tr>`;
+  const fmtDelta = (vFrom, vTo, isPct) => {
+    if (vFrom==null || vTo==null) return `<span style="color:var(--faint)">—</span>`;
+    const delta = isPct ? (vTo-vFrom) : (vFrom!==0 ? (vTo/vFrom-1)*100 : null);
+    if (delta==null) return `<span style="color:var(--faint)">—</span>`;
+    return {delta, txt: isPct ? `${delta>0?"+":""}${delta.toFixed(2)}pp` : `${delta>0?"+":""}${delta.toFixed(1)}%`};
+  };
   for (const m of CMP_METRICS) {
-    const vA = cmpMetricValue(map, pA, m.key);
-    const vB = cmpMetricValue(map, pB, m.key);
+    const vals = periodsSel.map(p => cmpMetricValue(map, p, m.key));
     const fmt = v => v==null ? "—" : m.isCurrency ? fmtB(v) : m.isPct ? v.toFixed(2)+"%" : Math.round(v).toLocaleString("es-CO");
-    let deltaHtml = `<span style="color:var(--faint)">—</span>`;
-    if (vA!=null && vB!=null) {
-      const delta = m.isPct ? (vB-vA) : (vA!==0 ? (vB/vA-1)*100 : null);
-      if (delta!=null) {
-        const good = m.good==="up" ? delta>=0 : delta<=0;
-        const cls = Math.abs(delta) < (m.isPct?0.005:0.05) ? "chip-neu" : (good?"chip-up":"chip-down");
-        const txt = m.isPct ? `${delta>0?"+":""}${delta.toFixed(2)}pp` : `${delta>0?"+":""}${delta.toFixed(1)}%`;
-        deltaHtml = `<span class="chip ${cls}">${txt}</span>`;
-      }
-    }
     const td = (content, align, extra) => `<td style="padding:11px 10px;border-bottom:1px solid var(--border);text-align:${align};${extra||""}">${content}</td>`;
-    html += `<tr>${td(m.label,"left","font-weight:600")}${td(fmt(vA),"right","font-variant-numeric:tabular-nums")}${td(fmt(vB),"right","font-variant-numeric:tabular-nums")}${td(deltaHtml,"right")}</tr>`;
+    const deltaCell = (vFrom, vTo) => {
+      const d = fmtDelta(vFrom, vTo, m.isPct);
+      if (typeof d === "string") return td(d, "right");
+      const good = m.good==="up" ? d.delta>=0 : d.delta<=0;
+      const cls = Math.abs(d.delta) < (m.isPct?0.005:0.05) ? "chip-neu" : (good?"chip-up":"chip-down");
+      return td(`<span class="chip ${cls}">${d.txt}</span>`, "right");
+    };
+    html += `<tr>${td(m.label,"left","font-weight:600")}${vals.map(v=>td(fmt(v),"right","font-variant-numeric:tabular-nums")).join("")}${deltaCell(vals[0],vals[1])}${deltaCell(vals[1],vals[2])}</tr>`;
   }
   table.innerHTML = html;
 }
@@ -1841,114 +1889,6 @@ function setHeatmapFranq(f, el) {
   renderHeatmap(filtered());
 }
 
-// ── Ranking de bancos en el tiempo (bump chart) ─────────────────────────────────
-function renderBumpRanking(rows) {
-  const isAnual = currentView === "anual";
-  const allPeriods = isAnual
-    ? [...new Set(rows.map(r => r.MES.slice(0,4)))].sort()
-    : [...new Set(rows.map(r => r.MES))].sort();
-  const periods = viewPeriods(allPeriods);
-  const wrap = document.getElementById("chart-ranking");
-  const sub = document.getElementById("ranking-sub");
-  if (periods.length < 2) { if (wrap) wrap.innerHTML = ""; return; }
-
-  const bs_rk = getPillVals("banco");
-  const rowsBanco = bs_rk ? RAW.filter(r=>bs_rk.includes(r.ENTIDAD)) : RAW;
-  const byBank = {};
-  for (const r of rowsBanco) {
-    if (!ALL_F.includes(r.FRANQUICIA)) continue;
-    const p = isAnual ? r.MES.slice(0,4) : r.MES;
-    if (!periods.includes(p)) continue;
-    if (!byBank[r.ENTIDAD]) byBank[r.ENTIDAD] = {};
-    byBank[r.ENTIDAD][p] = (byBank[r.ENTIDAD][p]||0) + (r.MTO_COMPRAS_CREDITO||0);
-  }
-  const banksAll = Object.keys(byBank);
-  if (!banksAll.length) { if (wrap) wrap.innerHTML = ""; return; }
-
-  // Rank every bank within each period (1 = mayor facturación)
-  const rankOf = {};
-  periods.forEach(p => {
-    const ranked = banksAll
-      .map(b => ({b, v: byBank[b][p]||0}))
-      .filter(x => x.v > 0)
-      .sort((a,b) => b.v - a.v);
-    rankOf[p] = {};
-    ranked.forEach((x,i) => { rankOf[p][x.b] = i+1; });
-  });
-
-  const lastP = periods[periods.length-1];
-  const MAX_RANK = 10; // por debajo de este puesto, la línea se corta (banco "fuera del top")
-  const topBanks = Object.keys(rankOf[lastP]||{})
-    .filter(b => rankOf[lastP][b] <= 8)
-    .sort((a,b) => rankOf[lastP][a]-rankOf[lastP][b]);
-  if (!topBanks.length) { if (wrap) wrap.innerHTML = ""; return; }
-
-  if (sub) sub.textContent = `Posición por facturación${currentTipo!=="credito"?(currentTipo==="debito"?" · débito":" · crédito + débito"):""} · ${isAnual?"anual":"mensual"} · top ${topBanks.length}`;
-
-  const labels = periods.map(p => isAnual ? p : p.slice(0,7));
-  const datasets = topBanks.map((b,i) => ({
-    label: fmtBank(b),
-    data: periods.map(p => { const r = rankOf[p]?.[b]; return (r && r<=MAX_RANK) ? r : null; }),
-    borderColor: RANK_COLORS[i % RANK_COLORS.length],
-    backgroundColor: RANK_COLORS[i % RANK_COLORS.length],
-    pointBackgroundColor: RANK_COLORS[i % RANK_COLORS.length],
-    pointBorderColor: "#fff",
-    pointBorderWidth: 2,
-    pointRadius: 4.5,
-    pointHoverRadius: 6.5,
-    borderWidth: 2.2,
-    tension: 0,
-    spanGaps: false,
-  }));
-
-  if (!wrap.querySelector("canvas")) wrap.innerHTML = '<canvas id="rankingChart"></canvas>';
-  mkChart("rankingChart", {
-    type: "line",
-    data: { labels, datasets },
-    options: {
-      responsive:true, maintainAspectRatio:false,
-      layout:{ padding:{ top:10, right:118, bottom:2, left:2 } },
-      interaction:{ mode:"nearest", intersect:true },
-      plugins:{
-        legend:{ display:false },
-        tooltip:{ callbacks:{ label: c => c.parsed.y!=null ? `${c.dataset.label}: puesto #${c.parsed.y}` : `${c.dataset.label}: fuera del top ${MAX_RANK}` } }
-      },
-      scales:{
-        x:{ ticks:{font:{size:9},maxRotation:0,autoSkip:true}, grid:{display:false} },
-        y:{ reverse:true, min:1, max:MAX_RANK, ticks:{stepSize:1, callback:v=>"#"+v, font:{size:9}}, grid:{color:"#F2F4F7"} }
-      },
-      animation:{duration:300}
-    },
-    plugins:[{
-      id:"rankEndLabels",
-      afterDatasetsDraw(chart){
-        const {ctx} = chart;
-        ctx.save();
-        ctx.font = "600 10.5px "+getComputedStyle(document.body).fontFamily;
-        ctx.textBaseline = "middle";
-        chart.data.datasets.forEach((ds,i)=>{
-          const meta = chart.getDatasetMeta(i);
-          if (meta.hidden) return;
-          for (let j=meta.data.length-1; j>=0; j--){
-            const v = ds.data[j];
-            if (v==null) continue;
-            const pt = meta.data[j];
-            ctx.fillStyle = "#101828";
-            ctx.fillText(`#${v} ${ds.label}`, pt.x+9, pt.y);
-            break;
-          }
-        });
-        ctx.restore();
-      }
-    }]
-  });
-
-  const lg = document.getElementById("legend-ranking");
-  if (lg) lg.innerHTML = topBanks.map((b,i)=>
-    `<span style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:50%;background:${RANK_COLORS[i % RANK_COLORS.length]};flex:none"></span>${fmtBank(b)}</span>`
-  ).join("");
-}
-
 // ── Análisis de Cohorte ────────────────────────────────────────────────────────
 
 function renderCohort(rows) {
@@ -2299,11 +2239,19 @@ function renderYoY(rows) {
 }
 
 // ── Transacciones + Tarjetas Vigentes ────────────────────────────────────────
-function renderTxnVig(map, periods) {
+function setTxnVigTab(t, el) {
+  txnVigTktTab = t;
+  document.querySelectorAll("#txnvigtkt-tabs .tab").forEach(b => b.classList.remove("active"));
+  el.classList.add("active");
+  const rows = filtered();
+  const { map, periods } = buildPeriod(rows, currentView);
+  renderTxnVigTkt(map, periods);
+}
+
+function renderTxnVigTkt(map, periods) {
   const last = viewPeriods(periods);
   const labels = viewLabels(periods);
 
-  // ── helper: YoY label for latest point ──
   function yoyLabel(vals) {
     if (vals.length < 13) return null;
     const cur = vals[vals.length-1], prev = vals[vals.length-13];
@@ -2316,59 +2264,91 @@ function renderTxnVig(map, periods) {
     return `${prefix}: <span class="chip ${cls}">${v>0?"+":""}${v.toFixed(1)}%</span>`;
   }
 
-  // Transactions
-  const rawVT = last.map(p => (map[p]?.VISA?.num_nal||0) + (map[p]?.VISA?.num_ext||0));
-  const rawMT = last.map(p => (map[p]?.MASTERCARD?.num_nal||0) + (map[p]?.MASTERCARD?.num_ext||0));
-  const scT = chartScale([...rawVT, ...rawMT]);
-  mkChart("txnChart", {
-    type: "line",
-    data: { labels, datasets: [
-      {label:"Visa",       data:rawVT.map(v=>+(v/scT.div).toFixed(2)), borderColor:VISA, backgroundColor:VISA+"18", fill:true, pointRadius:0, tension:0.3, borderWidth:2},
-      {label:"Mastercard", data:rawMT.map(v=>+(v/scT.div).toFixed(2)), borderColor:MC,   backgroundColor:MC+"18",   fill:true, pointRadius:0, tension:0.3, borderWidth:2},
-    ]},
-    options: {
-      responsive:true, maintainAspectRatio:false,
-      layout:{padding:{top:10,right:10,bottom:2,left:2}},
-      interaction:{mode:"index",intersect:false},
-      plugins:{legend:{display:false},tooltip:{mode:"index",intersect:false,callbacks:{
-        label: c => `${c.dataset.label}: ${c.parsed.y.toFixed(2)} ${scT.sfx} txn`
-      }}},
-      scales:{
-        x:{ticks:{maxRotation:0,autoSkip:true,maxTicksLimit:20,font:{size:9}},grid:{display:false}},
-        y:{grace:"8%",ticks:{callback:v=>v.toFixed(1)+scT.sfx,font:{size:9}},grid:{color:"#F2F4F7"}}
-      }
-    }
-  });
-  const yoyV = yoyLabel(rawVT), yoyM = yoyLabel(rawMT);
-  document.getElementById("txn-yoy-visa").innerHTML = yoyHtml(yoyV, "Visa YoY");
-  document.getElementById("txn-yoy-mc").innerHTML   = yoyHtml(yoyM, "MC YoY");
+  const titles = {txn:"Transacciones", vig:"Tarjetas Vigentes", tkt:"Ticket Promedio"};
+  const subs = {
+    txn: currentTipo === "credito" ? "Transacciones crédito" : currentTipo === "debito" ? "Transacciones débito" : "Transacciones crédito + débito",
+    vig: currentTipo === "credito" ? "Stock al corte · crédito" : currentTipo === "debito" ? "Stock al corte · débito" : "Stock al corte · crédito + débito",
+    tkt: "Facturación nac. / transacciones · COP miles",
+  };
+  document.getElementById("txnvigtkt-title").textContent = titles[txnVigTktTab];
+  document.getElementById("txnvigtkt-sub").textContent = subs[txnVigTktTab];
+  const yoyVisaEl = document.getElementById("txnvigtkt-yoy-visa");
+  const yoyMcEl = document.getElementById("txnvigtkt-yoy-mc");
 
-  // Tarjetas Vigentes — snapshot del último mes del período (no acumulado)
-  const rawVV = last.map(p => map[p]?.VISA?.vigentes||0);
-  const rawMV = last.map(p => map[p]?.MASTERCARD?.vigentes||0);
-  const scV = chartScale([...rawVV, ...rawMV]);
-  mkChart("vigChart", {
-    type: "line",
-    data: { labels, datasets: [
-      {label:"Visa",       data:rawVV.map(v=>+(v/scV.div).toFixed(2)), borderColor:VISA, backgroundColor:"transparent", fill:false, pointRadius:0, tension:0.3, borderWidth:2},
-      {label:"Mastercard", data:rawMV.map(v=>+(v/scV.div).toFixed(2)), borderColor:MC,   backgroundColor:"transparent", fill:false, pointRadius:0, tension:0.3, borderWidth:2},
-    ]},
-    options: {
-      responsive:true, maintainAspectRatio:false,
-      layout:{padding:{top:10,right:10,bottom:2,left:2}},
-      interaction:{mode:"index",intersect:false},
-      plugins:{legend:{display:false},tooltip:{mode:"index",intersect:false,callbacks:{
-        label: c => `${c.dataset.label}: ${c.parsed.y.toFixed(2)} ${scV.sfx}`
-      }}},
-      scales:{
-        x:{ticks:{maxRotation:0,autoSkip:true,maxTicksLimit:20,font:{size:9}},grid:{display:false}},
-        y:{grace:"8%",ticks:{callback:v=>v.toFixed(1)+scV.sfx,font:{size:9}},grid:{color:"#F2F4F7"}}
+  if (txnVigTktTab === "txn") {
+    const rawVT = last.map(p => (map[p]?.VISA?.num_nal||0) + (map[p]?.VISA?.num_ext||0));
+    const rawMT = last.map(p => (map[p]?.MASTERCARD?.num_nal||0) + (map[p]?.MASTERCARD?.num_ext||0));
+    const scT = chartScale([...rawVT, ...rawMT]);
+    mkChart("txnVigTktChart", {
+      type: "line",
+      data: { labels, datasets: [
+        {label:"Visa",       data:rawVT.map(v=>+(v/scT.div).toFixed(2)), borderColor:VISA, backgroundColor:VISA+"18", fill:true, pointRadius:0, tension:0.3, borderWidth:2},
+        {label:"Mastercard", data:rawMT.map(v=>+(v/scT.div).toFixed(2)), borderColor:MC,   backgroundColor:MC+"18",   fill:true, pointRadius:0, tension:0.3, borderWidth:2},
+      ]},
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        layout:{padding:{top:10,right:10,bottom:2,left:2}},
+        interaction:{mode:"index",intersect:false},
+        plugins:{legend:{display:false},tooltip:{mode:"index",intersect:false,callbacks:{
+          label: c => `${c.dataset.label}: ${c.parsed.y.toFixed(2)} ${scT.sfx} txn`
+        }}},
+        scales:{
+          x:{ticks:{maxRotation:0,autoSkip:true,maxTicksLimit:20,font:{size:9}},grid:{display:false}},
+          y:{grace:"8%",ticks:{callback:v=>v.toFixed(1)+scT.sfx,font:{size:9}},grid:{color:"#F2F4F7"}}
+        }
       }
-    }
-  });
-  const yoyVV = yoyLabel(rawVV), yoyMV = yoyLabel(rawMV);
-  document.getElementById("vig-yoy-visa").innerHTML = yoyHtml(yoyVV, "Visa YoY");
-  document.getElementById("vig-yoy-mc").innerHTML   = yoyHtml(yoyMV, "MC YoY");
+    });
+    const yoyV = yoyLabel(rawVT), yoyM = yoyLabel(rawMT);
+    yoyVisaEl.innerHTML = yoyHtml(yoyV, "Visa YoY");
+    yoyMcEl.innerHTML   = yoyHtml(yoyM, "MC YoY");
+  } else if (txnVigTktTab === "vig") {
+    const rawVV = last.map(p => map[p]?.VISA?.vigentes||0);
+    const rawMV = last.map(p => map[p]?.MASTERCARD?.vigentes||0);
+    const scV = chartScale([...rawVV, ...rawMV]);
+    mkChart("txnVigTktChart", {
+      type: "line",
+      data: { labels, datasets: [
+        {label:"Visa",       data:rawVV.map(v=>+(v/scV.div).toFixed(2)), borderColor:VISA, backgroundColor:"transparent", fill:false, pointRadius:0, tension:0.3, borderWidth:2},
+        {label:"Mastercard", data:rawMV.map(v=>+(v/scV.div).toFixed(2)), borderColor:MC,   backgroundColor:"transparent", fill:false, pointRadius:0, tension:0.3, borderWidth:2},
+      ]},
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        layout:{padding:{top:10,right:10,bottom:2,left:2}},
+        interaction:{mode:"index",intersect:false},
+        plugins:{legend:{display:false},tooltip:{mode:"index",intersect:false,callbacks:{
+          label: c => `${c.dataset.label}: ${c.parsed.y.toFixed(2)} ${scV.sfx}`
+        }}},
+        scales:{
+          x:{ticks:{maxRotation:0,autoSkip:true,maxTicksLimit:20,font:{size:9}},grid:{display:false}},
+          y:{grace:"8%",ticks:{callback:v=>v.toFixed(1)+scV.sfx,font:{size:9}},grid:{color:"#F2F4F7"}}
+        }
+      }
+    });
+    const yoyVV = yoyLabel(rawVV), yoyMV = yoyLabel(rawMV);
+    yoyVisaEl.innerHTML = yoyHtml(yoyVV, "Visa YoY");
+    yoyMcEl.innerHTML   = yoyHtml(yoyMV, "MC YoY");
+  } else {
+    yoyVisaEl.innerHTML = ""; yoyMcEl.innerHTML = "";
+    const rawVT = last.map(p => { const d=map[p]?.VISA||{}; return d.num_nal>0 ? Math.round(d.mto_nal/d.num_nal/1000) : null; });
+    const rawMT = last.map(p => { const d=map[p]?.MASTERCARD||{}; return d.num_nal>0 ? Math.round(d.mto_nal/d.num_nal/1000) : null; });
+    mkChart("txnVigTktChart", {
+      type:"line",
+      data:{labels, datasets:[
+        {label:"Visa",       data:rawVT, borderColor:VISA, backgroundColor:"transparent", fill:false, pointRadius:0, tension:0.3, borderWidth:2, spanGaps:true},
+        {label:"Mastercard", data:rawMT, borderColor:MC,   backgroundColor:"transparent", fill:false, pointRadius:0, tension:0.3, borderWidth:2, spanGaps:true},
+      ]},
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        layout:{padding:{top:10,right:10,bottom:2,left:2}},
+        interaction:{mode:"index",intersect:false},
+        plugins:{legend:{display:false},tooltip:{mode:"index",intersect:false,callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y != null ? "$"+c.parsed.y.toLocaleString("es-CO")+"K" : "—"}`}}},
+        scales:{
+          x:{ticks:{maxRotation:0,autoSkip:true,maxTicksLimit:20,font:{size:9}},grid:{display:false}},
+          y:{grace:"8%",ticks:{callback:v=>"$"+Math.round(v).toLocaleString("es-CO")+"K",font:{size:9}},grid:{color:"#F2F4F7"}}
+        }
+      }
+    });
+  }
 }
 
 // ── Contribución ──────────────────────────────────────────────────────────────
@@ -2433,32 +2413,6 @@ function renderIntl(map, ultimo) {
     </div>`;
   }
   intlBody.innerHTML = html;
-}
-
-// ── Ticket Promedio ───────────────────────────────────────────────────────────
-function renderTicket(map, periods) {
-  const last = viewPeriods(periods);
-  const labels = viewLabels(periods);
-  // Ticket en miles de pesos COP
-  const rawVT = last.map(p => { const d=map[p]?.VISA||{}; return d.num_nal>0 ? Math.round(d.mto_nal/d.num_nal/1000) : null; });
-  const rawMT = last.map(p => { const d=map[p]?.MASTERCARD||{}; return d.num_nal>0 ? Math.round(d.mto_nal/d.num_nal/1000) : null; });
-  mkChart("ticketChart", {
-    type:"line",
-    data:{labels, datasets:[
-      {label:"Visa",       data:rawVT, borderColor:VISA, backgroundColor:"transparent", fill:false, pointRadius:0, tension:0.3, borderWidth:2, spanGaps:true},
-      {label:"Mastercard", data:rawMT, borderColor:MC,   backgroundColor:"transparent", fill:false, pointRadius:0, tension:0.3, borderWidth:2, spanGaps:true},
-    ]},
-    options: {
-      responsive:true, maintainAspectRatio:false,
-      layout:{padding:{top:10,right:10,bottom:2,left:2}},
-      interaction:{mode:"index",intersect:false},
-      plugins:{legend:{display:false},tooltip:{mode:"index",intersect:false,callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y != null ? "$"+c.parsed.y.toLocaleString("es-CO")+"K" : "—"}`}}},
-      scales:{
-        x:{ticks:{maxRotation:0,autoSkip:true,maxTicksLimit:20,font:{size:9}},grid:{display:false}},
-        y:{grace:"8%",ticks:{callback:v=>"$"+Math.round(v).toLocaleString("es-CO")+"K",font:{size:9}},grid:{color:"#F2F4F7"}}
-      }
-    }
-  });
 }
 
 // ── Bank name formatter ──────────────────────────────────────────────────────
@@ -2877,9 +2831,23 @@ function renderContribWaterfall(canvasId, franq, color, startVal, top, endVal, u
     return;
   }
   const cats = [penult, ...top.map(e=>e.bank), ultimo];
+
+  // Rango real que toca el puente (arranque, cada total corrido, cierre) — el
+  // eje se hace zoom a este rango en vez de arrancar en 0, porque el total
+  // (30-60%) y las variaciones (décimas de pp) viven en escalas tan distintas
+  // que sobre un eje 0-100% las subidas/bajadas se ven planas.
+  const runningTotals = [startVal];
+  let runningV = startVal;
+  for (const e of top) { runningV += e.diff; runningTotals.push(runningV); }
+  const dataMin = Math.min(...runningTotals, endVal);
+  const dataMax = Math.max(...runningTotals, endVal);
+  const span = Math.max(dataMax - dataMin, 0.05);
+  const axisMin = dataMin - span*0.35;
+  const axisMax = dataMax + span*0.35;
+
   const bars = [];
   const bg = [];
-  bars.push([0, startVal]); bg.push("#334155");
+  bars.push([axisMin, startVal]); bg.push("#334155");
   let running = startVal;
   for (const e of top) {
     const from = running;
@@ -2887,7 +2855,7 @@ function renderContribWaterfall(canvasId, franq, color, startVal, top, endVal, u
     bars.push([from, running]);
     bg.push(e.diff >= 0 ? color : "#D0D5DD");
   }
-  bars.push([0, endVal]); bg.push("#334155");
+  bars.push([axisMin, endVal]); bg.push("#334155");
 
   mkChart(canvasId, {
     type: "bar",
@@ -2919,7 +2887,7 @@ function renderContribWaterfall(canvasId, franq, color, startVal, top, endVal, u
       },
       scales:{
         x:{ ticks:{font:{size:8.5},maxRotation:42,minRotation:42,autoSkip:false}, grid:{display:false} },
-        y:{ grace:"20%", ticks:{callback:v=>v.toFixed(1)+"%",font:{size:9}}, grid:{color:"#F2F4F7"} }
+        y:{ min:axisMin, max:axisMax, ticks:{callback:v=>v.toFixed(2)+"%",font:{size:9}}, grid:{color:"#F2F4F7"} }
       },
       animation:{duration:300}
     },
