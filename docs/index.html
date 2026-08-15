@@ -1037,12 +1037,18 @@ function setTipo(tipo, el) {
   if (txnSub) txnSub.textContent = tipo === "credito" ? "Transacciones crédito" : tipo === "debito" ? "Transacciones débito" : "Transacciones crédito + débito";
   const vigSub = document.getElementById("vig-sub");
   if (vigSub) vigSub.textContent = tipo === "credito" ? "Stock al corte · crédito" : tipo === "debito" ? "Stock al corte · débito" : "Stock al corte · crédito + débito";
-  const yoySub = document.getElementById("yoy-sub");
-  if (yoySub) yoySub.textContent =
-      tipo === "total"  ? "Variación anual · Visa vs Mastercard · crédito + débito combinado"
-    : tipo === "debito" ? "Variación anual · Visa vs Mastercard · débito (proxy TII)"
-    :                     "Crecimiento interanual · últimos 18 meses";
+  updateYoySub();
   renderAll();
+}
+
+function updateYoySub() {
+  const yoySub = document.getElementById("yoy-sub");
+  if (!yoySub) return;
+  const isAnual = currentView === "anual";
+  yoySub.textContent =
+      currentTipo === "total"  ? "Variación anual · Visa vs Mastercard · crédito + débito combinado"
+    : currentTipo === "debito" ? "Variación anual · Visa vs Mastercard · débito (proxy TII)"
+    :                     (isAnual ? "Crecimiento interanual · histórico completo" : "Crecimiento interanual · últimos 18 meses");
 }
 
 function setView(v, el) {
@@ -1053,6 +1059,7 @@ function setView(v, el) {
   el.classList.add("active");
   // re-activate vol tab
   document.getElementById("vol-tab-"+volTab)?.classList.add("active");
+  updateYoySub();
   renderAll();
 }
 function toggleBancos() {
@@ -1135,7 +1142,7 @@ function renderAll() {
     ? (getPillVals("ano")?.[0] || mPeriods[mPeriods.length-1].slice(0,4))
     : mPeriods[mPeriods.length-1]);
   // Cartera: orden Utilización → CohortRent → IntlHist → Mora → Churn → RatioVig → VelAdq → Castigo
-  renderCartera(mMap, mPeriods);
+  renderCartera(cMap, cPeriods);
   renderCohortRent(rows, cMap, cPeriods);
   renderIntlHist(cMap, cPeriods);
   renderVelAdq(mMap, mPeriods);
@@ -1281,7 +1288,7 @@ function renderVelAdq(map, periods) {
   const fs = getPillVals("franq");
   let rowsB = bs ? RAW.filter(r=>bs.includes(r.ENTIDAD)) : RAW;
   if (fs) rowsB = rowsB.filter(r=>fs.includes(r.FRANQUICIA));
-  const {map:mB, periods:pB} = buildPeriod(rowsB, "mensual");
+  const {map:mB, periods:pB} = buildPeriod(rowsB, currentView);
   map = mB; periods = pB;
   const allM = Object.keys(map).sort();
   const last  = viewPeriods(allM).length>0 ? viewPeriods(allM) : allM.slice(-24);
@@ -1807,48 +1814,64 @@ function renderYoY(rows) {
                : currentTipo === "debito" ? RAW_DEBITO
                :                           RAW_CREDITO;
   const bs = getPillVals("banco");
-  const rowsBanco = bs ? rawSrc.filter(r=>bs.includes(r.ENTIDAD)) : rawSrc;
-  const {map:fullMap, periods:fullPeriods} = buildPeriod(rowsBanco, "mensual");
+  let rowsBanco = bs ? rawSrc.filter(r=>bs.includes(r.ENTIDAD)) : rawSrc;
 
-  // Which months to show: apply año+mes filters
+  const isAnual = currentView === "anual";
+  if (isAnual) {
+    // Vista anual: recorta todos los años al mismo set de meses del año más
+    // reciente, para no comparar un año en curso (parcial) contra años
+    // completos. Mismo criterio que usa renderAll (rowsForPrior) y renderCohort.
+    const allYears = [...new Set(rowsBanco.map(r => r.MES.slice(0,4)))].sort();
+    const lastYear = allYears[allYears.length-1];
+    const monthSet = new Set(rowsBanco.filter(r => r.MES.slice(0,4) === lastYear).map(r => r.MES.slice(5,7)));
+    rowsBanco = rowsBanco.filter(r => r.MES.slice(0,4) === lastYear || monthSet.has(r.MES.slice(5,7)));
+  }
+  const {map:fullMap, periods:fullPeriods} = buildPeriod(rowsBanco, isAnual ? "anual" : "mensual");
+
+  // Which periods to show: aplica filtro de año (el filtro de mes no aplica en vista anual)
   const years = getPillVals("year");
   const meses  = getPillVals("mes");
+  const mesesActive = !!meses && !isAnual;
   let displayPeriods = fullPeriods;
   if (years) displayPeriods = displayPeriods.filter(p => years.includes(p.slice(0,4)));
-  if (meses)  displayPeriods = displayPeriods.filter(p => meses.includes(p.slice(5,7)));
-  // Need at least 12 months of history — always use fullMap for lookups
+  if (mesesActive)  displayPeriods = displayPeriods.filter(p => meses.includes(p.slice(5,7)));
+  // Need at least one prior period of history — always use fullMap for lookups
   const labels=[], vY=[], mY=[], totY=[];
   const keyFn = yoyTab === "fact" ? d => d.mto_tot
                : yoyTab === "txn"  ? d => (d.num_nal||0)+(d.num_ext||0)
                : yoyTab === "tkt"  ? d => d.num_nal>0 ? d.mto_nal/d.num_nal : null
                :                     d => d.vigentes||0;
+  const lag = isAnual ? 1 : 12;
   for (const p of displayPeriods) {
-    // prior = same month 12 periods back in fullPeriods
+    // prior = mismo período `lag` pasos atrás en fullPeriods (1 año, o 12 meses)
     const pIdx = fullPeriods.indexOf(p);
-    if (pIdx < 12) continue;
-    const p12 = fullPeriods[pIdx-12];
-    const vN=keyFn(fullMap[p]?.VISA||{}),  vO=keyFn(fullMap[p12]?.VISA||{});
-    const mN=keyFn(fullMap[p]?.MASTERCARD||{}), mO=keyFn(fullMap[p12]?.MASTERCARD||{});
+    if (pIdx < lag) continue;
+    const pPrior = fullPeriods[pIdx-lag];
+    const vN=keyFn(fullMap[p]?.VISA||{}),  vO=keyFn(fullMap[pPrior]?.VISA||{});
+    const mN=keyFn(fullMap[p]?.MASTERCARD||{}), mO=keyFn(fullMap[pPrior]?.MASTERCARD||{});
     // Use ALL_F (dynamic per tipo) — matches snapshot formula: sum all active franquicias
     const activeFranqs = Object.keys(fullMap[p]||{});
     const totN = activeFranqs.reduce((s,f) => { const v=keyFn(fullMap[p]?.[f]||{}); return s+(v||0); }, 0);
-    const totO = activeFranqs.reduce((s,f) => { const v=keyFn(fullMap[p12]?.[f]||{}); return s+(v||0); }, 0);
+    const totO = activeFranqs.reduce((s,f) => { const v=keyFn(fullMap[pPrior]?.[f]||{}); return s+(v||0); }, 0);
     // Cada serie se evalúa de forma INDEPENDIENTE: basta con que alguna tenga
-    // base del año anterior. (Antes se exigía vO>0 && mO>0, lo que dejaba el
+    // base del período anterior. (Antes se exigía vO>0 && mO>0, lo que dejaba el
     // gráfico vacío para emisores monofranquicia como Banco Agrario —solo Visa—
     // descartando también los puntos válidos de la franquicia que sí tenía datos.)
     if (vO>0 || mO>0 || totO>0) {
-      labels.push(p.slice(0,7));
+      labels.push(isAnual ? p : p.slice(0,7));
       vY.push(vO>0 ? (vN/vO-1)*100 : null);
       mY.push(mO>0 ? (mN/mO-1)*100 : null);
       totY.push(totO>0 ? (totN/totO-1)*100 : null);
     }
   }
-  // If no year/mes filter, show last 18 months
-  const last  = (!years && !meses) ? labels.slice(-18) : labels;
-  const vD    = (!years && !meses) ? vY.slice(-18)     : vY;
-  const mD    = (!years && !meses) ? mY.slice(-18)     : mY;
-  const tD    = (!years && !meses) ? totY.slice(-18)   : totY;
+  // Si no hay filtro de año/mes: en vista anual muestra todo el histórico
+  // (igual que el resto de gráficos anuales, que arrancan en 2015); en vista
+  // mensual muestra solo los últimos 18 meses.
+  const noFilter = !years && !mesesActive;
+  const last  = (noFilter && !isAnual) ? labels.slice(-18) : labels;
+  const vD    = (noFilter && !isAnual) ? vY.slice(-18)     : vY;
+  const mD    = (noFilter && !isAnual) ? mY.slice(-18)     : mY;
+  const tD    = (noFilter && !isAnual) ? totY.slice(-18)   : totY;
   mkChart("yoyChart", {
     type:"line",
     data:{labels:last, datasets:[
@@ -2161,7 +2184,7 @@ function renderRatioVig(map, periods) {
   const fs = getPillVals("franq");
   let rowsB = bs ? RAW.filter(r=>bs.includes(r.ENTIDAD)) : RAW;
   if (fs) rowsB = rowsB.filter(r=>fs.includes(r.FRANQUICIA));
-  const {map:mB, periods:pB} = buildPeriod(rowsB, "mensual");
+  const {map:mB, periods:pB} = buildPeriod(rowsB, currentView);
   map = mB; periods = pB;
   const last = viewPeriods(periods).length > 0 ? viewPeriods(periods) : periods.slice(-36);
   const labels = last.map(p => p.slice(0,7));
@@ -2296,7 +2319,7 @@ function renderCartera(map, periods) {
 
   // Full market map (banco-filtered RAW, not filtered by año/mes) for market total line
   const rowsBancoC = (() => { const bs=getPillVals("banco"); return bs?RAW.filter(r=>bs.includes(r.ENTIDAD)):RAW; })();
-  const {map:fullMapC, periods:fullPeriodsC} = buildPeriod(rowsBancoC, "mensual");
+  const {map:fullMapC, periods:fullPeriodsC} = buildPeriod(rowsBancoC, currentView);
   const lastFull = fullPeriodsC.filter(p => last.includes(p));
 
   function carteraLine(id, keyFn, fmtStr) {
