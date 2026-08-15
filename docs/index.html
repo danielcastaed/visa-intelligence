@@ -352,24 +352,16 @@ button.tab.active{background:var(--visa);color:#fff;border-color:var(--visa)}
       <button class="tab active" onclick="setTxnVigTab('txn',this)">Transacciones</button>
       <button class="tab" onclick="setTxnVigTab('vig',this)">Tarjetas Vigentes</button>
       <button class="tab" onclick="setTxnVigTab('tkt',this)">Ticket Promedio</button>
+      <button class="tab" onclick="setTxnVigTab('ext',this)">Exterior</button>
     </div>
   </div>
-  <div class="leg-row">
+  <div class="leg-row" id="txnvigtkt-legrow">
     <span class="leg"><span class="leg-sq" style="background:var(--visa)"></span>Visa</span>
     <span class="leg"><span class="leg-sq" style="background:var(--mc)"></span>Mastercard</span>
     <span class="leg" id="txnvigtkt-yoy-visa" style="margin-left:auto"></span>
     <span class="leg" id="txnvigtkt-yoy-mc"></span>
   </div>
   <div class="chart-wrap" style="height:220px"><canvas id="txnVigTktChart"></canvas></div>
-</div>
-<div class="card" style="margin-top:14px">
-  <div class="card-title">Exterior</div>
-  <div class="card-sub" id="intlhist-sub">Compras exterior / Facturación total · solo crédito</div>
-  <div class="leg-row">
-    <span class="leg"><span class="leg-sq" style="background:var(--visa)"></span>Visa</span>
-    <span class="leg"><span class="leg-sq" style="background:var(--mc)"></span>Mastercard</span>
-  </div>
-  <div class="chart-wrap" style="height:220px"><canvas id="intlHistChart"></canvas></div>
 </div>
 <div class="card" style="margin-top:14px">
   <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px">
@@ -382,6 +374,7 @@ button.tab.active{background:var(--visa);color:#fff;border-color:var(--visa)}
       <button class="tab" id="yoy-tab-txn"  onclick="setYoyTab('txn',this)">Transacciones</button>
       <button class="tab" id="yoy-tab-vig"  onclick="setYoyTab('vig',this)">Tarjetas</button>
       <button class="tab" id="yoy-tab-tkt"  onclick="setYoyTab('tkt',this)">Ticket</button>
+      <button class="tab" id="yoy-tab-ext"  onclick="setYoyTab('ext',this)">Exterior</button>
     </div>
   </div>
   <div class="leg-row">
@@ -1188,10 +1181,10 @@ function renderAll() {
   renderBancos(rows, currentView==="anual"
     ? (getPillVals("year")?.[0] || mPeriods[mPeriods.length-1].slice(0,4))
     : mPeriods[mPeriods.length-1]);
-  // Cartera: orden Utilización → CohortRent → IntlHist → Mora → Churn → RatioVig → VelAdq → Castigo
+  // Cartera: orden Utilización → CohortRent → Mora → Churn → RatioVig → VelAdq → Castigo
+  // (Exterior ahora vive como tab dentro de renderTxnVigTkt)
   renderCartera(cMap, cPeriods);
   renderCohortRent(rows, cMap, cPeriods);
-  renderIntlHist(cMap, cPeriods);
   renderVelAdq(mMap, mPeriods);
   renderRatioVig(mMap, mPeriods);
   renderContribBancos(rows, ultimo, contribPrev);
@@ -1588,55 +1581,6 @@ function renderCohortRent(rows, map, periods) {
     }
   });
 }
-function renderIntlHist(map, periods) {
-  // Rebuild map from banco-filtered RAW to ensure banco filter is respected
-  const bs = getPillVals("banco");
-  const fs = getPillVals("franq");
-  let rowsB = bs ? RAW.filter(r=>bs.includes(r.ENTIDAD)) : RAW;
-  if (fs) rowsB = rowsB.filter(r=>fs.includes(r.FRANQUICIA));
-  const {map:mB, periods:pB} = buildPeriod(rowsB, currentView);
-  map = mB; periods = pB;
-  const el = document.getElementById("intlHistChart");
-  if (!el) return;
-  const subEl = document.getElementById("intlhist-sub");
-  if (currentTipo !== "credito") {
-    const ctx=el.getContext("2d"); if(ctx) ctx.clearRect(0,0,el.width,el.height);
-    if(subEl) subEl.textContent="Solo disponible en modo Crédito";
-    return;
-  }
-  if(subEl) subEl.textContent="Monto compras exterior / Facturación total · solo crédito · indicador de viajes internacionales";
-  const last = viewPeriods(periods).length>0 ? viewPeriods(periods) : periods.slice(-24);
-  const labels = last.map(p=>p.length>=7?p.slice(0,7):p);
-  const FRANQ_C2 = {"VISA":VISA,"MASTERCARD":MC,"DINERS":"#004B87","AMERICAN EXPRESS":"#007BC1","OTRAS TARJETAS DE CREDITO":"#9CA3AF"};
-  const FRANQ_L2 = {"VISA":"Visa","MASTERCARD":"Mastercard","DINERS":"Diners","AMERICAN EXPRESS":"Amex","OTRAS TARJETAS DE CREDITO":"Otras"};
-  const activeFranqs2 = Object.keys(FRANQ_C2).filter(f=>
-    last.some(p=>{ const d=map[p]?.[f]||{}; return d.mto_tot>0 && d.mto_ext>0; })
-  );
-  if (!activeFranqs2.length) return;
-  const datasets2 = activeFranqs2.map(f=>({
-    label: FRANQ_L2[f]||f,
-    data: last.map(p=>{const d=map[p]?.[f]||{}; return d.mto_tot>0?+(d.mto_ext/d.mto_tot*100).toFixed(2):null;}),
-    borderColor: FRANQ_C2[f], fill:false, tension:0.3, pointRadius:3, borderWidth:2.5, spanGaps:true
-  }));
-  mkChart("intlHistChart",{
-    type:"line",
-    data:{labels,datasets:datasets2},
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      interaction:{mode:"index",intersect:false},
-      plugins:{
-        legend:{display:activeFranqs2.length>1,labels:{font:{size:9},boxWidth:10,padding:8}},
-        tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${(c.parsed.y||0).toFixed(2)}% exterior`}}
-      },
-      scales:{
-        x:{ticks:{font:{size:9},maxRotation:45},grid:{color:"#F2F4F7"}},
-        y:{min:0,ticks:{callback:v=>v.toFixed(1)+"%",font:{size:9}},grid:{color:"#F2F4F7"}}
-      },
-      animation:{duration:300}
-    }
-  });
-}
-
 // ── Velocidad adquisición neta ────────────────────────────────────────────────
 function renderVelAdq(map, periods) {
   // Rebuild map from banco-filtered RAW to ensure banco filter is respected
@@ -2126,9 +2070,12 @@ function renderMSChart(map, periods) {
     plugins:[{
       // Muestra el valor de Visa y Mastercard sobre cada segmento del stack —
       // Amex/Diners/Otras se dejan solo en tooltip porque el segmento es
-      // demasiado angosto para un texto legible.
+      // demasiado angosto para un texto legible. Solo en vista anual: en
+      // mensual hay demasiadas barras angostas y el texto se vuelve
+      // ilegible — ahí se deja solo el hover.
       id:"msValueLabels",
       afterDatasetsDraw(chart){
+        if (currentView !== "anual") return;
         const {ctx} = chart;
         ctx.save();
         ctx.font = "700 9.5px "+getComputedStyle(document.body).fontFamily;
@@ -2181,9 +2128,9 @@ function renderVolChart(map, periods) {
 // ── VIZ YoY ───────────────────────────────────────────────────────────────────
 function setYoyTab(t, el) {
   yoyTab = t;
-  ["fact","txn","vig","tkt"].forEach(v => document.getElementById("yoy-tab-"+v)?.classList.remove("active"));
+  ["fact","txn","vig","tkt","ext"].forEach(v => document.getElementById("yoy-tab-"+v)?.classList.remove("active"));
   el.classList.add("active");
-  const labels = {"fact":"Facturación","txn":"Transacciones","vig":"Tarjetas Vigentes","tkt":"Ticket Promedio"};
+  const labels = {"fact":"Facturación","txn":"Transacciones","vig":"Tarjetas Vigentes","tkt":"Ticket Promedio","ext":"Exterior"};
   document.getElementById("yoy-title").textContent = "Crecimiento YoY — " + labels[t];
   renderYoY(filtered());
 }
@@ -2222,7 +2169,13 @@ function renderYoY(rows) {
   const keyFn = yoyTab === "fact" ? d => d.mto_tot
                : yoyTab === "txn"  ? d => (d.num_nal||0)+(d.num_ext||0)
                : yoyTab === "tkt"  ? d => d.num_nal>0 ? d.mto_nal/d.num_nal : null
+               : yoyTab === "ext"  ? d => d.mto_ext||0
                :                     d => d.vigentes||0;
+  if (yoyTab === "ext" && currentTipo !== "credito") {
+    // La SFC no desagrega nacional vs exterior para débito
+    if (CHARTS["yoyChart"]) { CHARTS["yoyChart"].destroy(); delete CHARTS["yoyChart"]; }
+    return;
+  }
   const lag = isAnual ? 1 : 12;
   for (const p of displayPeriods) {
     // prior = mismo período `lag` pasos atrás en fullPeriods (1 año, o 12 meses)
@@ -2291,16 +2244,21 @@ function renderTxnVigTkt(map, periods) {
     return `${prefix}: <span class="chip ${cls}">${v>0?"+":""}${v.toFixed(1)}%</span>`;
   }
 
-  const titles = {txn:"Transacciones", vig:"Tarjetas Vigentes", tkt:"Ticket Promedio"};
+  const titles = {txn:"Transacciones", vig:"Tarjetas Vigentes", tkt:"Ticket Promedio", ext:"Exterior"};
   const subs = {
     txn: currentTipo === "credito" ? "Transacciones crédito" : currentTipo === "debito" ? "Transacciones débito" : "Transacciones crédito + débito",
     vig: currentTipo === "credito" ? "Stock al corte · crédito" : currentTipo === "debito" ? "Stock al corte · débito" : "Stock al corte · crédito + débito",
     tkt: "Facturación nac. / transacciones · COP miles",
+    ext: "Compras exterior / Facturación total · solo crédito · indicador de viajes internacionales",
   };
   document.getElementById("txnvigtkt-title").textContent = titles[txnVigTktTab];
   document.getElementById("txnvigtkt-sub").textContent = subs[txnVigTktTab];
   const yoyVisaEl = document.getElementById("txnvigtkt-yoy-visa");
   const yoyMcEl = document.getElementById("txnvigtkt-yoy-mc");
+  // El tab Exterior dibuja su propia leyenda dentro del canvas (puede tener
+  // más de 2 franquicias activas) — se oculta la leyenda estática Visa/MC.
+  const legRowEl = document.getElementById("txnvigtkt-legrow");
+  if (legRowEl) legRowEl.style.display = txnVigTktTab === "ext" ? "none" : "";
 
   if (txnVigTktTab === "txn") {
     const rawVT = last.map(p => (map[p]?.VISA?.num_nal||0) + (map[p]?.VISA?.num_ext||0));
@@ -2354,7 +2312,7 @@ function renderTxnVigTkt(map, periods) {
     const yoyVV = yoyLabel(rawVV), yoyMV = yoyLabel(rawMV);
     yoyVisaEl.innerHTML = yoyHtml(yoyVV, "Visa YoY");
     yoyMcEl.innerHTML   = yoyHtml(yoyMV, "MC YoY");
-  } else {
+  } else if (txnVigTktTab === "tkt") {
     yoyVisaEl.innerHTML = ""; yoyMcEl.innerHTML = "";
     const rawVT = last.map(p => { const d=map[p]?.VISA||{}; return d.num_nal>0 ? Math.round(d.mto_nal/d.num_nal/1000) : null; });
     const rawMT = last.map(p => { const d=map[p]?.MASTERCARD||{}; return d.num_nal>0 ? Math.round(d.mto_nal/d.num_nal/1000) : null; });
@@ -2373,6 +2331,56 @@ function renderTxnVigTkt(map, periods) {
           x:{ticks:{maxRotation:0,autoSkip:true,maxTicksLimit:20,font:{size:9}},grid:{display:false}},
           y:{grace:"8%",ticks:{callback:v=>"$"+Math.round(v).toLocaleString("es-CO")+"K",font:{size:9}},grid:{color:"#F2F4F7"}}
         }
+      }
+    });
+  } else if (txnVigTktTab === "ext") {
+    yoyVisaEl.innerHTML = ""; yoyMcEl.innerHTML = "";
+    // Reconstruye el mapa desde RAW filtrado por banco/franq para respetar
+    // esos filtros igual que el resto de esta función (map/periods vienen de
+    // renderAll y ya reflejan currentView, pero no banco/franq).
+    const bs = getPillVals("banco");
+    const fs = getPillVals("franq");
+    let rowsB = bs ? RAW.filter(r=>bs.includes(r.ENTIDAD)) : RAW;
+    if (fs) rowsB = rowsB.filter(r=>fs.includes(r.FRANQUICIA));
+    const {map:mB, periods:pB} = buildPeriod(rowsB, currentView);
+    if (currentTipo !== "credito") {
+      if (CHARTS["txnVigTktChart"]) { CHARTS["txnVigTktChart"].destroy(); delete CHARTS["txnVigTktChart"]; }
+      const ctx = document.getElementById("txnVigTktChart")?.getContext("2d");
+      if (ctx) ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
+      document.getElementById("txnvigtkt-sub").textContent = "Solo disponible en modo Crédito";
+      return;
+    }
+    const lastExt = viewPeriods(pB).length>0 ? viewPeriods(pB) : pB.slice(-24);
+    const labelsExt = lastExt.map(p=>p.length>=7?p.slice(0,7):p);
+    const FRANQ_C2 = {"VISA":VISA,"MASTERCARD":MC,"DINERS":"#004B87","AMERICAN EXPRESS":"#007BC1","OTRAS TARJETAS DE CREDITO":"#9CA3AF"};
+    const FRANQ_L2 = {"VISA":"Visa","MASTERCARD":"Mastercard","DINERS":"Diners","AMERICAN EXPRESS":"Amex","OTRAS TARJETAS DE CREDITO":"Otras"};
+    const activeFranqs2 = Object.keys(FRANQ_C2).filter(f=>
+      lastExt.some(p=>{ const d=mB[p]?.[f]||{}; return d.mto_tot>0 && d.mto_ext>0; })
+    );
+    if (!activeFranqs2.length) {
+      if (CHARTS["txnVigTktChart"]) { CHARTS["txnVigTktChart"].destroy(); delete CHARTS["txnVigTktChart"]; }
+      return;
+    }
+    const datasetsExt = activeFranqs2.map(f=>({
+      label: FRANQ_L2[f]||f,
+      data: lastExt.map(p=>{const d=mB[p]?.[f]||{}; return d.mto_tot>0?+(d.mto_ext/d.mto_tot*100).toFixed(2):null;}),
+      borderColor: FRANQ_C2[f], fill:false, tension:0.3, pointRadius:3, borderWidth:2.5, spanGaps:true
+    }));
+    mkChart("txnVigTktChart",{
+      type:"line",
+      data:{labels:labelsExt, datasets:datasetsExt},
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        interaction:{mode:"index",intersect:false},
+        plugins:{
+          legend:{display:activeFranqs2.length>1,labels:{font:{size:9},boxWidth:10,padding:8}},
+          tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${(c.parsed.y||0).toFixed(2)}% exterior`}}
+        },
+        scales:{
+          x:{ticks:{font:{size:9},maxRotation:45},grid:{color:"#F2F4F7"}},
+          y:{min:0,ticks:{callback:v=>v.toFixed(1)+"%",font:{size:9}},grid:{color:"#F2F4F7"}}
+        },
+        animation:{duration:300}
       }
     });
   }
@@ -2519,15 +2527,18 @@ function renderBancos(rows, ultimo) {
       data[r.ENTIDAD].OTRAS += (r.MTO_COMPRAS_CREDITO||0);
     }
   }
-  const entries = Object.entries(data)
+  const allEntries = Object.entries(data)
     .map(([e,d]) => [e,
       (d.VISA||0)+(d.MASTERCARD||0)+(d["AMERICAN EXPRESS"]||0)+(d.DINERS||0)+(d.OTRAS||0),
       d.VISA||0, d.MASTERCARD||0, d["AMERICAN EXPRESS"]||0, d.DINERS||0, d.OTRAS||0])
     .filter(e => e[1] > 0)
-    .sort((a,b) => b[1]-a[1])
-    .slice(0, bancosShowAll ? 20 : 10);
-
-  const mktTotal = entries.reduce((s,e) => s+e[1], 0);
+    .sort((a,b) => b[1]-a[1]);
+  // mktTotal = mercado real completo (todos los bancos), NO solo los que se
+  // grafican — si se calculara después del slice, el denominador se
+  // subestima y los % mostrados quedan inflados vs. Contribución al Δ MS
+  // (que sí usa el total real).
+  const mktTotal = allEntries.reduce((s,e) => s+e[1], 0);
+  const entries = allEntries.slice(0, bancosShowAll ? 20 : 10);
 
   const labels = entries.map(e => fmtBank(e[0]));
   const allVals = entries.flatMap(e => [e[2], e[3], e[4], e[5], e[6]]);
