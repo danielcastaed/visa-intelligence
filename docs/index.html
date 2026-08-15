@@ -288,6 +288,13 @@ button.tab.active{background:var(--visa);color:#fff;border-color:var(--visa)}
   </div>
 </div><!-- /filters -->
 </div><!-- /filters-bar -->
+
+<div class="page-tabs" style="display:flex;gap:6px;margin:0 0 20px">
+  <button class="tab active" id="page-tab-dashboard" onclick="setPageTab('dashboard',this)">Dashboard</button>
+  <button class="tab" id="page-tab-projection" onclick="setPageTab('projection',this)">Proyección y Comparación</button>
+</div>
+
+<div id="view-dashboard">
 <!-- VIZ 1 — MS 100% Horizontal Bar -->
 <div class="slabel">Snapshot</div>
 <div id="snap-mkt" style="margin-bottom:14px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 20px 14px;display:none">
@@ -434,11 +441,13 @@ button.tab.active{background:var(--visa);color:#fff;border-color:var(--visa)}
     <div class="card-title">Top bancos por ganancia/pérdida de MS — Visa</div>
     <div class="card-sub" id="contrib-banco-visa-sub">Δpp vs período anterior</div>
     <div id="contrib-banco-visa"></div>
+    <div class="chart-wrap" style="height:200px;margin-top:14px"><canvas id="waterfallVisaChart"></canvas></div>
   </div>
   <div class="card">
     <div class="card-title">Top bancos por ganancia/pérdida de MS — Mastercard</div>
     <div class="card-sub" id="contrib-banco-mc-sub">Δpp vs período anterior</div>
     <div id="contrib-banco-mc"></div>
+    <div class="chart-wrap" style="height:200px;margin-top:14px"><canvas id="waterfallMcChart"></canvas></div>
   </div>
 </div>
 
@@ -524,6 +533,15 @@ button.tab.active{background:var(--visa);color:#fff;border-color:var(--visa)}
   <div id="heatmap-container" style="overflow-x:auto"></div>
 </div>
 
+<!-- VIZ 12b — Ranking de bancos en el tiempo -->
+<div class="slabel" style="margin-top:28px">Ranking de Bancos</div>
+<div class="card" style="margin-top:14px">
+  <div class="card-title">Ranking de Bancos en el Tiempo</div>
+  <div class="card-sub" id="ranking-sub">Posición por facturación · top emisores</div>
+  <div class="chart-wrap" id="chart-ranking" style="height:340px"></div>
+  <div class="legend" id="legend-ranking" style="display:flex;flex-wrap:wrap;gap:10px 16px;margin-top:12px;font-size:10.5px;color:var(--muted)"></div>
+</div>
+
 <!-- VIZ 13 — Cuadrante Competitivo -->
 <div class="slabel" style="margin-top:28px">Cuadrante Competitivo</div>
 <div class="card" style="margin-top:14px">
@@ -563,6 +581,47 @@ button.tab.active{background:var(--visa);color:#fff;border-color:var(--visa)}
 <div style="margin-top:28px;font-size:11px;color:var(--faint);text-align:center">
   Superintendencia Financiera de Colombia · datos.gov.co · 2026-05
 </div>
+</div><!-- /view-dashboard -->
+
+<div id="view-projection" style="display:none">
+  <div class="slabel">Proyección</div>
+  <div class="card" style="margin-top:14px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px;margin-bottom:4px">
+      <div>
+        <div class="card-title">Proyección de Métricas Principales</div>
+        <div class="card-sub" id="proj-sub">Tendencia + banda de incertidumbre · Facturación</div>
+      </div>
+      <div id="proj-metric-tabs" style="display:flex;gap:4px;flex-wrap:wrap">
+        <button class="tab active" onclick="setProjMetric('fact',this)">Facturación</button>
+        <button class="tab" onclick="setProjMetric('txn',this)">Transacciones</button>
+        <button class="tab" onclick="setProjMetric('vig',this)">Tarjetas Vigentes</button>
+        <button class="tab" onclick="setProjMetric('tkt',this)">Ticket Promedio</button>
+      </div>
+    </div>
+    <div class="chart-wrap" style="height:280px;margin-top:10px"><canvas id="projChart"></canvas></div>
+    <div class="concept-note" style="font-size:10.5px;color:var(--faint);margin-top:10px">Proyección lineal simple sobre el histórico filtrado; la banda refleja la dispersión de los últimos períodos, no un modelo estadístico formal.</div>
+  </div>
+
+  <div class="slabel" style="margin-top:28px">Comparador de Períodos</div>
+  <div class="card" style="margin-top:14px">
+    <div class="card-title">Comparador de Períodos Libre</div>
+    <div class="card-sub">Compara cualquier par de períodos con los filtros activos</div>
+    <div style="display:flex;align-items:center;gap:10px;margin:14px 0 4px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:8px 12px">
+        <span style="font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">Período A</span>
+        <select id="cmp-sel-a" onchange="renderComparador()" style="border:none;background:transparent;font:inherit;font-weight:700;font-size:13px;color:var(--text);cursor:pointer"></select>
+      </div>
+      <span style="font-size:11px;color:var(--faint);font-weight:700">vs.</span>
+      <div style="display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:8px 12px">
+        <span style="font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">Período B</span>
+        <select id="cmp-sel-b" onchange="renderComparador()" style="border:none;background:transparent;font:inherit;font-weight:700;font-size:13px;color:var(--text);cursor:pointer"></select>
+      </div>
+    </div>
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:12.5px;margin-top:10px" id="cmp-table"></table>
+    </div>
+  </div>
+</div><!-- /view-projection -->
 
 </div><!-- /page -->
 
@@ -711,6 +770,8 @@ const MC    = "#CC2200";
 const AMEX  = "#8E9296";
 const DINERS= "#334155";
 const C = {VISA, MASTERCARD: MC, "AMERICAN EXPRESS": AMEX, DINERS, "OTRAS TARJETAS DE CREDITO": "#94A3B8"};
+// Paleta ejecutiva para el ranking de bancos — tonos apagados, sin colores llamativos
+const RANK_COLORS = ["#1A1F71","#3E5C76","#6B7280","#8C6E4F","#4B6B58","#7A4B5C","#5B4B7A","#2E4756"];
 // ALL_F computed dynamically from current RAW so débito/total only sees VISA+MC
 function getActiveFranqs() {
   return [...new Set(RAW.map(r => r.FRANQUICIA))].filter(f =>
@@ -729,6 +790,8 @@ let bancosShowAll = false;
 let volTab = "tot";
 let volPeriod = "mensual";
 let yoyTab = "fact";
+let currentPageTab = "dashboard";
+let projMetric = "fact";
 let CHARTS = {};
 
 // ── Populate bank dropdown ────────────────────────────────────────────────────
@@ -1170,8 +1233,252 @@ function renderAll() {
   renderSnapMkt(map, periods, yoyMap, yoyAM2Comp);
   renderRetiros();
   renderHeatmap(rows);
+  renderBumpRanking(rows);
   renderCohort(rows);
   renderHHI(rows);
+  renderProjection();
+  populateComparadorPeriods();
+  renderComparador();
+}
+
+// ── Pestañas de página (Dashboard / Proyección) ─────────────────────────────────
+function setPageTab(view, el) {
+  currentPageTab = view;
+  document.querySelectorAll(".page-tabs .tab").forEach(b => b.classList.remove("active"));
+  el.classList.add("active");
+  document.getElementById("view-dashboard").style.display = view === "dashboard" ? "" : "none";
+  document.getElementById("view-projection").style.display = view === "projection" ? "" : "none";
+}
+
+// ── Proyección de métricas principales ──────────────────────────────────────────
+const PROJ_METRICS = {
+  fact: {label:"Facturación",      isCurrency:true},
+  txn:  {label:"Transacciones",    isCurrency:false},
+  vig:  {label:"Tarjetas Vigentes",isCurrency:false},
+  tkt:  {label:"Ticket Promedio",  isCurrency:true},
+};
+
+function projMetricValue(map, p, metric) {
+  if (metric === "tkt") {
+    let amt=0, cnt=0;
+    for (const f of ALL_F) { const d = map[p]?.[f]; if (!d) continue; amt += d.mto_nal||0; cnt += d.num_nal||0; }
+    return cnt>0 ? amt/cnt : null;
+  }
+  let s=0, has=false;
+  for (const f of ALL_F) {
+    const d = map[p]?.[f]; if (!d) continue;
+    const v = metric==="fact" ? d.mto_tot : metric==="txn" ? (d.num_nal||0)+(d.num_ext||0) : d.vigentes;
+    if (v!=null) { s += v; has = true; }
+  }
+  return has ? s : null;
+}
+
+function linreg(ys) {
+  const n = ys.length;
+  const mx = (n-1)/2, my = ys.reduce((a,b)=>a+b,0)/n;
+  let num=0, den=0;
+  for (let i=0;i<n;i++){ num += (i-mx)*(ys[i]-my); den += (i-mx)*(i-mx); }
+  const slope = den>0 ? num/den : 0;
+  const intercept = my - slope*mx;
+  let ss=0;
+  for (let i=0;i<n;i++){ const fit=intercept+slope*i; ss += (ys[i]-fit)*(ys[i]-fit); }
+  return {slope, intercept, residualStd: Math.sqrt(ss/n)};
+}
+
+function setProjMetric(m, el) {
+  projMetric = m;
+  document.querySelectorAll("#proj-metric-tabs .tab").forEach(b => b.classList.remove("active"));
+  el.classList.add("active");
+  renderProjection();
+}
+
+function fmtCount(v) {
+  if (v == null || isNaN(v)) return "—";
+  const abs = Math.abs(v);
+  if (abs >= 1e6) return (v/1e6).toFixed(2)+"M";
+  if (abs >= 1e3) return (v/1e3).toFixed(1)+"K";
+  return v.toFixed(0);
+}
+
+function renderProjection() {
+  const cfg = PROJ_METRICS[projMetric];
+  const sub = document.getElementById("proj-sub");
+  if (sub) sub.textContent = `Tendencia + banda de incertidumbre · ${cfg.label}`;
+  const clearChart = () => { if (CHARTS["projChart"]) { CHARTS["projChart"].destroy(); delete CHARTS["projChart"]; } };
+  const el = document.getElementById("projChart");
+  if (!el) return;
+
+  const rows = filtered();
+  const isAnual = currentView === "anual";
+  const { map, periods: allPeriods } = buildPeriod(rows, currentView);
+  const periods = viewPeriods(allPeriods).length ? viewPeriods(allPeriods) : allPeriods;
+  if (periods.length < 3) { clearChart(); return; }
+
+  const hist = periods.map(p => projMetricValue(map, p, projMetric));
+  const validIdx = hist.map((v,i)=>v!=null?i:null).filter(v=>v!=null);
+  if (validIdx.length < 3) { clearChart(); return; }
+  const lastIdx = validIdx[validIdx.length-1];
+  const activePeriods = periods.slice(0, lastIdx+1);
+  const activeHist = hist.slice(0, lastIdx+1);
+
+  const windowN = isAnual ? validIdx.length : Math.min(24, validIdx.length);
+  const fitIdx = validIdx.slice(-windowN);
+  const fitVals = fitIdx.map(i=>hist[i]);
+  const { slope, intercept, residualStd } = linreg(fitVals);
+
+  const H = isAnual ? 2 : 6;
+  const projPeriods = [];
+  let lastP = activePeriods[activePeriods.length-1];
+  for (let h=1; h<=H; h++){
+    if (isAnual) lastP = String(parseInt(lastP)+1);
+    else {
+      // Aritmética de enteros en vez de Date+setMonth: en timezones UTC-negativas
+      // (p.ej. America/Bogota) parsear "YYYY-MM-01" como UTC y luego usar
+      // getMonth()/setMonth() (hora LOCAL) puede quedarse pegado en el mismo mes.
+      let [yy, mm] = lastP.split("-").map(Number);
+      mm += 1; if (mm > 12) { mm = 1; yy += 1; }
+      lastP = yy + "-" + String(mm).padStart(2,"0");
+    }
+    projPeriods.push(lastP);
+  }
+
+  const n0 = fitVals.length;
+  const projMean=[], projUp=[], projLo=[];
+  for (let h=1; h<=H; h++){
+    const val = intercept + slope*(n0-1+h);
+    const band = residualStd * Math.sqrt(1+h);
+    projMean.push(Math.max(0,val));
+    projUp.push(Math.max(0,val+band));
+    projLo.push(Math.max(0,val-band));
+  }
+
+  const allPeriodsFull = activePeriods.concat(projPeriods);
+  const dispLabels = allPeriodsFull.map(p => isAnual ? p : p.slice(0,7));
+  const histData = activeHist.concat(projPeriods.map(()=>null));
+  const lastVal = activeHist[activeHist.length-1];
+  const bridge = Array(activePeriods.length-1).fill(null).concat([lastVal]);
+  const projData = bridge.concat(projMean);
+  const bandUp = bridge.concat(projUp);
+  const bandLo = bridge.concat(projLo);
+
+  const fmtY = v => v==null ? "—" : cfg.isCurrency ? fmtB(v) : fmtCount(v);
+
+  mkChart("projChart", {
+    type:"line",
+    data:{
+      labels: dispLabels,
+      datasets:[
+        {label:"_lo", data:bandLo, borderWidth:0, pointRadius:0, fill:false, spanGaps:true},
+        {label:"_hi", data:bandUp, borderWidth:0, pointRadius:0, fill:"-1", backgroundColor:"rgba(51,65,85,0.10)", spanGaps:true},
+        {label:"Histórico", data:histData, borderColor:"#334155", backgroundColor:"transparent", borderWidth:2.5, pointRadius:0, tension:0.25, spanGaps:false},
+        {label:"Proyección", data:projData, borderColor:"#334155", backgroundColor:"transparent", borderWidth:2.5, borderDash:[6,4], pointRadius:0, tension:0.25, spanGaps:true},
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:"index", intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          filter: c => c.dataset.label === "Histórico" || c.dataset.label === "Proyección",
+          callbacks:{ label: c => `${c.dataset.label}: ${fmtY(c.parsed.y)}` }
+        }
+      },
+      scales:{
+        x:{ ticks:{font:{size:9},maxRotation:0,autoSkip:true}, grid:{display:false} },
+        y:{ grace:"10%", ticks:{callback:v=>fmtY(v),font:{size:9}}, grid:{color:"#F2F4F7"} }
+      },
+      animation:{duration:300}
+    },
+    plugins:[{
+      id:"todayLine",
+      afterDraw(chart){
+        const {ctx, chartArea:{top,bottom}, scales:{x}} = chart;
+        if (!x) return;
+        const xPix = x.getPixelForValue(activePeriods.length-1);
+        ctx.save();
+        ctx.strokeStyle="#98A2B3"; ctx.lineWidth=1; ctx.setLineDash([2,4]);
+        ctx.beginPath(); ctx.moveTo(xPix,top); ctx.lineTo(xPix,bottom); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.font="9px "+getComputedStyle(document.body).fontFamily; ctx.fillStyle="#98A2B3";
+        ctx.fillText("Hoy", xPix+4, top+10);
+        ctx.restore();
+      }
+    }]
+  });
+}
+
+// ── Comparador de períodos libre ─────────────────────────────────────────────────
+const CMP_METRICS = [
+  {key:"fact",       label:"Facturación total",  isCurrency:true,  good:"up"},
+  {key:"txn",        label:"Transacciones",      isCurrency:false, good:"up"},
+  {key:"vig",        label:"Tarjetas Vigentes",  isCurrency:false, good:"up"},
+  {key:"tkt",        label:"Ticket Promedio",    isCurrency:true,  good:"up"},
+  {key:"ms_visa",    label:"Market Share Visa",  isPct:true,       good:"up"},
+  {key:"churn_visa", label:"Churn Rate Visa",    isPct:true,       good:"down"},
+];
+
+function cmpMetricValue(map, p, key) {
+  const d = f => map[p]?.[f];
+  if (key==="fact") { let s=0,has=false; for(const f of ALL_F){const x=d(f); if(x){s+=x.mto_tot||0;has=true;}} return has?s:null; }
+  if (key==="txn")  { let s=0,has=false; for(const f of ALL_F){const x=d(f); if(x){s+=(x.num_nal||0)+(x.num_ext||0);has=true;}} return has?s:null; }
+  if (key==="vig")  { let s=0,has=false; for(const f of ALL_F){const x=d(f); if(x){s+=x.vigentes||0;has=true;}} return has?s:null; }
+  if (key==="tkt")  { let amt=0,cnt=0; for(const f of ALL_F){const x=d(f); if(x){amt+=x.mto_nal||0;cnt+=x.num_nal||0;}} return cnt>0?amt/cnt:null; }
+  if (key==="ms_visa") { const tot=ALL_F.reduce((s,f)=>s+(d(f)?.mto_tot||0),0); const v=d("VISA")?.mto_tot||0; return tot>0? v/tot*100 : null; }
+  if (key==="churn_visa") { const x=d("VISA"); if(!x) return null; return x.vigentes_mes>0 ? x.canceladas/x.vigentes_mes*100 : null; }
+  return null;
+}
+
+function periodDisplayLabel(p) {
+  if (p.length === 4) return p;
+  const MESES = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+  const [y,m] = p.split("-");
+  return MESES[parseInt(m)-1] + " " + y;
+}
+
+function populateComparadorPeriods() {
+  const rows = filtered();
+  const { periods } = buildPeriod(rows, currentView);
+  const selA = document.getElementById("cmp-sel-a");
+  const selB = document.getElementById("cmp-sel-b");
+  if (!selA || !selB) return;
+  if (!periods.length) { selA.innerHTML=""; selB.innerHTML=""; return; }
+  const prevA = selA.value, prevB = selB.value;
+  const opts = periods.map(p => `<option value="${p}">${periodDisplayLabel(p)}</option>`).join("");
+  selA.innerHTML = opts; selB.innerHTML = opts;
+  selA.value = periods.includes(prevA) ? prevA : (periods[periods.length-2] || periods[0]);
+  selB.value = periods.includes(prevB) ? prevB : periods[periods.length-1];
+}
+
+function renderComparador() {
+  const rows = filtered();
+  const { map } = buildPeriod(rows, currentView);
+  const selA = document.getElementById("cmp-sel-a");
+  const selB = document.getElementById("cmp-sel-b");
+  const table = document.getElementById("cmp-table");
+  if (!selA || !selB || !table || !selA.value || !selB.value) { if (table) table.innerHTML=""; return; }
+  const pA = selA.value, pB = selB.value;
+  const labelA = periodDisplayLabel(pA), labelB = periodDisplayLabel(pB);
+  const th = (txt, align) => `<th style="text-align:${align};font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);padding:0 10px 8px;border-bottom:1px solid var(--border)">${txt}</th>`;
+  let html = `<tr>${th("Métrica","left")}${th(labelA,"right")}${th(labelB,"right")}${th("Δ","right")}</tr>`;
+  for (const m of CMP_METRICS) {
+    const vA = cmpMetricValue(map, pA, m.key);
+    const vB = cmpMetricValue(map, pB, m.key);
+    const fmt = v => v==null ? "—" : m.isCurrency ? fmtB(v) : m.isPct ? v.toFixed(2)+"%" : Math.round(v).toLocaleString("es-CO");
+    let deltaHtml = `<span style="color:var(--faint)">—</span>`;
+    if (vA!=null && vB!=null) {
+      const delta = m.isPct ? (vB-vA) : (vA!==0 ? (vB/vA-1)*100 : null);
+      if (delta!=null) {
+        const good = m.good==="up" ? delta>=0 : delta<=0;
+        const cls = Math.abs(delta) < (m.isPct?0.005:0.05) ? "chip-neu" : (good?"chip-up":"chip-down");
+        const txt = m.isPct ? `${delta>0?"+":""}${delta.toFixed(2)}pp` : `${delta>0?"+":""}${delta.toFixed(1)}%`;
+        deltaHtml = `<span class="chip ${cls}">${txt}</span>`;
+      }
+    }
+    const td = (content, align, extra) => `<td style="padding:11px 10px;border-bottom:1px solid var(--border);text-align:${align};${extra||""}">${content}</td>`;
+    html += `<tr>${td(m.label,"left","font-weight:600")}${td(fmt(vA),"right","font-variant-numeric:tabular-nums")}${td(fmt(vB),"right","font-variant-numeric:tabular-nums")}${td(deltaHtml,"right")}</tr>`;
+  }
+  table.innerHTML = html;
 }
 
 // ── Rentabilidad por tarjeta vigente ─────────────────────────────────────────
@@ -1532,6 +1839,114 @@ function setHeatmapFranq(f, el) {
   document.querySelectorAll("#heatmap-franq-tabs .tab").forEach(b => b.classList.remove("active"));
   el.classList.add("active");
   renderHeatmap(filtered());
+}
+
+// ── Ranking de bancos en el tiempo (bump chart) ─────────────────────────────────
+function renderBumpRanking(rows) {
+  const isAnual = currentView === "anual";
+  const allPeriods = isAnual
+    ? [...new Set(rows.map(r => r.MES.slice(0,4)))].sort()
+    : [...new Set(rows.map(r => r.MES))].sort();
+  const periods = viewPeriods(allPeriods);
+  const wrap = document.getElementById("chart-ranking");
+  const sub = document.getElementById("ranking-sub");
+  if (periods.length < 2) { if (wrap) wrap.innerHTML = ""; return; }
+
+  const bs_rk = getPillVals("banco");
+  const rowsBanco = bs_rk ? RAW.filter(r=>bs_rk.includes(r.ENTIDAD)) : RAW;
+  const byBank = {};
+  for (const r of rowsBanco) {
+    if (!ALL_F.includes(r.FRANQUICIA)) continue;
+    const p = isAnual ? r.MES.slice(0,4) : r.MES;
+    if (!periods.includes(p)) continue;
+    if (!byBank[r.ENTIDAD]) byBank[r.ENTIDAD] = {};
+    byBank[r.ENTIDAD][p] = (byBank[r.ENTIDAD][p]||0) + (r.MTO_COMPRAS_CREDITO||0);
+  }
+  const banksAll = Object.keys(byBank);
+  if (!banksAll.length) { if (wrap) wrap.innerHTML = ""; return; }
+
+  // Rank every bank within each period (1 = mayor facturación)
+  const rankOf = {};
+  periods.forEach(p => {
+    const ranked = banksAll
+      .map(b => ({b, v: byBank[b][p]||0}))
+      .filter(x => x.v > 0)
+      .sort((a,b) => b.v - a.v);
+    rankOf[p] = {};
+    ranked.forEach((x,i) => { rankOf[p][x.b] = i+1; });
+  });
+
+  const lastP = periods[periods.length-1];
+  const MAX_RANK = 10; // por debajo de este puesto, la línea se corta (banco "fuera del top")
+  const topBanks = Object.keys(rankOf[lastP]||{})
+    .filter(b => rankOf[lastP][b] <= 8)
+    .sort((a,b) => rankOf[lastP][a]-rankOf[lastP][b]);
+  if (!topBanks.length) { if (wrap) wrap.innerHTML = ""; return; }
+
+  if (sub) sub.textContent = `Posición por facturación${currentTipo!=="credito"?(currentTipo==="debito"?" · débito":" · crédito + débito"):""} · ${isAnual?"anual":"mensual"} · top ${topBanks.length}`;
+
+  const labels = periods.map(p => isAnual ? p : p.slice(0,7));
+  const datasets = topBanks.map((b,i) => ({
+    label: fmtBank(b),
+    data: periods.map(p => { const r = rankOf[p]?.[b]; return (r && r<=MAX_RANK) ? r : null; }),
+    borderColor: RANK_COLORS[i % RANK_COLORS.length],
+    backgroundColor: RANK_COLORS[i % RANK_COLORS.length],
+    pointBackgroundColor: RANK_COLORS[i % RANK_COLORS.length],
+    pointBorderColor: "#fff",
+    pointBorderWidth: 2,
+    pointRadius: 4.5,
+    pointHoverRadius: 6.5,
+    borderWidth: 2.2,
+    tension: 0,
+    spanGaps: false,
+  }));
+
+  if (!wrap.querySelector("canvas")) wrap.innerHTML = '<canvas id="rankingChart"></canvas>';
+  mkChart("rankingChart", {
+    type: "line",
+    data: { labels, datasets },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      layout:{ padding:{ top:10, right:118, bottom:2, left:2 } },
+      interaction:{ mode:"nearest", intersect:true },
+      plugins:{
+        legend:{ display:false },
+        tooltip:{ callbacks:{ label: c => c.parsed.y!=null ? `${c.dataset.label}: puesto #${c.parsed.y}` : `${c.dataset.label}: fuera del top ${MAX_RANK}` } }
+      },
+      scales:{
+        x:{ ticks:{font:{size:9},maxRotation:0,autoSkip:true}, grid:{display:false} },
+        y:{ reverse:true, min:1, max:MAX_RANK, ticks:{stepSize:1, callback:v=>"#"+v, font:{size:9}}, grid:{color:"#F2F4F7"} }
+      },
+      animation:{duration:300}
+    },
+    plugins:[{
+      id:"rankEndLabels",
+      afterDatasetsDraw(chart){
+        const {ctx} = chart;
+        ctx.save();
+        ctx.font = "600 10.5px "+getComputedStyle(document.body).fontFamily;
+        ctx.textBaseline = "middle";
+        chart.data.datasets.forEach((ds,i)=>{
+          const meta = chart.getDatasetMeta(i);
+          if (meta.hidden) return;
+          for (let j=meta.data.length-1; j>=0; j--){
+            const v = ds.data[j];
+            if (v==null) continue;
+            const pt = meta.data[j];
+            ctx.fillStyle = "#101828";
+            ctx.fillText(`#${v} ${ds.label}`, pt.x+9, pt.y);
+            break;
+          }
+        });
+        ctx.restore();
+      }
+    }]
+  });
+
+  const lg = document.getElementById("legend-ranking");
+  if (lg) lg.innerHTML = topBanks.map((b,i)=>
+    `<span style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:50%;background:${RANK_COLORS[i % RANK_COLORS.length]};flex:none"></span>${fmtBank(b)}</span>`
+  ).join("");
 }
 
 // ── Análisis de Cohorte ────────────────────────────────────────────────────────
@@ -2395,7 +2810,7 @@ function renderContribBancos(rows, ultimo, penult) {
   const mktU = Object.values(totU).reduce((s,v)=>s+v,0);
   const mktP = Object.values(totP).reduce((s,v)=>s+v,0);
 
-  function renderForFranq(franq, elId, subId) {
+  function renderForFranq(franq, elId, subId, waterfallId) {
     const banks = [...new Set(rows.map(r=>r.ENTIDAD))];
     const entries = banks.map(b => {
       const u = totU[b+"|"+franq]||0;
@@ -2444,10 +2859,92 @@ function renderContribBancos(rows, ultimo, penult) {
     const bodyHtml = html || '<em style="color:var(--faint);font-size:11px">Sin variación en el período</em>';
     document.getElementById(elId).innerHTML = headerHtml + bodyHtml;
     document.getElementById(subId).textContent = `Δ pp YoY: ${ultimo} vs ${penult}`;
+    if (waterfallId) renderContribWaterfall(waterfallId, franq, color, franqMsP, top, franqMsU, ultimo, penult);
   }
 
-  renderForFranq("VISA",       "contrib-banco-visa", "contrib-banco-visa-sub");
-  renderForFranq("MASTERCARD", "contrib-banco-mc",   "contrib-banco-mc-sub");
+  renderForFranq("VISA",       "contrib-banco-visa", "contrib-banco-visa-sub", "waterfallVisaChart");
+  renderForFranq("MASTERCARD", "contrib-banco-mc",   "contrib-banco-mc-sub",   "waterfallMcChart");
+}
+
+// Puente (waterfall) del Δ de Market Share: reutiliza los mismos gainers/losers
+// que ya se listan arriba, en el mismo orden, para que ambos se lean como una unidad.
+function renderContribWaterfall(canvasId, franq, color, startVal, top, endVal, ultimo, penult) {
+  const el = document.getElementById(canvasId);
+  if (!el) return;
+  if (!top.length) {
+    if (CHARTS[canvasId]) { CHARTS[canvasId].destroy(); delete CHARTS[canvasId]; }
+    const ctx = el.getContext('2d'); if (ctx) ctx.clearRect(0,0,el.width,el.height);
+    return;
+  }
+  const cats = [penult, ...top.map(e=>e.bank), ultimo];
+  const bars = [];
+  const bg = [];
+  bars.push([0, startVal]); bg.push("#334155");
+  let running = startVal;
+  for (const e of top) {
+    const from = running;
+    running += e.diff;
+    bars.push([from, running]);
+    bg.push(e.diff >= 0 ? color : "#D0D5DD");
+  }
+  bars.push([0, endVal]); bg.push("#334155");
+
+  mkChart(canvasId, {
+    type: "bar",
+    data: {
+      labels: cats,
+      datasets: [{
+        data: bars,
+        backgroundColor: bg,
+        borderRadius: 3,
+        borderSkipped: false,
+        barPercentage: 0.7,
+        categoryPercentage: 0.85,
+      }]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      layout:{ padding:{ top:22, right:6, bottom:2, left:2 } },
+      plugins:{
+        legend:{ display:false },
+        tooltip:{ callbacks:{
+          title: c => c[0].label,
+          label: c => {
+            const isEdge = c.dataIndex===0 || c.dataIndex===cats.length-1;
+            if (isEdge) return `MS: ${c.raw[1].toFixed(2)}%`;
+            const e = top[c.dataIndex-1];
+            return `${e.diff>=0?"+":""}${e.diff.toFixed(2)}pp vs ${penult}`;
+          }
+        }}
+      },
+      scales:{
+        x:{ ticks:{font:{size:8.5},maxRotation:42,minRotation:42,autoSkip:false}, grid:{display:false} },
+        y:{ grace:"20%", ticks:{callback:v=>v.toFixed(1)+"%",font:{size:9}}, grid:{color:"#F2F4F7"} }
+      },
+      animation:{duration:300}
+    },
+    plugins:[{
+      id:"waterfallLabels",
+      afterDatasetsDraw(chart){
+        const {ctx, scales:{y}} = chart;
+        const meta = chart.getDatasetMeta(0);
+        ctx.save();
+        ctx.font = "700 9px "+getComputedStyle(document.body).fontFamily;
+        ctx.textAlign = "center";
+        // Solo se rotula el inicio y el fin (el total) — el detalle por banco ya
+        // está en la lista de arriba y en el tooltip; rotular cada barra aquí
+        // encima de columnas tan angostas se vuelve ilegible.
+        [0, bars.length-1].forEach(i=>{
+          const b = bars[i];
+          const top2 = y.getPixelForValue(Math.max(b[0],b[1]));
+          const txt = b[1].toFixed(1)+"%";
+          ctx.fillStyle = "#334155";
+          ctx.fillText(txt, meta.data[i].x, top2-6);
+        });
+        ctx.restore();
+      }
+    }]
+  });
 }
 
 // ── VIZ 11 — Snapshot ────────────────────────────────────────────────────────
