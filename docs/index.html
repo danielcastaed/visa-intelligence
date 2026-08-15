@@ -119,6 +119,7 @@ button.tab.active{background:var(--visa);color:#fff;border-color:var(--visa)}
 .intl-bar{display:flex;border-radius:4px;overflow:hidden;height:14px}
 @media(max-width:720px){
   .kpi-grid,.row-2,.row-3,.row-2s,.row-4,.snap-grid{grid-template-columns:1fr}
+  #snap-mkt-body{grid-template-columns:repeat(2,1fr) !important}
 }
 
 .filters-bar { position: relative; }
@@ -302,7 +303,7 @@ button.tab.active{background:var(--visa);color:#fff;border-color:var(--visa)}
     <span style="font-size:11px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.06em">Mercado total</span>
     <span id="snap-mkt-sub" style="font-size:10px;color:var(--muted)"></span>
   </div>
-  <div id="snap-mkt-body" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:8px 20px"></div>
+  <div id="snap-mkt-body" style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px 20px"></div>
 </div>
 <div class="snap-grid" id="snap-grid"></div>
 
@@ -333,8 +334,8 @@ button.tab.active{background:var(--visa);color:#fff;border-color:var(--visa)}
       <button class="tab" id="vol-tab-nal" onclick="setVolTab('nal',this)">Nacional</button>
       <button class="tab" id="vol-tab-ext" onclick="setVolTab('ext',this)">Exterior</button>
       <span style="width:1px;background:var(--border);margin:0 2px"></span>
-      <button class="tab active" id="vol-period-mes" onclick="setVolPeriod('mensual',this)">Mensual</button>
-      <button class="tab" id="vol-period-ano" onclick="setVolPeriod('anual',this)">Anual</button>
+      <button class="tab" id="vol-period-mes" onclick="setVolPeriod('mensual',this)">Mensual</button>
+      <button class="tab active" id="vol-period-ano" onclick="setVolPeriod('anual',this)">Anual</button>
     </div>
   </div>
   <div class="chart-wrap" style="height:190px"><canvas id="volChart"></canvas></div>
@@ -775,7 +776,7 @@ let cohortYoyMax = Infinity; // slider threshold — Infinity = no filter
 
 let bancosShowAll = false;
 let volTab = "tot";
-let volPeriod = "mensual";
+let volPeriod = "anual";
 let yoyTab = "fact";
 let txnVigTktTab = "txn";
 let currentPageTab = "dashboard";
@@ -1333,7 +1334,7 @@ function renderProjection() {
   const lastIdx = validIdx[validIdx.length-1];
   const activePeriods = periods.slice(0, lastIdx+1);
 
-  const H = isAnual ? 2 : 6;
+  const H = 5;
   const projPeriods = [];
   let lastP = activePeriods[activePeriods.length-1];
   for (let h=1; h<=H; h++){
@@ -2121,7 +2122,33 @@ function renderMSChart(map, periods) {
         x: { stacked:true, ticks:{maxRotation:0,autoSkip:true,maxTicksLimit:20,font:{size:9}}, grid:{display:false} },
         y: { stacked:true, min:0, max:100, ticks:{callback:v=>v+"%",font:{size:10}}, grid:{color:"#F2F4F7"} }
       }
-    }
+    },
+    plugins:[{
+      // Muestra el valor de Visa y Mastercard sobre cada segmento del stack —
+      // Amex/Diners/Otras se dejan solo en tooltip porque el segmento es
+      // demasiado angosto para un texto legible.
+      id:"msValueLabels",
+      afterDatasetsDraw(chart){
+        const {ctx} = chart;
+        ctx.save();
+        ctx.font = "700 9.5px "+getComputedStyle(document.body).fontFamily;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = "#fff";
+        datasets.forEach((ds, di) => {
+          if (ds.label !== "VISA" && ds.label !== "MASTERCARD") return;
+          const meta = chart.getDatasetMeta(di);
+          meta.data.forEach((bar, i) => {
+            const v = ds.data[i];
+            if (v == null) return;
+            const h = Math.abs(bar.base - bar.y);
+            if (h < 14) return; // muy angosto para que quepa el texto
+            ctx.fillText(v.toFixed(1)+"%", bar.x, (bar.y+bar.base)/2);
+          });
+        });
+        ctx.restore();
+      }
+    }]
   });
 }
 
@@ -2530,9 +2557,11 @@ function renderBancos(rows, ultimo) {
               const franqVal = fmap[c.dataset.label] || 0;
               const pctPais   = mktTotal>0 ? (tot/mktTotal*100).toFixed(1) : "—";
               const pctFranq  = tot>0      ? (franqVal/tot*100).toFixed(1)   : "—";
+              const pctMktFranq = mktTotal>0 ? (franqVal/mktTotal*100).toFixed(2) : "—";
               return [
                 `${c.dataset.label}: $${c.parsed.x.toFixed(2)} ${sc.sfx}`,
-                `Banco: ${pctPais}% del mercado total`,
+                `${pctMktFranq}% del mercado total es ${c.dataset.label} de este banco`,
+                `Banco: ${pctPais}% del mercado total (todas las franquicias)`,
                 `${c.dataset.label} dentro del banco: ${pctFranq}%`
               ];
             }
@@ -2543,7 +2572,37 @@ function renderBancos(rows, ultimo) {
         x:{stacked:true, ticks:{callback:v=>"$"+v+sc.sfx,font:{size:9}},grid:{color:"#F2F4F7"}},
         y:{stacked:true, ticks:{font:{size:10}},grid:{display:false}}
       }
-    }
+    },
+    plugins:[{
+      // % del mercado total (todas las franquicias) que representa el segmento
+      // Visa / Mastercard de cada banco — p.ej. "5.79%" en el segmento Visa de
+      // Bancolombia. Amex/Diners/Otras se dejan solo en tooltip: el segmento es
+      // demasiado angosto para un texto legible.
+      id:"bancoValueLabels",
+      afterDatasetsDraw(chart){
+        const {ctx} = chart;
+        ctx.save();
+        ctx.font = "700 9px "+getComputedStyle(document.body).fontFamily;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = "#fff";
+        [{label:"Visa", idx:2}, {label:"Mastercard", idx:3}].forEach(({label, idx})=>{
+          const dsIndex = chart.data.datasets.findIndex(d=>d.label===label);
+          if (dsIndex < 0) return;
+          const meta = chart.getDatasetMeta(dsIndex);
+          meta.data.forEach((bar,i)=>{
+            const e = entries[i];
+            const franqVal = e ? e[idx] : 0;
+            if (!franqVal || mktTotal<=0) return;
+            const share = franqVal/mktTotal*100;
+            const w = Math.abs(bar.base - bar.x);
+            if (w < 32) return; // muy angosto para que quepa el texto
+            ctx.fillText(share.toFixed(2)+"%", (bar.x+bar.base)/2, bar.y);
+          });
+        });
+        ctx.restore();
+      }
+    }]
   });
 }
 
