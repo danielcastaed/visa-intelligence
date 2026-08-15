@@ -1117,7 +1117,7 @@ function toggleBancos() {
   // Usar la MISMA clave de período que renderAll: año en vista anual, mes en mensual.
   // (Antes pasaba siempre el mes → en vista anual descartaba todo y el gráfico salía vacío.)
   const ultimo = currentView==="anual"
-    ? (getPillVals("ano")?.[0] || mPeriods[mPeriods.length-1].slice(0,4))
+    ? (getPillVals("year")?.[0] || mPeriods[mPeriods.length-1].slice(0,4))
     : mPeriods[mPeriods.length-1];
   renderBancos(rows, ultimo);
 }
@@ -1186,7 +1186,7 @@ function renderAll() {
   renderContrib(map, ultimo, contribPrev);
   renderIntl(mMap, mPeriods[mPeriods.length-1]);
   renderBancos(rows, currentView==="anual"
-    ? (getPillVals("ano")?.[0] || mPeriods[mPeriods.length-1].slice(0,4))
+    ? (getPillVals("year")?.[0] || mPeriods[mPeriods.length-1].slice(0,4))
     : mPeriods[mPeriods.length-1]);
   // Cartera: orden Utilización → CohortRent → IntlHist → Mora → Churn → RatioVig → VelAdq → Castigo
   renderCartera(cMap, cPeriods);
@@ -2498,10 +2498,19 @@ function fmtBank(raw) {
 
 // ── VIZ 10 — Bancos horizontal stacked ───────────────────────────────────────
 function renderBancos(rows, ultimo) {
+  // Con año y/o mes seleccionados explícitamente, `rows` (ya filtrado por
+  // filtered()) se suma completo — así el gráfico refleja el rango elegido en
+  // vez de colapsar siempre a un solo período "más reciente", que hacía
+  // parecer que el filtro de mes/año no tenía efecto. Sin filtro de año/mes
+  // se mantiene el snapshot del último período (mismo comportamiento de
+  // siempre para el estado por defecto).
+  const hasYearOrMesFilter = !!(getPillVals("year") || getPillVals("mes"));
   const data = {};
   for (const r of rows) {
-    const _bnKey = currentView==="anual" ? r.MES.slice(0,4) : r.MES;
-    if (_bnKey !== ultimo) continue;
+    if (!hasYearOrMesFilter) {
+      const _bnKey = currentView==="anual" ? r.MES.slice(0,4) : r.MES;
+      if (_bnKey !== ultimo) continue;
+    }
     if (!data[r.ENTIDAD]) data[r.ENTIDAD] = {VISA:0, MASTERCARD:0, "AMERICAN EXPRESS":0, DINERS:0, OTRAS:0};
     if (["VISA","MASTERCARD","AMERICAN EXPRESS","DINERS"].includes(r.FRANQUICIA)) {
       data[r.ENTIDAD][r.FRANQUICIA] += (r.MTO_COMPRAS_CREDITO||0);
