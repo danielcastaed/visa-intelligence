@@ -17,13 +17,27 @@ header .brand{font-weight:700;color:var(--visa);letter-spacing:.2px}
 header .brand span{color:var(--muted);font-weight:500}
 header a{font-size:12px;color:var(--visa);text-decoration:none}
 header a:hover{text-decoration:underline}
+.filters{width:100%;max-width:1320px;display:flex;gap:14px 22px;flex-wrap:wrap;align-items:center;margin-top:14px;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:12px}
+.filters .f{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--muted)}
+.seg2{display:flex;border:1px solid var(--border);border-radius:9px;overflow:hidden;background:var(--card)}
+.seg2 button{border:0;background:transparent;padding:8px 14px;font-size:13.5px;font-weight:600;color:var(--muted);cursor:pointer}
+.seg2 button+button{border-left:1px solid var(--border)}
+.seg2 button:hover{color:var(--visa)}
+.seg2 button:disabled{opacity:.4;cursor:not-allowed}.seg2 button:disabled:hover{color:var(--muted)}
+.seg2 button.on{background:var(--visa);color:#fff}
+.filters select{border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:9px;padding:8px 12px;font-size:13.5px;font-weight:600;min-width:210px;cursor:pointer}
+.filters .reset{border:0;background:none;color:var(--visa);font-size:12.5px;font-weight:600;cursor:pointer;text-decoration:underline}
+.filters .reset[hidden]{display:none}
+.tabs button:disabled{opacity:.45;cursor:not-allowed}
+.tabs button:disabled:hover{border-color:var(--border);color:var(--muted)}
+.empty{margin:auto;text-align:center;color:var(--muted);max-width:520px;font-size:16px;line-height:1.5}
 .tabs{width:100%;max-width:1320px;display:flex;gap:6px;margin-bottom:12px}
 .tabs button{flex:1;border:1px solid var(--border);background:var(--card);color:var(--muted);border-radius:10px;padding:12px 8px;font-size:clamp(14px,1.1vw,16px);font-weight:700;cursor:pointer;line-height:1.2}
 .tabs button small{display:block;font-weight:500;font-size:11px;margin-top:2px;color:var(--faint)}
 .tabs button:hover{border-color:var(--visa);color:var(--visa)}
 .tabs button.on{background:var(--visa);border-color:var(--visa);color:#fff}
 .tabs button.on small{color:#C7CBF0}
-.stage{position:relative;width:100%;max-width:1320px;height:clamp(540px,calc(100vh - 215px),800px);background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(16,24,40,.05)}
+.stage{position:relative;width:100%;max-width:1320px;height:clamp(540px,calc(100vh - 275px),800px);background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(16,24,40,.05)}
 .scene{position:absolute;inset:0;padding:34px clamp(40px,4vw,72px) 38px;display:flex;flex-direction:column;justify-content:center;opacity:0;visibility:hidden;transition:opacity .45s ease,visibility .45s}
 .scene.on{opacity:1;visibility:visible}
 .eyebrow{font-size:clamp(12px,.95vw,14px);font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
@@ -118,6 +132,11 @@ svg.chart .vlab{opacity:0;transition:opacity .4s ease .9s;font-weight:700;fill:v
   <div class="dots" id="dots"></div>
   <button id="motion" class="motion-btn" hidden>Activar animaciones</button>
 </div>
+<div class="filters" id="filters">
+  <div class="f">Producto <div class="seg2" id="f-prod"></div></div>
+  <div class="f">Banco <select id="f-banco" aria-label="Banco"></select></div>
+  <button class="reset" id="f-reset" hidden>Quitar filtros</button>
+</div>
 <p class="foot" id="foot"></p>
 
 <script>
@@ -131,7 +150,7 @@ if(forced) document.documentElement.classList.add("motion");
 const $ = (t,c,h)=>{const e=document.createElement(t); if(c) e.className=c; if(h!=null) e.innerHTML=h; return e};
 const NS = "http://www.w3.org/2000/svg";
 const sv = (t,a={})=>{const e=document.createElementNS(NS,t); for(const k in a) e.setAttribute(k,a[k]); return e};
-const fmtV = (v,fmt)=> fmt==="%" ? v.toFixed(1)+"%" : fmt.replace("{:.0f}",Math.round(v));
+const fmtV = (v,fmt)=> fmt==="%" ? v.toFixed(1)+"%" : v.toFixed(+((/\.(\d)f/.exec(fmt)||[0,0])[1]));
 
 /* Mide el espacio libre de la escena para que los gráficos ocupen el recuadro */
 function box(el, reserve, ratio){
@@ -180,7 +199,7 @@ const R = {
   line(sc, el){
     el.append($("div","eyebrow",sc.eyebrow), $("h2",0,sc.title)); if(sc.sub) el.append($("p","sub",sc.sub));
     const n=sc.labels.length, [W,H]=box(el, sc.series.length>1?44:10, .36), pl=44,pr=64,pt=16,pb=30;
-    const all=sc.series.flatMap(s=>s.values), mn=Math.min(...all), mx=Math.max(...all), span=mx-mn;
+    const all=sc.series.flatMap(s=>s.values), mn=Math.min(...all), mx=Math.max(...all), span=(mx-mn)||1;
     const step=span<=4?1:span<=10?2:span<=25?5:10, lo=Math.floor((mn-span*.12)/step)*step, hi=Math.ceil((mx+span*.12)/step)*step;
     const x=i=>pl+i*(W-pl-pr)/Math.max(1,n-1), y=v=>pt+(hi-v)/(hi-lo)*(H-pt-pb);
     const svg=sv("svg",{class:"chart",viewBox:`0 0 ${W} ${H}`,role:"img","aria-label":sc.title});
@@ -217,9 +236,9 @@ const R = {
   },
   stackcols(sc, el){
     el.append($("div","eyebrow",sc.eyebrow), $("h2",0,sc.title)); if(sc.sub) el.append($("p","sub",sc.sub));
-    const abs=sc.mode==="abs";
+    const abs=sc.mode==="abs", DEC=+((/\.(\d)f/.exec(sc.fmt||"")||[0,0])[1]);
     const n=sc.labels.length, [W,H]=box(el,40+(sc.tiles?118:0),.36), pl=10,pr=10,pt=abs?34:10,pb=28,bw=(W-pl-pr)/n;
-    const tot=sc.labels.map((_,i)=>sc.series.reduce((a,s)=>a+s.values[i],0)), mx=abs?Math.max(...tot):100;
+    const tot=sc.labels.map((_,i)=>sc.series.reduce((a,s)=>a+s.values[i],0)), mx=abs?(Math.max(...tot)||1):100;
     const svg=sv("svg",{class:"chart",viewBox:`0 0 ${W} ${H}`,role:"img","aria-label":sc.title});
     for(let i=0;i<n;i++){
       let acc=0; const bx=pl+i*bw+bw*.12, w=bw*.76;
@@ -227,7 +246,7 @@ const R = {
         const v=s.values[i], h=v/mx*(H-pt-pb), yy=H-pb-acc-h; acc+=h;
         svg.append(sv("rect",{class:"col",x:bx,y:yy,width:w,height:h,fill:COL[s.color],style:`transition-delay:${i*.05}s`}));
         if(!abs||(h>=15&&s.name!=="Otras")){
-          const t=sv("text",{class:"vlab",x:bx+w/2,y:yy+h/2+4,"text-anchor":"middle",style:"font-size:11px;fill:#fff;transition-delay:"+(.5+i*.05)+"s"}); t.textContent=abs?Math.round(v):Math.round(v)+"%"; svg.append(t);
+          const t=sv("text",{class:"vlab",x:bx+w/2,y:yy+h/2+4,"text-anchor":"middle",style:"font-size:11px;fill:#fff;transition-delay:"+(.5+i*.05)+"s"}); t.textContent=abs?v.toFixed(DEC):Math.round(v)+"%"; svg.append(t);
         }
       });
       if(abs){
@@ -255,19 +274,34 @@ const R = {
 const stage=document.getElementById("stage"), tabs=document.getElementById("tabs"), dots=document.getElementById("dots"),
       playBtn=document.getElementById("play"), foot=document.getElementById("foot");
 let cur=0, rep=null, scenes=[], enters=[], playing=!reduce, timer=null, raf=null, t0=0;
+const PRODS=[["T","Total"],["C","Crédito"],["D","Débito"]], PN={T:"Total (crédito + débito)",C:"Crédito",D:"Débito"};
+const st={prod:"T",banco:""};
+const comboKey=()=>st.banco?st.banco+"."+st.prod:st.prod;
+const reps=()=>DATA.combos[comboKey()]||[];
+const bancoNombre=()=>{const b=DATA.bancos.find(x=>x.id===st.banco); return b?b.nombre:""};
+function parseHash(){ const h=location.hash.slice(1); if(!h) return {};
+  if(!h.includes("=")) return {id:h};
+  const p=new URLSearchParams(h); return {id:p.get("id")||"", prod:p.get("prod")||"T", banco:p.get("banco")||""}; }
+function writeHash(){ try{ const f=(st.prod!=="T"||st.banco);
+  history.replaceState(null,"","#"+(f?`id=${rep?rep.id:""}&prod=${st.prod}&banco=${st.banco}`:(rep?rep.id:""))) }catch(e){} }
 const prog=$("div","progress");
 
 function buildReport(id, idx=0){
-  rep=DATA.reportes.find(r=>r.id===id)||DATA.reportes[0];
-  try{history.replaceState(null,"","#"+rep.id)}catch(e){}
+  const lista=reps();
+  rep=lista.find(r=>r.id===id)||lista[0]||null;
+  writeHash();
+  clearTimeout(timer); cancelAnimationFrame(raf);
   stage.innerHTML=""; dots.innerHTML=""; scenes=[]; enters=[];
+  syncFilters();
+  if(!rep){ stage.append($("div","empty","No hay datos suficientes para este filtro: el banco no ofrece ese producto o no tiene facturación de Visa y Mastercard a la vez.")); return; }
   rep.scenes.forEach((sc,i)=>{
     const el=$("section","scene"); stage.append(el); enters.push(R[sc.type](sc,el)); scenes.push(el);
     const b=$("button"); b.setAttribute("aria-label","Escena "+(i+1)); b.onclick=()=>go(i); dots.append(b);
   });
   stage.append(prog);
-  [...tabs.children].forEach(b=>b.classList.toggle("on",b.dataset.id===rep.id));
-  foot.textContent=`Fuente: Superintendencia Financiera de Colombia (datos.gov.co), corte ${DATA.corte}. Facturación = compras nacionales + exterior, crédito + débito. En débito la franquicia es estimada por proxy (la SFC no la reporta); Nequi se muestra separado de Bancolombia. Textos generados automáticamente con las cifras del período.`;
+  [...tabs.children].forEach(b=>{ b.classList.toggle("on",b.dataset.id===rep.id); b.disabled=!lista.some(r=>r.id===b.dataset.id); b.title=b.disabled?"Sin datos suficientes con este filtro":"" });
+  const vista=(st.banco||st.prod!=="T")?`Vista filtrada: ${st.banco?bancoNombre()+" · ":""}${PN[st.prod]}. `:"";
+  foot.textContent=vista+`Fuente: Superintendencia Financiera de Colombia (datos.gov.co), corte ${DATA.corte}. Facturación = compras nacionales + exterior, crédito + débito. En débito la franquicia es estimada por proxy (la SFC no la reporta); Nequi se muestra separado de Bancolombia. Textos generados automáticamente con las cifras del período.`;
   go(idx);
 }
 function go(i){
@@ -285,7 +319,17 @@ function schedule(){
 }
 function setPlaying(v){playing=v; playBtn.textContent=v?"⏸":"▶"; schedule()}
 
-DATA.reportes.forEach(r=>{const b=$("button",0,`${r.tab}<small>${r.label}</small>`); b.dataset.id=r.id; b.onclick=()=>buildReport(r.id); tabs.append(b)});
+DATA.combos.T.forEach(r=>{const b=$("button",0,`${r.tab}<small>${r.label}</small>`); b.dataset.id=r.id; b.onclick=()=>buildReport(r.id); tabs.append(b)});
+
+/* Filtros */
+const fProd=document.getElementById("f-prod"), fBanco=document.getElementById("f-banco"), fReset=document.getElementById("f-reset");
+PRODS.forEach(([k,n])=>{const b=$("button",0,n); b.dataset.k=k; b.onclick=()=>{st.prod=k; buildReport(rep?rep.id:"",0)}; fProd.append(b)});
+fBanco.append(new Option("Todos los bancos",""));
+DATA.bancos.forEach(b=>fBanco.append(new Option(b.nombre,b.id)));
+const hay=(k,b=st.banco)=>!!DATA.combos[b?b+"."+k:k];
+fBanco.onchange=()=>{st.banco=fBanco.value; if(!hay(st.prod)) st.prod=PRODS.map(x=>x[0]).find(k=>hay(k))||"T"; buildReport(rep?rep.id:"",0)};
+fReset.onclick=()=>{st.prod="T"; st.banco=""; buildReport(rep?rep.id:"",0)};
+function syncFilters(){ [...fProd.children].forEach(b=>{b.classList.toggle("on",b.dataset.k===st.prod); b.disabled=!hay(b.dataset.k); b.title=b.disabled?"Este banco no tiene datos suficientes para este producto":""}); fBanco.value=st.banco; fReset.hidden=!(st.banco||st.prod!=="T"); }
 const motionBtn=document.getElementById("motion");
 if(reduce){ motionBtn.hidden=false; motionBtn.title="Tu sistema tiene las animaciones reducidas; la página las respeta hasta que las actives aquí." }
 motionBtn.onclick=()=>{ reduce=false; try{localStorage.setItem("resumen-motion","1")}catch(e){}
@@ -294,11 +338,12 @@ playBtn.onclick=()=>setPlaying(!playing); playBtn.textContent=playing?"⏸":"▶
 document.getElementById("prev").onclick=()=>go(cur-1);
 document.getElementById("next").onclick=()=>go(cur+1);
 addEventListener("keydown",e=>{ if(e.key==="ArrowRight")go(cur+1); else if(e.key==="ArrowLeft")go(cur-1); else if(e.key===" "){e.preventDefault();setPlaying(!playing)} });
-addEventListener("hashchange",()=>{ if(location.hash.slice(1)!==rep.id) buildReport(location.hash.slice(1)) });
-buildReport(location.hash.slice(1));
+function aplicarHash(){ const h=parseHash(); st.prod=h.prod&&DATA.combos[h.prod]?h.prod:"T"; st.banco=h.banco&&DATA.bancos.some(b=>b.id===h.banco)?h.banco:""; buildReport(h.id||""); }
+addEventListener("hashchange",()=>{ const h=parseHash(); if((h.id||"")!==(rep?rep.id:"")||(h.prod||"T")!==st.prod||(h.banco||"")!==st.banco) aplicarHash() });
+aplicarHash();
 let rt=null, lw=stage.clientWidth, lh=stage.clientHeight;
 addEventListener("resize",()=>{ clearTimeout(rt); rt=setTimeout(()=>{
-  if(Math.abs(stage.clientWidth-lw)>30||Math.abs(stage.clientHeight-lh)>30){ lw=stage.clientWidth; lh=stage.clientHeight; buildReport(rep.id,cur) } },200) });
+  if(Math.abs(stage.clientWidth-lw)>30||Math.abs(stage.clientHeight-lh)>30){ lw=stage.clientWidth; lh=stage.clientHeight; buildReport(rep?rep.id:"",cur) } },200) });
 </script>
 </body>
 </html>
