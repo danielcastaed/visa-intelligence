@@ -21,6 +21,7 @@ TEMPLATE = Path(__file__).resolve().parent / "resumen_template.html"
 
 MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio",
          "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
+NUMEROS = {4: "cuatro", 5: "cinco", 6: "seis", 7: "siete", 8: "ocho"}
 MES3 = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
 
 BANCOS = {
@@ -367,6 +368,20 @@ def relato_historia(d):
     vig_d = [d.vigentes(m, "D") / 1e6 for m in cortes]
     vig_visa = 100 * d.vigentes(cortes[-1], "T", "VISA") / d.vigentes(cortes[-1])
 
+    # Apertura por franquicia (facturación en billones y parque en millones)
+    fac_v = [d.monto(p, "T", "VISA") / 1e12 for p in per]
+    fac_m = [d.monto(p, "T", "MASTERCARD") / 1e12 for p in per]
+    fac_o = [t - v - m for t, v, m in zip(tot, fac_v, fac_m)]
+    vig_v = [d.vigentes(m, "T", "VISA") / 1e6 for m in cortes]
+    vig_m = [d.vigentes(m, "T", "MASTERCARD") / 1e6 for m in cortes]
+    vig_o = [t - v - m for t, v, m in zip(vig_t, vig_v, vig_m)]
+
+    def ficha(nombre, serie, fmt, extra=""):
+        a, b = serie[0], serie[-1]
+        anual = 100 * ((b / a) ** (1 / n) - 1)
+        return {"value": fmt.format(b),
+                "label": f"{nombre} · ×{num(b / a, 1)} desde {etq[0]} ({num(anual, 1)}% anual){extra}"}
+
     primero, ultimo = etq[0], etq[-1]
     pesos = f"de ${num(tot[0], 0)} billones en {primero} a ${num(tot[-1], 0)} billones en {ultimo.replace('12M', 'los 12 meses a')}"
 
@@ -392,6 +407,9 @@ def relato_historia(d):
         f"El mercado se multiplicó por <b>{num(veces, 1)}</b> en pesos corrientes ({pesos}), "
         f"un crecimiento anual compuesto de {num(cagr, 1)}%."
         + (f" La única caída fue {caidas[0][0]} ({sgn(caidas[0][1], 0)}%)." if len(caidas) == 1 else ""),
+        f"Visa facturó <b>×{num(fac_v[-1] / fac_v[0], 1)}</b> desde {primero} (${num(fac_v[0], 0)} → ${num(fac_v[-1], 0)} billones) y Mastercard "
+        f"<b>×{num(fac_m[-1] / fac_m[0], 1)}</b> (${num(fac_m[0], 0)} → ${num(fac_m[-1], 0)} billones): "
+        f"{'Mastercard creció más rápido' if fac_m[-1] / fac_m[0] > fac_v[-1] / fac_v[0] else 'Visa creció más rápido'}, de ahí el cambio de cuota.",
         f"Visa tuvo su mejor momento en <b>{etq[i_pico]}</b> ({num(vv[i_pico], 1)}%) y hoy está en <b>{num(vv[-1], 1)}%</b>; "
         f"Mastercard pasó de {num(mm[0], 1)}% a {num(mm[-1], 1)}%.",
         f"El <b>crédito</b>, con dato reportado por la SFC, es el terreno sólido de Visa: {num(vc[0], 1)}% en {primero} → {num(vc[-1], 1)}% hoy "
@@ -400,7 +418,7 @@ def relato_historia(d):
         + (f" y superó al crédito en {etq[i_deb50]}" if i_deb50 is not None and i_deb50 > 0 else "")
         + f"; ahí la cuota estimada de Visa baja de {num(vd[0], 1)}% a {num(vd[-1], 1)}%, y explica buena parte de la caída de la cuota total.",
         f"Las tarjetas vigentes pasaron de <b>{num(vig_t[0], 1)}</b> a <b>{num(vig_t[-1], 1)} millones</b> "
-        f"(crédito {num(vig_c[0], 1)} → {num(vig_c[-1], 1)} M; débito {num(vig_d[0], 1)} → {num(vig_d[-1], 1)} M); Visa tiene {num(vig_visa, 0)}% del parque.",
+        f"(crédito {num(vig_c[0], 1)} → {num(vig_c[-1], 1)} M; débito {num(vig_d[0], 1)} → {num(vig_d[-1], 1)} M); Visa tiene {num(vig_visa, 0)}% del parque ({num(vig_v[-1], 1)} M de tarjetas frente a {num(vig_m[-1], 1)} M de Mastercard).",
     ]
 
     anot = [{"i": etq.index(a), "text": "pandemia" if a == "2020" else "caída"} for a, _ in caidas]
@@ -412,9 +430,15 @@ def relato_historia(d):
              "num": {"from": 1.0, "to": round(veces, 1), "decimals": 1, "suffix": "×"},
              "chip": {"text": f"{num(cagr, 1)}% anual compuesto", "cls": "pos"},
              "sub": pesos[0].upper() + pesos[1:] + " (pesos corrientes, sin descontar inflación).", "dur": 6000},
-            {"type": "columns", "eyebrow": "Crecimiento", "title": "Facturación anual con tarjetas (billones de pesos)",
-             "sub": "Crédito + débito, compras nacionales y en el exterior. La barra final son los últimos 12 meses.",
-             "labels": etq, "values": [round(x, 1) for x in tot], "fmt": "{:.0f}", "annot": anot, "dur": 6500},
+            {"type": "stackcols", "mode": "abs", "eyebrow": "Crecimiento",
+             "title": "Facturación anual con tarjetas (billones de pesos), por franquicia",
+             "sub": "Crédito + débito, nacional y exterior. La barra final son los últimos 12 meses. En débito la franquicia es estimada.",
+             "labels": etq, "fmt": "{:.0f}", "annot": anot,
+             "series": [{"name": "Visa", "color": "visa", "values": [round(x, 1) for x in fac_v]},
+                        {"name": "Mastercard", "color": "mc", "values": [round(x, 1) for x in fac_m]},
+                        {"name": "Otras", "color": "otras", "values": [round(x, 1) for x in fac_o]}],
+             "tiles": [ficha("Mercado total", tot, "${:.0f} bill."), ficha("Visa", fac_v, "${:.0f} bill."),
+                       ficha("Mastercard", fac_m, "${:.0f} bill.")], "dur": 8000},
             {"type": "line", "eyebrow": "Cuota de mercado", "title": t_ms, "sub": sub_ms,
              "labels": etq, "series": [{"name": "Visa", "color": "visa", "values": vv},
                                        {"name": "Mastercard", "color": "mc", "values": mm}], "fmt": "%", "dur": 7000},
@@ -427,10 +451,16 @@ def relato_historia(d):
              "labels": etq, "series": [{"name": "Visa en crédito (SFC)", "color": "credito", "values": vc},
                                        {"name": "Visa en débito (estimado)", "color": "debito", "values": vd, "dash": True}],
              "fmt": "%", "dur": 7500},
-            {"type": "columns", "eyebrow": "Parque de tarjetas", "title": "Tarjetas vigentes (millones), crédito + débito",
-             "sub": "Stock al cierre de cada año; la barra final es el último mes disponible.",
-             "labels": etq, "values": [round(x, 1) for x in vig_t], "fmt": "{:.0f}", "annot": [], "dur": 6000},
-            {"type": "read", "eyebrow": "Mensajes clave", "title": "La historia en cinco ideas", "items": items,
+            {"type": "stackcols", "mode": "abs", "eyebrow": "Parque de tarjetas",
+             "title": "Tarjetas vigentes (millones), crédito + débito, por franquicia",
+             "sub": "Stock al cierre de cada año; la barra final es el último mes disponible. En débito la franquicia es estimada.",
+             "labels": etq, "fmt": "{:.0f}", "annot": [],
+             "series": [{"name": "Visa", "color": "visa", "values": [round(x, 1) for x in vig_v]},
+                        {"name": "Mastercard", "color": "mc", "values": [round(x, 1) for x in vig_m]},
+                        {"name": "Otras", "color": "otras", "values": [round(x, 1) for x in vig_o]}],
+             "tiles": [ficha("Parque total", vig_t, "{:.1f} M"), ficha("Visa", vig_v, "{:.1f} M"),
+                       ficha("Mastercard", vig_m, "{:.1f} M")], "dur": 8000},
+            {"type": "read", "eyebrow": "Mensajes clave", "title": f"La historia en {NUMEROS.get(len(items), len(items))} ideas", "items": items,
              "note": "Pesos corrientes. Crédito: dato SFC. Débito: franquicia estimada por proxy (la SFC no la reporta); lectura indicativa.",
              "dur": 12000},
         ]}
