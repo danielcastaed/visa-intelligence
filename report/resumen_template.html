@@ -23,7 +23,7 @@ header a:hover{text-decoration:underline}
 .tabs button:hover{border-color:var(--visa);color:var(--visa)}
 .tabs button.on{background:var(--visa);border-color:var(--visa);color:#fff}
 .tabs button.on small{color:#C7CBF0}
-.stage{position:relative;width:100%;max-width:880px;height:470px;background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(16,24,40,.05)}
+.stage{position:relative;width:100%;max-width:880px;height:530px;background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(16,24,40,.05)}
 .scene{position:absolute;inset:0;padding:30px 40px 34px;display:flex;flex-direction:column;justify-content:center;opacity:0;visibility:hidden;transition:opacity .45s ease,visibility .45s}
 .scene.on{opacity:1;visibility:visible}
 .eyebrow{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
@@ -92,7 +92,7 @@ svg.chart .vlab{opacity:0;transition:opacity .4s ease .9s;font-weight:700;fill:v
 .progress{position:absolute;left:0;bottom:0;height:3px;background:var(--visa);width:0}
 .foot{width:100%;max-width:880px;font-size:11.5px;color:var(--faint);margin-top:14px;line-height:1.5}
 @media (max-width:640px){
-  .stage{height:560px}.scene{padding:22px 18px 28px}
+  .stage{height:650px}.scene{padding:22px 18px 28px}
   .controls{gap:8px}
   h1{font-size:23px}h2{font-size:18px}.big{font-size:60px}.big small{font-size:26px}
   .crow{grid-template-columns:96px 1fr 56px;font-size:12px}
@@ -202,20 +202,31 @@ const R = {
   },
   stackcols(sc, el){
     el.append($("div","eyebrow",sc.eyebrow), $("h2",0,sc.title)); if(sc.sub) el.append($("p","sub",sc.sub));
-    const W=800,H=260,pl=10,pr=10,pt=10,pb=28,n=sc.labels.length,bw=(W-pl-pr)/n;
+    const abs=sc.mode==="abs";
+    const W=800,H=abs?215:260,pl=10,pr=10,pt=abs?34:10,pb=28,n=sc.labels.length,bw=(W-pl-pr)/n;
+    const tot=sc.labels.map((_,i)=>sc.series.reduce((a,s)=>a+s.values[i],0)), mx=abs?Math.max(...tot):100;
     const svg=sv("svg",{class:"chart",viewBox:`0 0 ${W} ${H}`,role:"img","aria-label":sc.title});
     for(let i=0;i<n;i++){
       let acc=0; const bx=pl+i*bw+bw*.12, w=bw*.76;
       sc.series.forEach((s,k)=>{
-        const v=s.values[i], h=v/100*(H-pt-pb), yy=H-pb-acc-h; acc+=h;
+        const v=s.values[i], h=v/mx*(H-pt-pb), yy=H-pb-acc-h; acc+=h;
         svg.append(sv("rect",{class:"col",x:bx,y:yy,width:w,height:h,fill:COL[s.color],style:`transition-delay:${i*.05}s`}));
-        const t=sv("text",{class:"vlab",x:bx+w/2,y:yy+h/2+4,"text-anchor":"middle",style:"font-size:10px;fill:#fff;transition-delay:"+(.5+i*.05)+"s"}); t.textContent=Math.round(v)+"%"; svg.append(t);
+        if(!abs||(h>=15&&s.name!=="Otras")){
+          const t=sv("text",{class:"vlab",x:bx+w/2,y:yy+h/2+4,"text-anchor":"middle",style:"font-size:10px;fill:#fff;transition-delay:"+(.5+i*.05)+"s"}); t.textContent=abs?Math.round(v):Math.round(v)+"%"; svg.append(t);
+        }
       });
+      if(abs){
+        const y0=H-pb-acc;
+        const t=sv("text",{class:"vlab",x:bx+w/2,y:y0-6,"text-anchor":"middle",style:`font-size:11px;transition-delay:${.5+i*.05}s`}); t.textContent=fmtV(tot[i],sc.fmt); svg.append(t);
+        (sc.annot||[]).filter(a=>a.i===i).forEach(a=>{const u=sv("text",{class:"vlab",x:bx+w/2,y:y0-20,"text-anchor":"middle",style:"font-size:10px;fill:#B42318;font-weight:700"}); u.textContent=a.text; svg.append(u)});
+      }
       const l=sv("text",{x:bx+w/2,y:H-8,"text-anchor":"middle"}); l.textContent=sc.labels[i]; svg.append(l);
     }
     el.append(svg);
     const lg=$("div","legend"); sc.series.forEach(s=>lg.append($("span",0,`<i class="sq" style="background:${COL[s.color]}"></i>${s.name}`))); el.append(lg);
-    return ()=>{};
+    let tiles=null;
+    if(sc.tiles){ tiles=$("div","tiles"); tiles.style.marginTop="14px"; sc.tiles.forEach(x=>tiles.append($("div",0,`<b>${x.value}</b><span>${x.label}</span>`))); el.append(tiles); }
+    return ()=>{ if(tiles){ tiles.classList.remove("show"); setTimeout(()=>tiles.classList.add("show"),reduce?0:900) } };
   },
   read(sc, el){
     el.append($("div","eyebrow",sc.eyebrow), $("h2",0,sc.title));
