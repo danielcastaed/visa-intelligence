@@ -31,6 +31,16 @@ Dos pipelines corren en GitHub Actions:
 | `monthly_report.yml` | Primer martes del mes | Dashboard actualizado + email con snapshot de market share |
 | `visa_intelligence.yml` | Día 1 del mes | Email con tracking de noticias/lanzamientos Visa–Mastercard |
 
+## Resumen animado
+
+[`docs/resumen.html`](https://danielcastaed.github.io/visa-intelligence/resumen.html) cuenta el mercado en tres relatos cortos y animados, pensados para presentar:
+
+- **Historia** — de 2015 al último mes: crecimiento del mercado, cuota de Visa vs. Mastercard, mezcla crédito/débito y tarjetas vigentes.
+- **Año a la fecha** — acumulado del año contra el mismo período del año anterior, con aporte por banco.
+- **Mes** — último mes contra el anterior y contra el mismo mes del año pasado.
+
+Se genera con `python report/generate_resumen.py` a partir de los datos embebidos en el dashboard (`docs/index.html`) y se regenera solo en el workflow mensual. Los textos salen de plantillas con las cifras del período (sin IA ni llamadas externas); la plantilla visual está en `report/resumen_template.html`.
+
 ## Stack
 
 Python (pandas) · Jupyter + Plotly · GitHub Actions · GitHub Pages · Gmail SMTP
