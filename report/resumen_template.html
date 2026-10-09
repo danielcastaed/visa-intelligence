@@ -198,12 +198,15 @@ const R = {
   },
   line(sc, el){
     el.append($("div","eyebrow",sc.eyebrow), $("h2",0,sc.title)); if(sc.sub) el.append($("p","sub",sc.sub));
-    const n=sc.labels.length, [W,H]=box(el, sc.series.length>1?44:10, .36), pl=44,pr=64,pt=16,pb=30;
+    const n=sc.labels.length, [W,H]=box(el, sc.series.length>1?44:10, .36), pl=44,pr=sc.fmt==="%"?64:100,pt=16,pb=30;
     const all=sc.series.flatMap(s=>s.values), mn=Math.min(...all), mx=Math.max(...all), span=(mx-mn)||1;
-    const step=span<=4?1:span<=10?2:span<=25?5:10, lo=Math.floor((mn-span*.12)/step)*step, hi=Math.ceil((mx+span*.12)/step)*step;
+    const pct=sc.fmt==="%";
+    const nice=r=>{const m=Math.pow(10,Math.floor(Math.log10(r))), f=r/m; return (f<=1?1:f<=2?2:f<=5?5:10)*m};
+    const step=pct?(span<=4?1:span<=10?2:span<=25?5:10):nice(span/4), lo=Math.floor((mn-span*.12)/step)*step, hi=Math.ceil((mx+span*.12)/step)*step;
+    const sdec=step>=1?0:step>=.1?1:2, lab=v=>pct?v.toFixed(1)+"%":v.toFixed(2)+(sc.unit||"");
     const x=i=>pl+i*(W-pl-pr)/Math.max(1,n-1), y=v=>pt+(hi-v)/(hi-lo)*(H-pt-pb);
     const svg=sv("svg",{class:"chart",viewBox:`0 0 ${W} ${H}`,role:"img","aria-label":sc.title});
-    for(let g=lo;g<=hi+1e-9;g+=step){svg.append(sv("line",{class:"grid",x1:pl,x2:W-pr,y1:y(g),y2:y(g)})); const t=sv("text",{x:pl-8,y:y(g)+4,"text-anchor":"end"}); t.textContent=g+"%"; svg.append(t)}
+    for(let g=lo;g<=hi+step*1e-6;g+=step){svg.append(sv("line",{class:"grid",x1:pl,x2:W-pr,y1:y(g),y2:y(g)})); const t=sv("text",{x:pl-8,y:y(g)+4,"text-anchor":"end"}); t.textContent=pct?g.toFixed(0)+"%":g.toFixed(sdec); svg.append(t)}
     const every=Math.ceil(n/Math.max(4,Math.floor(W/90)));
     sc.labels.forEach((l,i)=>{ if(showLbl(i,n,every)){const t=sv("text",{x:x(i),y:H-8,"text-anchor":"middle"}); t.textContent=l; svg.append(t)} });
     const paths=[];
@@ -211,7 +214,7 @@ const R = {
       const p=sv("path",{class:"ln"+(s.dash?" dash":""),stroke:COL[s.color],d:"M"+s.values.map((v,i)=>x(i).toFixed(1)+","+y(v).toFixed(1)).join(" L")}); svg.append(p); paths.push([p,s]);
       const li=s.values.length-1, g=sv("g",{class:"pt"});
       g.append(sv("circle",{cx:x(li),cy:y(s.values[li]),r:5,fill:COL[s.color]}));
-      const t=sv("text",{x:x(li)+10,y:y(s.values[li])+4,style:"font-weight:700;font-size:12px;fill:"+COL[s.color]}); t.textContent=s.values[li].toFixed(1)+"%"; g.append(t); svg.append(g);
+      const t=sv("text",{x:x(li)+10,y:y(s.values[li])+4,style:"font-weight:700;font-size:12px;fill:"+COL[s.color]}); t.textContent=lab(s.values[li]); g.append(t); svg.append(g);
     });
     el.append(svg);
     if(sc.series.length>1){const lg=$("div","legend"); sc.series.forEach(s=>lg.append($("span",0,`<i class="${s.dash?"d":""}" style="border-color:${COL[s.color]}"></i>${s.name}`))); el.append(lg)}

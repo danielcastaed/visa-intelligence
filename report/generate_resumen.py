@@ -221,6 +221,9 @@ class Ctx:
     @property
     def nota_sfc(self):
         base = "Cifras reportadas por las entidades a la SFC."
+        if self.banco == "Nequi":
+            base = ("Nequi no reporta por separado a la SFC: sus cifras se calibran con datos reales desde ene-2025, "
+                    "por eso no hay serie histórica anterior.")
         return base + (" La franquicia en débito es estimada (la SFC no la reporta)." if self.estimado else "")
 
     @property
@@ -540,6 +543,202 @@ def relato_historia(d, c=None):
     return {"id": "historia", "tab": "Historia", "label": f"{primero}–{mes_corto(last)}", "scenes": escenas}
 
 
+# ═══ Emisores de una sola franquicia ════════════════════════════════════════
+# Sin Visa vs. Mastercard que comparar, el relato cuenta tamaño, crecimiento, peso dentro de
+# su franquicia en el mercado y tarjetas vigentes.
+FR_NOM = {"VISA": "Visa", "MASTERCARD": "Mastercard"}
+FR_COLOR = {"VISA": "visa", "MASTERCARD": "mc"}
+
+
+def _dec(x):
+    return 0 if x >= 50 else 1 if x >= 5 else 2
+
+
+def _tendencia_pct(g, umbral=0.5):
+    return 0 if abs(g) < umbral else (1 if g > 0 else -1)
+
+
+def _peso(d, dm, meses, fr):
+    t = dm.monto(meses, "T", fr)
+    return 100 * d.monto(meses, "T", fr) / t if t else 0.0
+
+
+def mono_mes(d, dm, c, fr):
+    B, FR = c.mercado, FR_NOM[fr]
+    last, prev = d.meses[-1], d.meses[-2]
+    yo = f"{int(last[:4]) - 1}{last[4:]}"
+    fl, fp = d.monto([last]) / 1e12, d.monto([prev]) / 1e12
+    g = 100 * (fl / fp - 1)
+    t = _tendencia_pct(g)
+    mes, mes_p = MESES[int(last[5:7]) - 1], MESES[int(prev[5:7]) - 1]
+    serie = d.meses[-13:]
+    fs = [d.monto([m]) / 1e12 for m in serie]
+    dec = _dec(max(fs))
+    ps = [round(_peso(d, dm, [m], fr), 2) for m in serie]
+    pl, pp = ps[-1], _peso(d, dm, [prev], fr)
+    vl, vp = d.vigentes(last), d.vigentes(prev)
+
+    items = [f"{B} facturó <b>${num(fl, 2)} billones</b> en {mes_largo(last)} ({sgn(g, 1)}% vs. {mes_p}); opera solo con {FR}."]
+    if yo in d.meses and d.monto([yo]) > 0:
+        fy = d.monto([yo]) / 1e12
+        items.append(f"Frente a {mes_largo(yo)}: {sgn(100 * (fl / fy - 1), 1)}% (${num(fy, 2)} → ${num(fl, 2)} billones).")
+    items.append(f"Pesa <b>{num(pl, 1)}%</b> de la facturación {FR} del mercado ({sgn(pl - pp, 2)} pp vs. {mes_p}).")
+    if vl > 0 and vp > 0:
+        items.append(f"Tiene <b>{num(vl / 1e6, 2)} millones</b> de tarjetas vigentes ({sgn(100 * (vl / vp - 1), 1)}% vs. {mes_p}).")
+    lo, hi = min(fs), max(fs)
+    pos = "es el más alto del período" if fs[-1] == hi else "es el más bajo del período" if fs[-1] == lo else "está dentro del rango habitual"
+    items.append(f"En los últimos {len(serie)} meses facturó entre ${num(lo, 2)} y ${num(hi, 2)} billones al mes; {mes} {pos}.")
+
+    titulo = {0: f"{B} se mantuvo estable en {mes}", 1: f"{B} creció {num(g, 1)}% en {mes}", -1: f"{B} cayó {num(abs(g), 1)}% en {mes}"}[t]
+    return {"id": "mes", "tab": "Mes", "label": mes_largo(last), "scenes": [
+        {"type": "hero", "eyebrow": f"Resumen del mes · {mes_largo(last)}", "title": titulo,
+         "num": {"from": round(fp, 2), "to": round(fl, 2), "decimals": 2, "suffix": " bill."},
+         "chip": {"text": f"{sgn(g, 1)}% vs {mes_p}", "cls": "flat" if t == 0 else "pos" if t > 0 else "neg"},
+         "sub": f"Facturación de {c.tarjetas_largo} en {mes_largo(last)}, en billones de pesos. Opera solo con {FR}.", "dur": 5200},
+        {"type": "columns", "eyebrow": "Facturación mensual", "title": f"{B}: facturación de los últimos {len(serie)} meses (billones de pesos)",
+         "labels": [mes_corto(m).replace("-", " ") for m in serie], "values": [round(x, 3) for x in fs],
+         "fmt": "{:.%df}" % max(dec, 1), "annot": [], "dur": 6000},
+        {"type": "line", "eyebrow": f"Peso en {FR}", "title": f"{B} pesa {num(pl, 1)}% de la facturación {FR} del mercado",
+         "sub": f"Participación de {B} en el total {FR} del mercado, últimos {len(serie)} meses.",
+         "labels": [mes_corto(m).replace("-", " ") for m in serie],
+         "series": [{"name": f"{B} en {FR}", "color": FR_COLOR[fr], "values": ps}], "fmt": "%", "dur": 6000},
+        {"type": "read", "eyebrow": "Lectura del mes", "title": "Qué pasó y qué mirar", "items": items, "note": c.nota_sfc, "dur": 9000},
+    ]}
+
+
+def mono_ytd(d, dm, c, fr):
+    B, FR = c.mercado, FR_NOM[fr]
+    last = d.meses[-1]
+    y, m_last = int(last[:4]), int(last[5:7])
+    cy = [f"{y}-{i:02d}" for i in range(1, m_last + 1)]
+    py = [f"{y - 1}-{i:02d}" for i in range(1, m_last + 1)]
+    rango = f"{MES3[0]}–{MES3[m_last - 1]}" if m_last > 1 else MES3[0]
+    ec, ep = f"{rango} {y}", f"{rango} {y - 1}"
+    fc, fp = d.monto(cy) / 1e12, d.monto(py) / 1e12
+    g = 100 * (fc / fp - 1)
+    t = _tendencia_pct(g, 1.0)
+    s_cy = [round(d.monto([m]) / 1e12, 3) for m in cy]
+    s_py = [round(d.monto([m]) / 1e12, 3) for m in py]
+    pc, pp = _peso(d, dm, cy, fr), _peso(d, dm, py, fr)
+    mejor = max(range(m_last), key=lambda i: s_cy[i])
+    vl = d.vigentes(last)
+    vy = d.vigentes(f"{y - 1}{last[4:]}")
+    items = [f"{B} facturó <b>${num(fc, 2)} billones</b> en {ec} ({sgn(g, 1)}% vs. {ep}, cuando facturó ${num(fp, 2)} billones); opera solo con {FR}.",
+             f"Pesa <b>{num(pc, 1)}%</b> de la facturación {FR} del mercado ({sgn(pc - pp, 2)} pp vs. {ep})."]
+    if vl > 0 and vy > 0:
+        items.append(f"Sus tarjetas vigentes son <b>{num(vl / 1e6, 2)} millones</b> ({sgn(100 * (vl / vy - 1), 1)}% vs. {mes_largo(f'{y - 1}{last[4:]}')}).")
+    items.append(f"Su mejor mes de {y} fue {MESES[mejor]} (${num(s_cy[mejor], 2)} billones).")
+    titulo = {0: f"En {y}, {B} se mantiene frente a {y - 1}", 1: f"En {y}, {B} crece {num(g, 1)}% frente a {y - 1}",
+              -1: f"En {y}, {B} cae {num(abs(g), 1)}% frente a {y - 1}"}[t]
+    return {"id": "ytd", "tab": "Año a la fecha", "label": ec, "scenes": [
+        {"type": "hero", "eyebrow": f"Año a la fecha · {ec}", "title": titulo,
+         "num": {"from": round(fp, 2), "to": round(fc, 2), "decimals": 2, "suffix": " bill."},
+         "chip": {"text": f"{sgn(g, 1)}% vs {ep}", "cls": "flat" if t == 0 else "pos" if t > 0 else "neg"},
+         "sub": f"Facturación acumulada de {c.tarjetas_largo}, {ec} frente a {ep}, en billones de pesos.", "dur": 5200},
+        {"type": "line", "eyebrow": "Mes a mes", "title": f"Facturación mensual de {B}: {y} vs. {y - 1} (billones de pesos)",
+         "labels": [MES3[i] for i in range(m_last)],
+         "series": [{"name": str(y - 1), "color": "muted", "values": s_py, "dash": True},
+                    {"name": str(y), "color": FR_COLOR[fr], "values": s_cy}], "fmt": "num", "unit": " bill.", "dur": 6200},
+        {"type": "read", "eyebrow": "Lectura del año", "title": f"Qué ha pasado en {y}", "items": items, "note": c.nota_sfc, "dur": 9000},
+    ]}
+
+
+def mono_historia(d, dm, c, fr):
+    B, FR = c.mercado, FR_NOM[fr]
+    last = d.meses[-1]
+    años = sorted({m[:4] for m in d.meses})
+    completos = [a for a in años if all(f"{a}-{i:02d}" in d.meses for i in range(1, 13))]
+    incluir_ltm = d.meses[-12:][-1][5:7] != "12"
+
+    def ok(a):
+        ms = [f"{a}-{i:02d}" for i in range(1, 13)]
+        return d.monto(ms) > 0 and d.vigentes(f"{a}-12") > 0
+    ltm_monto = d.monto(d.meses[-12:])
+    # El punto de partida debe ser material: un emisor que arrancó de cero haría "×200" sin significado
+    while completos and (not ok(completos[0]) or d.monto([f"{completos[0]}-{i:02d}" for i in range(1, 13)]) < 0.05 * ltm_monto):
+        completos = completos[1:]
+    etq = completos + ([f"12M {mes_corto(last)}"] if incluir_ltm else [])
+    if len(etq) < 3:
+        return None
+    per = [[f"{a}-{i:02d}" for i in range(1, 13)] for a in completos] + ([d.meses[-12:]] if incluir_ltm else [])
+    cortes = [f"{a}-12" for a in completos] + ([last] if incluir_ltm else [])
+    tot = [d.monto(p) / 1e12 for p in per]
+    n = (len(completos) - 1) + (int(last[5:7]) / 12 if incluir_ltm else 0)
+    veces = tot[-1] / tot[0]
+    cagr = 100 * (veces ** (1 / n) - 1)
+    caidas = [(etq[i], 100 * (tot[i] / tot[i - 1] - 1)) for i in range(1, len(tot)) if tot[i] < tot[i - 1]]
+    pesos_fr = [round(_peso(d, dm, p, fr), 2) for p in per]
+    vig = [d.vigentes(m) / 1e6 for m in cortes]
+    dec_f = _dec(max(tot))
+    dec_v = 0 if max(vig) >= 20 else 1 if max(vig) >= 2 else 2
+    ticket = [1e12 * t / (v * 1e6) / 1e6 if v else 0 for t, v in zip(tot, vig)]   # millones de pesos por tarjeta al año
+    primero = etq[0]
+    pesos_txt = f"de ${num(tot[0], 2)} billones en {primero} a ${num(tot[-1], 2)} billones en {etq[-1].replace('12M', 'los 12 meses a')}"
+
+    def ficha(nombre, serie, fmt):
+        a, b = serie[0], serie[-1]
+        return {"value": fmt.format(b), "label": f"{nombre} · ×{num(b / a, 1)} desde {primero} ({num(100 * ((b / a) ** (1 / n) - 1), 1)}% anual)"}
+
+    items = [f"{c.mercado_cap if c.banco is None else B} se multiplicó por <b>{num(veces, 1)}</b> en pesos corrientes ({pesos_txt}), un crecimiento anual compuesto de {num(cagr, 1)}%."
+             + (f" La única caída fue {caidas[0][0]} ({sgn(caidas[0][1], 0)}%)." if len(caidas) == 1 else ""),
+             f"Opera solo con {FR}: su peso en la facturación {FR} del mercado pasó de <b>{num(pesos_fr[0], 1)}%</b> en {primero} a <b>{num(pesos_fr[-1], 1)}%</b>.",
+             f"Las tarjetas vigentes pasaron de <b>{num(vig[0], 2)}</b> a <b>{num(vig[-1], 2)} millones</b> (×{num(vig[-1] / vig[0], 1)}); "
+             f"cada tarjeta facturó en promedio ${num(ticket[-1], 1)} millones en los últimos 12 meses (${num(ticket[0], 1)} millones en {primero})."]
+    anot = [{"i": etq.index(a), "text": "pandemia" if a == "2020" else "caída"} for a, _ in caidas]
+    est = " En débito la franquicia es estimada." if c.estimado else ""
+    escenas = [
+        {"type": "hero", "eyebrow": f"La historia · {primero}–{mes_corto(last)}",
+         "title": f"Desde {primero}, la facturación de {c.tarjetas} se multiplicó por {num(veces, 1)}",
+         "num": {"from": 1.0, "to": round(veces, 1), "decimals": 1, "suffix": "×"},
+         "chip": {"text": f"{num(cagr, 1)}% anual compuesto", "cls": "pos"},
+         "sub": pesos_txt[0].upper() + pesos_txt[1:] + f" (pesos corrientes). Opera solo con {FR}.", "dur": 6000},
+        {"type": "stackcols", "mode": "abs", "eyebrow": "Crecimiento", "title": f"Facturación anual de {B} (billones de pesos)",
+         "sub": f"{c.prod_txt}, nacional y exterior. La barra final son los últimos 12 meses.{est}",
+         "labels": etq, "fmt": "{:.%df}" % dec_f, "annot": anot,
+         "series": [{"name": FR, "color": FR_COLOR[fr], "values": [round(x, 3) for x in tot]}],
+         "tiles": [ficha("Facturación (12 meses)", tot, "$%s bill." % ("{:.%df}" % dec_f)),
+                   {"value": f"{num(pesos_fr[-1], 1)}%", "label": f"Peso en la facturación {FR} del mercado ({num(pesos_fr[0], 1)}% en {primero})"},
+                   {"value": f"${num(ticket[-1], 1)} M", "label": f"Facturación por tarjeta al año (${num(ticket[0], 1)} M en {primero})"}], "dur": 8000},
+        {"type": "line", "eyebrow": f"Peso en {FR}", "title": (f"{B} pasó de pesar {num(pesos_fr[0], 1)}% a {num(pesos_fr[-1], 1)}% de la facturación {FR}"
+                                                         if abs(pesos_fr[-1] - pesos_fr[0]) >= 0.3 else f"{B} mantiene su peso ({num(pesos_fr[-1], 1)}%) en la facturación {FR}"),
+         "sub": f"Participación de {B} en el total {FR} del mercado. Cada franquicia suma el 100% de su propio mercado.",
+         "labels": etq, "series": [{"name": f"{B} en {FR}", "color": FR_COLOR[fr], "values": pesos_fr}], "fmt": "%", "dur": 6500},
+        {"type": "stackcols", "mode": "abs", "eyebrow": "Parque de tarjetas", "title": f"Tarjetas vigentes de {B} (millones)",
+         "sub": f"Stock al cierre de cada año; la barra final es el último mes disponible.{est}",
+         "labels": etq, "fmt": "{:.%df}" % dec_v, "annot": [],
+         "series": [{"name": FR, "color": FR_COLOR[fr], "values": [round(x, 3) for x in vig]}],
+         "tiles": [ficha("Tarjetas vigentes", vig, "{:.%df} M" % max(dec_v, 1))], "dur": 7000},
+    ]
+    if c.prod == "T" and all(d.monto(p, "C") > 0 and d.monto(p, "D") > 0 for p in per):
+        deb = [100 * d.monto(p, "D") / d.monto(p) for p in per]
+        escenas.insert(3, {"type": "stackcols", "eyebrow": "Mezcla de productos", "title": f"El débito pasó de {num(deb[0], 0)}% a {num(deb[-1], 0)}% de la facturación de {B}",
+                           "sub": "Participación de cada producto en la facturación total del banco.", "labels": etq,
+                           "series": [{"name": "Crédito", "color": "credito", "values": [round(100 - x, 1) for x in deb]},
+                                      {"name": "Débito", "color": "debito", "values": [round(x, 1) for x in deb]}], "dur": 6500})
+    escenas.append({"type": "read", "eyebrow": "Mensajes clave", "title": f"La historia en {NUMEROS.get(len(items), len(items))} ideas", "items": items,
+                    "note": c.nota_hist, "dur": 10000})
+    return {"id": "historia", "tab": "Historia", "label": f"{primero}–{mes_corto(last)}", "scenes": escenas}
+
+
+def reportes_mono(d, dm, c, fr):
+    out = []
+    last = d.meses[-1]
+    cy = [f"{last[:4]}-{i:02d}" for i in range(1, int(last[5:7]) + 1)]
+    py = [f"{int(last[:4]) - 1}-{i:02d}" for i in range(1, int(last[5:7]) + 1)]
+    for fn, cond in ((mono_historia, True),
+                     (mono_ytd, d.monto(cy) > 0 and d.monto(py) > 0),
+                     (mono_mes, d.monto([d.meses[-1]]) > 0 and d.monto([d.meses[-2]]) > 0)):
+        if not cond:
+            continue
+        try:
+            r = fn(d, dm, c, fr)
+        except (ZeroDivisionError, ValueError, IndexError):
+            continue
+        if r:
+            out.append(r)
+    return out
+
+
 # ═══ Filtros (producto y banco) ═════════════════════════════════════════════
 def filtrar(raw, prod="T", entidad=None):
     """Datos restringidos a un producto y/o una entidad. Con 'T' y sin entidad devuelve el original."""
@@ -548,15 +747,21 @@ def filtrar(raw, prod="T", entidad=None):
     return {"RAW_TOTAL": sel(raw[clave]), "RAW_CREDITO": sel(raw["RAW_CREDITO"]), "RAW_DEBITO": sel(raw["RAW_DEBITO"])}
 
 
-def reportes(raw, prod="T", entidad=None):
+def reportes(raw, prod="T", entidad=None, peso=None):
     """Los tres relatos para un filtro; omite los que no tienen datos suficientes."""
     f = filtrar(raw, prod, entidad)
     if not f["RAW_TOTAL"]:
         return []
     d = Datos(f)
-    if d.monto(d.meses[-12:], "T", "VISA") == 0 or d.monto(d.meses[-12:], "T", "MASTERCARD") == 0:
-        return []   # sin una de las dos franquicias no hay comparación Visa vs. Mastercard
     c = Ctx(prod, banco(entidad) if entidad else None)
+    ltm = d.meses[-12:]
+    tiene_v, tiene_m = d.monto(ltm, "T", "VISA") > 0, d.monto(ltm, "T", "MASTERCARD") > 0
+    if entidad and tiene_v != tiene_m:      # emisor de una sola franquicia
+        return reportes_mono(d, Datos(filtrar(raw, prod, None)), c, "VISA" if tiene_v else "MASTERCARD")
+    if not (tiene_v and tiene_m):
+        return []   # sin ninguna de las dos franquicias no hay nada que comparar
+    if entidad and peso is not None and peso < MIN_CUOTA_BANCO:
+        return []   # emisor de dos franquicias pero muy pequeño: su cuota no es estable
     out = []
     for fn, ok in ((relato_historia, True), (relato_ytd, True), (relato_mes, True)):
         try:
@@ -579,18 +784,20 @@ def reportes(raw, prod="T", entidad=None):
 
 
 # ═══ Salida ═════════════════════════════════════════════════════════════════
-MIN_CUOTA_BANCO = 1.0   # % de la facturación de los últimos 12 meses para tener filtro propio
+MIN_CANDIDATO = 0.3     # % de la facturación de los últimos 12 meses para considerar un banco
+MIN_CUOTA_BANCO = 1.0   # idem, para emisores con Visa y Mastercard (los de una sola franquicia no lo exigen)
 
 
 def bancos_filtrables(d, raw):
-    """Entidades con peso suficiente para tener su propio resumen, de mayor a menor."""
+    """(entidad, % de la facturación de 12 meses) con peso suficiente, de mayor a menor."""
     ltm = d.meses[-12:]
     peso = collections.defaultdict(float)
     for r in raw["RAW_TOTAL"]:
         if r["MES"] in ltm:
             peso[r["ENTIDAD"]] += (r.get("MTO_COMPRAS_NAL") or 0) + (r.get("MTO_COMPRAS_EXT") or 0)
     total = sum(peso.values())
-    return [e for e, v in sorted(peso.items(), key=lambda x: -x[1]) if 100 * v / total >= MIN_CUOTA_BANCO]
+    res = [(e, 100 * v / total) for e, v in sorted(peso.items(), key=lambda x: -x[1])]
+    return [(e, p) for e, p in res if p >= MIN_CANDIDATO]
 
 
 def main():
@@ -603,12 +810,12 @@ def main():
     corte = f"{calendar.monthrange(y, m)[1]}-{MES3[m - 1]}-{y}"
 
     ents = bancos_filtrables(d, raw)
-    bancos = [{"id": f"b{i}", "nombre": banco(e)} for i, e in enumerate(ents)]
+    bancos = [{"id": f"b{i}", "nombre": banco(e)} for i, (e, _) in enumerate(ents)]
     combos = {}
     for prod in ("T", "C", "D"):
         combos[prod] = reportes(raw, prod, None)
-        for b, e in zip(bancos, ents):
-            r = reportes(raw, prod, e)
+        for b, (e, peso) in zip(bancos, ents):
+            r = reportes(raw, prod, e, peso)
             if r:
                 combos[f"{b['id']}.{prod}"] = r
     bancos = [b for b in bancos if any(f"{b['id']}.{p}" in combos for p in "TCD")]   # solo bancos con algún resumen
