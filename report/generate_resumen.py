@@ -393,18 +393,31 @@ def relato_mes(d, c=None):
     serie_ant = [f"{int(m[:4]) - 1}{m[4:]}" for m in serie]
     sv_ant = [round(d.cuota([m])["VISA"], 2) for m in serie_ant] if all(m in d.meses and d.monto([m]) > 0 for m in serie_ant) else None
 
+    lo, hi = min(sv), max(sv)
+    pos = ("es el máximo del período" if sv[-1] == hi else "es el mínimo del período" if sv[-1] == lo
+           else "está dentro del rango habitual")
+    rango13 = f"en los últimos {len(serie)} meses la cuota oscila entre {num(lo, 1)}% y {num(hi, 1)}% y el dato de {mes_l} {pos}"
+    # Orden: 1-2 mensajes clave, 3 tarjetas, 4 productos y, al final, el desglose por banco
     items = [
         f"La cuota de Visa {'quedó prácticamente igual' if t == 0 else 'subió' if t > 0 else 'bajó'} "
         f"(<b>{num(cu['VISA'], 2)}%</b>, {sgn(dv)} pp): su facturación creció <b>{sgn(gv)}%</b>, "
         f"{comparativo(gv, gm, gt)} ({sgn(gm)}%) y {'por debajo' if gv < gt - 0.15 else 'cerca' if abs(gv - gt) <= 0.15 else 'por encima'} "
         f"{c.del_mercado} ({sgn(gt)}%)."]
-    if yo in d.meses and d.monto([yo]) > 0:
+    if ya:
         cy = d.cuota([yo])
         if round(abs(cu["VISA"] - cy["VISA"]), 2) == 0:
-            items.append(f"Frente a {mes_largo(yo)}, la cuota de Visa se mantuvo igual ({num(cu['VISA'], 1)}%).")
+            items.append(f"Frente a {mes_largo(yo)}, la cuota de Visa se mantuvo igual ({num(cu['VISA'], 1)}%); {rango13}.")
         else:
             items.append(f"Frente a {mes_largo(yo)}, la cuota de Visa {'subió' if cu['VISA'] > cy['VISA'] else 'bajó'} "
-                         f"{num(abs(cu['VISA'] - cy['VISA']), 2)} pp ({num(cy['VISA'], 1)}% → {num(cu['VISA'], 1)}%).")
+                         f"{num(abs(cu['VISA'] - cy['VISA']), 2)} pp ({num(cy['VISA'], 1)}% → {num(cu['VISA'], 1)}%); {rango13}.")
+    else:
+        items[0] = items[0][:-1] + f"; {rango13}."
+    if tj:
+        items.append(tj[1])
+    if c.prod == "T":
+        cc, cd = d.cuota([last], "C")["VISA"], d.cuota([last], "D")["VISA"]
+        items.append(f"Por producto: Visa tiene <b>{num(cc, 1)}%</b> en crédito (dato SFC) y "
+                     f"<b>{num(cd, 1)}%</b> en débito (estimado).")
     if info:
         cl_v = clausula_marca("Visa", *info["VISA"], ref=mes_largo(yo) if ya else None)
         if cl_v:
@@ -412,17 +425,6 @@ def relato_mes(d, c=None):
         fm = frase_marca("Mastercard", *info["MASTERCARD"])
         if fm:
             items.append(fm)
-    if c.prod == "T":
-        cc, cd = d.cuota([last], "C")["VISA"], d.cuota([last], "D")["VISA"]
-        items.append(f"Por producto: Visa tiene <b>{num(cc, 1)}%</b> en crédito (dato SFC) y "
-                     f"<b>{num(cd, 1)}%</b> en débito (estimado).")
-    if tj:
-        items.append(tj[1])
-    lo, hi = min(sv), max(sv)
-    pos = ("es el máximo del período" if sv[-1] == hi else "es el mínimo del período" if sv[-1] == lo
-           else "está dentro del rango habitual")
-    items.append(f"En los últimos {len(serie)} meses la cuota oscila entre {num(lo, 1)}% y {num(hi, 1)}%; "
-                 f"el dato de {MESES[int(last[5:7]) - 1]} {pos}.")
 
     chip_cls = "flat" if t == 0 else "pos" if t > 0 else "neg"
     escenas = [
@@ -479,23 +481,24 @@ def relato_ytd(d, c=None):
     mes_l = MESES[m_last - 1]
     tj = escena_tarjetas(d, c, last, f"{y - 1}-12", cy, "Tarjetas", ec, f"Parque al cierre de {mes_l} frente a diciembre de {y - 1}.", "en lo corrido del año") \
         if f"{y - 1}-12" in d.meses else None
-    # Cuota mensual del año en curso frente al anterior (Visa)
-    etq_m = [MES3[i] for i in range(m_last)]
-    s_cy = [round(d.cuota([m])["VISA"], 2) for m in cy]
-    s_py = [round(d.cuota([m])["VISA"], 2) for m in py]
-    # Cuota mensual de las dos marcas en los últimos 12 meses
+    # Cuota mensual de Visa en los últimos 12 meses y los mismos 12 meses un año antes
     u12 = d.meses[-12:]
-    q12 = [d.cuota([m]) for m in u12]
-    s_v12 = [round(q["VISA"], 2) for q in q12]
-    s_m12 = [round(q["MASTERCARD"], 2) for q in q12]
+    u12_ant = [f"{int(m[:4]) - 1}{m[4:]}" for m in u12]
+    s_v12 = [round(d.cuota([m])["VISA"], 2) for m in u12]
+    s_v12_ant = [round(d.cuota([m])["VISA"], 2) for m in u12_ant] if all(m in d.meses and d.monto([m]) > 0 for m in u12_ant) else None
     i_lo, i_hi = s_v12.index(min(s_v12)), s_v12.index(max(s_v12))
 
+    rango12 = (f"en los últimos 12 meses la cuota de Visa osciló entre {num(s_v12[i_lo], 1)}% ({mes_corto(u12[i_lo])}) "
+               f"y {num(s_v12[i_hi], 1)}% ({mes_corto(u12[i_hi])})")
+    # Orden: 1-2 mensajes clave, 3 tarjetas, 4 productos y, al final, el desglose por banco
     items = [
         f"La cuota de Visa en {ec} es <b>{num(qc['VISA'], 1)}%</b> ({sgn(dv)} pp vs. {ep}); "
-        f"Mastercard está en {num(qc['MASTERCARD'], 1)}% ({sgn(qc['MASTERCARD'] - qp['MASTERCARD'])} pp).",
+        f"Mastercard está en {num(qc['MASTERCARD'], 1)}% ({sgn(qc['MASTERCARD'] - qp['MASTERCARD'])} pp); {rango12}.",
         f"{c.mercado_cap} facturó <b>${num(d.monto(cy) / 1e12, 1)} billones</b> ({sgn(gt, 1)}% vs. {ep}); "
         f"Visa creció {sgn(gv, 1)}%, {comparativo(gv, gm, gt)} ({sgn(gm, 1)}%).",
     ]
+    if tj:
+        items.append(tj[1])
     escena_prod = None
     if c.prod == "T":
         cc_c, cc_p = d.cuota(cy, "C"), d.cuota(py, "C")
@@ -506,7 +509,8 @@ def relato_ytd(d, c=None):
         mix_p = 100 * d.monto(py, "D") / d.monto(py)
         items.append(
             f"En <b>crédito</b> (dato SFC) Visa pasa de {num(cc_p['VISA'], 1)}% a {num(cc_c['VISA'], 1)}% ({sgn(cc_c['VISA'] - cc_p['VISA'], 1)} pp); "
-            f"en <b>débito</b> (estimado), de {num(dd_p['VISA'], 1)}% a {num(dd_c['VISA'], 1)}% ({sgn(dd_c['VISA'] - dd_p['VISA'], 1)} pp).")
+            f"en <b>débito</b> (estimado), de {num(dd_p['VISA'], 1)}% a {num(dd_c['VISA'], 1)}% ({sgn(dd_c['VISA'] - dd_p['VISA'], 1)} pp). "
+            f"El débito pesa {num(mix_c, 1)}% de la facturación ({'+' if mix_c >= mix_p else '−'}{num(abs(mix_c - mix_p), 1)} pp vs. {ep}).")
         escena_prod = {"type": "stack", "eyebrow": "Por producto", "title": f"Crédito vs. débito, {ec}",
                        "rows": [barra(f"Crédito · {ec}", f"{sgn(gc, 1)}% facturación vs. {ep}", cc_c),
                                 barra(f"Débito (estimado) · {ec}", f"{sgn(gd, 1)}% facturación vs. {ep}", dd_c)],
@@ -516,14 +520,6 @@ def relato_ytd(d, c=None):
                        "dur": 6200}
     if info:
         items += [x for x in (frase_marca("Visa", *info["VISA"]), frase_marca("Mastercard", *info["MASTERCARD"])) if x]
-    if tj:
-        items.append(tj[1])
-    rango12 = (f"en los últimos 12 meses la cuota de Visa osciló entre {num(s_v12[i_lo], 1)}% ({mes_corto(u12[i_lo])}) "
-               f"y {num(s_v12[i_hi], 1)}% ({mes_corto(u12[i_hi])}).")
-    if c.prod == "T":
-        items.append(f"El débito pesa {num(mix_c, 1)}% de la facturación ({'+' if mix_c >= mix_p else '−'}{num(abs(mix_c - mix_p), 1)} pp vs. {ep}); " + rango12)
-    else:
-        items.append(rango12[0].upper() + rango12[1:])
 
     escenas = [
         {"type": "hero", "eyebrow": f"Año a la fecha · {ec}", "title": titulo,
@@ -538,15 +534,12 @@ def relato_ytd(d, c=None):
                    {"value": sgn(gm, 1) + "%", "label": f"Facturación Mastercard vs. {ep}"},
                    {"value": sgn(gt, 1) + "%", "label": f"{c.mercado_total} vs. {ep}"}],
          "dur": 6200},
-        {"type": "line", "eyebrow": "Últimos 12 meses", "title": "Cuota de Visa y Mastercard, últimos 12 meses",
-         "sub": f"Cuota mensual de {mes_corto(u12[0])} a {mes_corto(u12[-1])}.",
+        {"type": "line", "eyebrow": "Mes a mes",
+         "title": "Cuota de Visa por mes: últimos 12 meses" + (" vs. un año antes" if s_v12_ant else ""),
+         "sub": f"Cada mes de {mes_corto(u12[0])} a {mes_corto(u12[-1])}" + (" frente al mismo mes del año anterior (punteada)." if s_v12_ant else "."),
          "labels": [mes_corto(m).replace("-", " ") for m in u12],
-         "series": [{"name": "Visa", "color": "visa", "values": s_v12},
-                    {"name": "Mastercard", "color": "mc", "values": s_m12}], "fmt": "%", "dur": 6200},
-        {"type": "line", "eyebrow": "Mes a mes", "title": f"Cuota de Visa por mes: {y} vs. {y - 1}",
-         "sub": f"Cada mes de {ec} frente al mismo mes de {y - 1}.", "labels": etq_m,
-         "series": [{"name": str(y - 1), "color": "muted", "values": s_py, "dash": True},
-                    {"name": str(y), "color": "visa", "values": s_cy}], "fmt": "%", "dur": 6200},
+         "series": ([{"name": "Un año antes", "color": "muted", "values": s_v12_ant, "dash": True}] if s_v12_ant else [])
+                  + [{"name": "Últimos 12 meses", "color": "visa", "values": s_v12}], "fmt": "%", "dur": 6200},
     ]
     if escena_prod:
         escenas.append(escena_prod)
@@ -647,24 +640,23 @@ def relato_historia(d, c=None):
                                     "Nequi se separa de Bancolombia solo desde 2025, así que los aportes de ambos no son comparables con años anteriores.",
                                     per[i_a], per[-1], etq[i_a], etq[-1], n=4)
 
+    por_prod = (f"(crédito {num(vig_c[0], 1)} → {num(vig_c[-1], 1)} M; débito {num(vig_d[0], 1)} → {num(vig_d[-1], 1)} M); "
+                if c.prod == "T" else "")
+    mejor = (f"Visa tuvo su mejor momento en <b>{etq[i_pico]}</b> ({num(vv[i_pico], 1)}%) y hoy está en <b>{num(vv[-1], 1)}%</b>; "
+             if i_pico != len(vv) - 1 else
+             f"Visa está hoy en su mejor momento: <b>{num(vv[-1], 1)}%</b> (era {num(vv[0], 1)}% en {primero}); ")
+    # Orden: 1-2 mensajes clave, 3 tarjetas vigentes, luego productos y, al final, el desglose por banco
     items = [
         f"{c.mercado_cap} se multiplicó por <b>{num(veces, 1)}</b> en pesos corrientes ({pesos}), "
         f"un crecimiento anual compuesto de {num(cagr, 1)}%."
         + (f" La única caída fue {caidas[0][0]} ({sgn(caidas[0][1], 0)}%)." if len(caidas) == 1 else ""),
         f"Visa facturó <b>×{num(fac_v[-1] / fac_v[0], 1)}</b> desde {primero} (${num(fac_v[0], 0)} → ${num(fac_v[-1], 0)} billones) y Mastercard "
         f"<b>×{num(fac_m[-1] / fac_m[0], 1)}</b> (${num(fac_m[0], 0)} → ${num(fac_m[-1], 0)} billones): "
-        f"{'Mastercard creció más rápido' if fac_m[-1] / fac_m[0] > fac_v[-1] / fac_v[0] else 'Visa creció más rápido'}, de ahí el cambio de cuota.",
-        (f"Visa tuvo su mejor momento en <b>{etq[i_pico]}</b> ({num(vv[i_pico], 1)}%) y hoy está en <b>{num(vv[-1], 1)}%</b>; "
-         if i_pico != len(vv) - 1 else
-         f"Visa está hoy en su mejor momento: <b>{num(vv[-1], 1)}%</b> (era {num(vv[0], 1)}% en {primero}); ")
-        + f"Mastercard pasó de {num(mm[0], 1)}% a {num(mm[-1], 1)}%.",
+        f"{'Mastercard creció más rápido' if fac_m[-1] / fac_m[0] > fac_v[-1] / fac_v[0] else 'Visa creció más rápido'}, de ahí el cambio de cuota. "
+        + mejor + f"Mastercard pasó de {num(mm[0], 1)}% a {num(mm[-1], 1)}%.",
+        f"Las tarjetas vigentes pasaron de <b>{num(vig_t[0], 1)}</b> a <b>{num(vig_t[-1], 1)} millones</b>"
+        f"{' ' + por_prod if por_prod else '. '}Visa tiene {num(vig_visa, 0)}% del parque ({num(vig_v[-1], 1)} M de tarjetas frente a {num(vig_m[-1], 1)} M de Mastercard).",
     ]
-    if info:
-        cv = clausula_marca("Visa", info["VISA"][0][:3], info["VISA"][1][:3])
-        cm = clausula_marca("Mastercard", info["MASTERCARD"][0][:3], info["MASTERCARD"][1][:3])
-        partes = [x for x in (cv, cm) if x]
-        if partes:
-            items.append(f"Entre {etq[i_a]} y {etq[-1]} el cambio de cuota se explica por los bancos: " + "; ".join(partes) + ".")
     if c.prod == "T":
         dc = vc[-1] - vc[0]
         items += [
@@ -674,11 +666,12 @@ def relato_historia(d, c=None):
             + (f" y superó al crédito en {etq[i_deb50]}" if i_deb50 is not None and i_deb50 > 0 else "")
             + f"; ahí la cuota estimada de Visa baja de {num(vd[0], 1)}% a {num(vd[-1], 1)}%, y explica buena parte de la caída de la cuota total.",
         ]
-        por_prod = f"(crédito {num(vig_c[0], 1)} → {num(vig_c[-1], 1)} M; débito {num(vig_d[0], 1)} → {num(vig_d[-1], 1)} M); "
-    else:
-        por_prod = ""
-    items.append(f"Las tarjetas vigentes pasaron de <b>{num(vig_t[0], 1)}</b> a <b>{num(vig_t[-1], 1)} millones</b>"
-                 f"{' ' + por_prod if por_prod else '. '}Visa tiene {num(vig_visa, 0)}% del parque ({num(vig_v[-1], 1)} M de tarjetas frente a {num(vig_m[-1], 1)} M de Mastercard).")
+    if info:
+        cv = clausula_marca("Visa", info["VISA"][0][:3], info["VISA"][1][:3])
+        cm = clausula_marca("Mastercard", info["MASTERCARD"][0][:3], info["MASTERCARD"][1][:3])
+        partes = [x for x in (cv, cm) if x]
+        if partes:
+            items.append(f"Entre {etq[i_a]} y {etq[-1]} el cambio de cuota se explica por los bancos: " + "; ".join(partes) + ".")
 
     anot = [{"i": etq.index(a), "text": "pandemia" if a == "2020" else "caída"} for a, _ in caidas]
     est = " En débito la franquicia es estimada." if c.estimado else ""
