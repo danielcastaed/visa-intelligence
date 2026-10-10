@@ -35,13 +35,12 @@ header a:hover{text-decoration:underline}
 .wfpanel h3.visa{color:var(--visa)}.wfpanel h3.mc{color:var(--mc)}
 .wfpanel .rng{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin-top:1px}
 .cardsgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
-.bcard{border:1px solid var(--border);border-radius:12px;padding:12px 18px 8px;border-top:4px solid}
-.bcard h3{margin:0 0 4px;font-size:clamp(15px,1.2vw,17px);font-weight:700}
-.bcard .row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:4px 0;border-bottom:1px solid var(--grid);font-size:clamp(13px,1vw,14.5px);color:var(--muted)}
-.bcard .row:last-child{border-bottom:0}
-.bcard .row b{font-variant-numeric:tabular-nums;font-size:clamp(14px,1.15vw,16.5px);color:var(--text)}
-.bcard .row .pos b{color:var(--pos)}.bcard .row .neg b{color:var(--neg)}
-.bcard small{margin-left:6px;font-weight:600}.bcard .pos small{color:var(--pos)}.bcard .neg small{color:var(--neg)}
+.bcard{border:1px solid var(--border);border-radius:12px;padding:14px 20px 12px;border-top:4px solid;text-align:center}
+.bcard h3{margin:0 0 2px;font-size:clamp(15px,1.2vw,17px);font-weight:700}
+.bigv{font-size:clamp(34px,3.6vw,52px);font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.bigv.pos{color:var(--pos)}.bigv.neg{color:var(--neg)}.bigv.flat{color:var(--muted)}
+.bigl{font-size:12.5px;color:var(--muted);margin-bottom:8px}
+.bsmall{font-size:clamp(13px,1vw,14.5px);color:var(--muted);line-height:1.5;font-variant-numeric:tabular-nums}
 .cardsgrid+.read{margin-top:14px}
 @media (max-width:760px){.wfgrid,.cardsgrid{grid-template-columns:1fr}}
 .empty{margin:auto;text-align:center;color:var(--muted);max-width:520px;font-size:16px;line-height:1.5}
@@ -291,7 +290,7 @@ const R = {
     sc.panels.forEach(pn=>{
       const wrap=$("div","wfpanel"), d=pn.end.val-pn.start.val;
       wrap.append($("h3",pn.color,`${pn.name}<span class="rng">${pn.start.label} ${pn.start.val.toFixed(1)}% → ${pn.end.label} ${pn.end.val.toFixed(1)}% (${sg(d)} pp)</span>`));
-      const pl=40,pr=6,pt=22,pb=76,n=pn.steps.length+2,bw=(pw-pl-pr)/n;
+      const maxl=Math.max(...pn.steps.map(s=>s.name.length),pn.start.label.length,pn.end.label.length), pl=40,pr=6,pt=22,pb=Math.min(120,Math.max(56,Math.round(maxl*5.3)+20)),n=pn.steps.length+2,bw=(pw-pl-pr)/n;
       const cum=[pn.start.val]; pn.steps.forEach(s=>cum.push(cum[cum.length-1]+s.val));
       const lo=Math.min(...cum,pn.end.val), hi=Math.max(...cum,pn.end.val), rg=(hi-lo)||1, base=lo-rg*.35, top=hi+rg*.12;
       const y=v=>pt+(top-v)/(top-base)*(H-pt-pb);
@@ -301,7 +300,7 @@ const R = {
         const bx=pl+i*bw+bw*.14,w=bw*.72,y1=y(Math.max(v0,v1)),h=Math.max(1.5,y(Math.min(v0,v1))-y1);
         svg.append(sv("rect",{class:"col",x:bx,y:y1,width:w,height:h,rx:2,fill,style:`transition-delay:${i*.1}s`}));
         const t=sv("text",{class:"vlab",x:bx+w/2,y:y1-5,"text-anchor":"middle",style:`font-size:11px;fill:${tcls};transition-delay:${.4+i*.1}s`}); t.textContent=txt; svg.append(t);
-        const l=sv("text",{x:bx+w/2+4,y:H-pb+14,"text-anchor":"end",transform:`rotate(-38 ${bx+w/2+4} ${H-pb+14})`}); l.textContent=lab.length>22?lab.slice(0,21)+"…":lab; svg.append(l);
+        const l=sv("text",{x:bx+w/2+3.5,y:H-pb+8,"text-anchor":"end",transform:`rotate(-90 ${bx+w/2+3.5} ${H-pb+8})`,style:"font-size:10px"}); l.textContent=lab; svg.append(l);
         return [bx,w];
       };
       const [x0,w0]=bar(0,base,pn.start.val,COL[pn.color],pn.start.val.toFixed(1)+"%",COL[pn.color],pn.start.label);
@@ -319,8 +318,9 @@ const R = {
   cards(sc, el){
     el.append($("div","eyebrow",sc.eyebrow), $("h2",0,sc.title)); if(sc.sub) el.append($("p","sub",sc.sub));
     const g=$("div","cardsgrid");
-    sc.brands.forEach(b=>{ const c=$("div","bcard"); c.style.borderTopColor=COL[b.color]; c.append($("h3",0,b.name));
-      b.rows.forEach(r=>c.append($("div","row",`<span>${r.label}</span><span class="${r.cls||""}"><b>${r.value}</b>${r.delta?`<small>${r.delta}</small>`:""}</span>`)));
+    sc.brands.forEach(b=>{ const c=$("div","bcard"); c.style.borderTopColor=COL[b.color];
+      c.append($("h3",0,b.name), $("div","bigv "+(b.big.cls||""),b.big.value), $("div","bigl",b.big.label));
+      b.small.forEach(x=>c.append($("div","bsmall",x)));
       g.append(c); });
     el.append(g);
     const ul=$("ul","read"); sc.items.forEach((t,i)=>ul.append($("li",0,`<i>${i+1}</i><span>${t}</span>`))); el.append(ul);
