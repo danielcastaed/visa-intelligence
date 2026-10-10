@@ -379,6 +379,11 @@ def relato_mes(d, c=None):
               1: f"Visa ganó cuota en {MESES[int(last[5:7]) - 1]}",
               -1: f"Visa cedió cuota en {MESES[int(last[5:7]) - 1]}"}[t]
     ya = yo in d.meses and d.monto([yo]) > 0
+    # Escena 2: mismo mes del año anterior (si no existe, el mes anterior)
+    ref = yo if ya else prev
+    cr = d.cuota([ref])
+    gvy, gmy, gty = crecimiento(d, [ref], [last])
+    mr, mr_l = MESES[int(ref[5:7]) - 1], mes_largo(ref)
     wf = info = None
     if not c.banco:
         a_, la_ = ([yo], mes_largo(yo).capitalize()) if ya else ([prev], mes_largo(prev).capitalize())   # mismo mes del año anterior
@@ -399,17 +404,19 @@ def relato_mes(d, c=None):
     rango13 = f"en los últimos {len(serie)} meses la cuota oscila entre {num(lo, 1)}% y {num(hi, 1)}% y el dato de {mes_l} {pos}"
     # Orden: 1-2 mensajes clave, 3 tarjetas, 4 productos y, al final, el desglose por banco
     items = [
-        f"La cuota de Visa {'quedó prácticamente igual' if t == 0 else 'subió' if t > 0 else 'bajó'} "
+        f"La cuota de Visa {'quedó prácticamente igual' if t == 0 else 'subió' if t > 0 else 'bajó'} frente a {MESES[int(prev[5:7]) - 1]} "
         f"(<b>{num(cu['VISA'], 2)}%</b>, {sgn(dv)} pp): su facturación creció <b>{sgn(gv)}%</b>, "
         f"{comparativo(gv, gm, gt)} ({sgn(gm)}%) y {'por debajo' if gv < gt - 0.15 else 'cerca' if abs(gv - gt) <= 0.15 else 'por encima'} "
         f"{c.del_mercado} ({sgn(gt)}%)."]
     if ya:
         cy = d.cuota([yo])
+        fy = (f"su facturación creció <b>{sgn(gvy)}%</b>, {comparativo(gvy, gmy, gty)} ({sgn(gmy)}%) y "
+              f"{'por debajo' if gvy < gty - 0.15 else 'cerca' if abs(gvy - gty) <= 0.15 else 'por encima'} {c.del_mercado} ({sgn(gty)}%)")
         if round(abs(cu["VISA"] - cy["VISA"]), 2) == 0:
-            items.append(f"Frente a {mes_largo(yo)}, la cuota de Visa se mantuvo igual ({num(cu['VISA'], 1)}%); {rango13}.")
+            items.append(f"Año contra año, frente a {mes_largo(yo)}, la cuota de Visa se mantuvo igual ({num(cu['VISA'], 1)}%) y {fy}; {rango13}.")
         else:
-            items.append(f"Frente a {mes_largo(yo)}, la cuota de Visa {'subió' if cu['VISA'] > cy['VISA'] else 'bajó'} "
-                         f"{num(abs(cu['VISA'] - cy['VISA']), 2)} pp ({num(cy['VISA'], 1)}% → {num(cu['VISA'], 1)}%); {rango13}.")
+            items.append(f"Año contra año, frente a {mes_largo(yo)}, la cuota de Visa {'subió' if cu['VISA'] > cy['VISA'] else 'bajó'} "
+                         f"{num(abs(cu['VISA'] - cy['VISA']), 2)} pp ({num(cy['VISA'], 1)}% → {num(cu['VISA'], 1)}%) y {fy}; {rango13}.")
     else:
         items[0] = items[0][:-1] + f"; {rango13}."
     if tj:
@@ -433,12 +440,12 @@ def relato_mes(d, c=None):
          "chip": {"text": f"{sgn(dv)} pp vs {MESES[int(prev[5:7]) - 1]}", "cls": chip_cls},
          "sub": f"Participación de Visa en la facturación total de {c.tarjetas_largo}.",
          "dur": 5200},
-        {"type": "stack", "eyebrow": c.reparte, "title": f"Visa vs. Mastercard, {MESES[int(prev[5:7]) - 1]} → {MESES[int(last[5:7]) - 1]}",
-         "rows": [barra(mp, f"${num(d.monto([prev]) / 1e12, 1)} billones facturados", cp),
+        {"type": "stack", "eyebrow": c.reparte, "title": f"Visa vs. Mastercard, {mr_l} → {ml}",
+         "rows": [barra(mr_l, f"${num(d.monto([ref]) / 1e12, 1)} billones facturados", cr),
                   barra(ml, f"${num(d.monto([last]) / 1e12, 1)} billones facturados", cu)],
-         "tiles": [{"value": sgn(gv) + "%", "label": f"Facturación Visa vs. {MESES[int(prev[5:7]) - 1]}"},
-                   {"value": sgn(gm) + "%", "label": f"Facturación Mastercard vs. {MESES[int(prev[5:7]) - 1]}"},
-                   {"value": sgn(gt) + "%", "label": f"{c.mercado_total} vs. {MESES[int(prev[5:7]) - 1]}"}],
+         "tiles": [{"value": sgn(gvy) + "%", "label": f"Facturación Visa vs. {mr_l}"},
+                   {"value": sgn(gmy) + "%", "label": f"Facturación Mastercard vs. {mr_l}"},
+                   {"value": sgn(gty) + "%", "label": f"{c.mercado_total} vs. {mr_l}"}],
          "dur": 6200},
     ]
     series_linea = ([{"name": f"Un año antes ({mes_corto(serie_ant[0])} a {mes_corto(serie_ant[-1])})", "color": "muted", "values": sv_ant, "dash": True}] if sv_ant else []) \
