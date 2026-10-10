@@ -30,6 +30,19 @@ header a:hover{text-decoration:underline}
 .filters .reset[hidden]{display:none}
 .tabs button:disabled{opacity:.45;cursor:not-allowed}
 .tabs button:disabled:hover{border-color:var(--border);color:var(--muted)}
+.wfgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:6px}
+.wfpanel h3{font-size:clamp(14px,1.1vw,16px);font-weight:700;margin:0 0 2px}
+.wfpanel h3.visa{color:var(--visa)}.wfpanel h3.mc{color:var(--mc)}
+.wfpanel .rng{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin-top:1px}
+.cardsgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+.bcard{border:1px solid var(--border);border-radius:12px;padding:14px 20px 12px;border-top:4px solid;text-align:center}
+.bcard h3{margin:0 0 2px;font-size:clamp(15px,1.2vw,17px);font-weight:700}
+.bigv{font-size:clamp(34px,3.6vw,52px);font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.bigv.pos{color:var(--pos)}.bigv.neg{color:var(--neg)}.bigv.flat{color:var(--muted)}
+.bigl{font-size:12.5px;color:var(--muted);margin-bottom:8px}
+.bsmall{font-size:clamp(13px,1vw,14.5px);color:var(--muted);line-height:1.5;font-variant-numeric:tabular-nums}
+.cardsgrid+.read{margin-top:14px}
+@media (max-width:760px){.wfgrid,.cardsgrid{grid-template-columns:1fr}}
 .empty{margin:auto;text-align:center;color:var(--muted);max-width:520px;font-size:16px;line-height:1.5}
 .tabs{width:100%;max-width:1100px;display:flex;gap:6px;margin-bottom:12px}
 .tabs button{flex:1;border:1px solid var(--border);background:var(--card);color:var(--muted);border-radius:10px;padding:12px 8px;font-size:clamp(14px,1.1vw,16px);font-weight:700;cursor:pointer;line-height:1.2}
@@ -38,7 +51,7 @@ header a:hover{text-decoration:underline}
 .tabs button.on{background:var(--visa);border-color:var(--visa);color:#fff}
 .tabs button.on small{color:#C7CBF0}
 .stage{position:relative;width:100%;max-width:1100px;height:clamp(520px,calc(100vh - 275px),700px);background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(16,24,40,.05)}
-.scene{position:absolute;inset:0;padding:34px clamp(40px,4vw,72px) 38px;display:flex;flex-direction:column;justify-content:center;opacity:0;visibility:hidden;transition:opacity .45s ease,visibility .45s}
+.scene{position:absolute;inset:0;padding:34px clamp(40px,4vw,72px) 38px;display:flex;flex-direction:column;justify-content:center;justify-content:safe center;overflow-y:auto;opacity:0;visibility:hidden;transition:opacity .45s ease,visibility .45s}
 .scene.on{opacity:1;visibility:visible}
 .eyebrow{font-size:clamp(12px,.95vw,14px);font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
 h1{font-size:clamp(28px,2.8vw,40px);line-height:1.15;font-weight:700;max-width:960px}
@@ -264,6 +277,55 @@ const R = {
     let tiles=null;
     if(sc.tiles){ tiles=$("div","tiles"); tiles.style.marginTop="14px"; sc.tiles.forEach(x=>tiles.append($("div",0,`<b>${x.value}</b><span>${x.label}</span>`))); el.append(tiles); }
     return ()=>{ if(tiles){ tiles.classList.remove("show"); setTimeout(()=>tiles.classList.add("show"),reduce?0:900) } };
+  },
+  waterfall(sc, el){
+    el.append($("div","eyebrow",sc.eyebrow), $("h2",0,sc.title)); if(sc.sub) el.append($("p","sub",sc.sub));
+    const grid=$("div","wfgrid"); el.append(grid);
+    const cs=getComputedStyle(el), Wt=Math.round(el.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight));
+    const dos=el.clientWidth>=760, pw=dos?Math.floor((Wt-18)/2):Wt;
+    let used=0; [...el.children].forEach(c=>used+=c.offsetHeight+10);
+    const avail=stage.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-used-(dos?44:90);
+    const H=Math.round(Math.max(230,Math.min(dos?avail:avail/2,pw*.85)));
+    const sg=v=>(v>0?"+":v<0?"−":"")+Math.abs(v).toFixed(2);
+    sc.panels.forEach(pn=>{
+      const wrap=$("div","wfpanel"), d=pn.end.val-pn.start.val;
+      wrap.append($("h3",pn.color,`${pn.name}<span class="rng">${pn.start.label} ${pn.start.val.toFixed(1)}% → ${pn.end.label} ${pn.end.val.toFixed(1)}% (${sg(d)} pp)</span>`));
+      const maxl=Math.max(...pn.steps.map(s=>s.name.length),pn.start.label.length,pn.end.label.length), pl=40,pr=6,pt=22,pb=Math.min(120,Math.max(56,Math.round(maxl*5.3)+20)),n=pn.steps.length+2,bw=(pw-pl-pr)/n;
+      const cum=[pn.start.val]; pn.steps.forEach(s=>cum.push(cum[cum.length-1]+s.val));
+      const lo=Math.min(...cum,pn.end.val), hi=Math.max(...cum,pn.end.val), rg=(hi-lo)||1, base=lo-rg*.35, top=hi+rg*.12;
+      const y=v=>pt+(top-v)/(top-base)*(H-pt-pb);
+      const svg=sv("svg",{class:"chart",viewBox:`0 0 ${pw} ${H}`,role:"img","aria-label":pn.name+": "+sc.title,style:"overflow:visible"});
+      const stp=(top-base)/3; for(let k=0;k<=3;k++){const g=base+k*stp; svg.append(sv("line",{class:"grid",x1:pl,x2:pw-pr,y1:y(g),y2:y(g)})); const t=sv("text",{x:pl-6,y:y(g)+4,"text-anchor":"end"}); t.textContent=g.toFixed(1)+"%"; svg.append(t);}
+      const bar=(i,v0,v1,fill,txt,tcls,lab)=>{
+        const bx=pl+i*bw+bw*.14,w=bw*.72,y1=y(Math.max(v0,v1)),h=Math.max(1.5,y(Math.min(v0,v1))-y1);
+        svg.append(sv("rect",{class:"col",x:bx,y:y1,width:w,height:h,rx:2,fill,style:`transition-delay:${i*.1}s`}));
+        const t=sv("text",{class:"vlab",x:bx+w/2,y:y1-5,"text-anchor":"middle",style:`font-size:11px;fill:${tcls};transition-delay:${.4+i*.1}s`}); t.textContent=txt; svg.append(t);
+        const l=sv("text",{x:bx+w/2+3.5,y:H-pb+8,"text-anchor":"end",transform:`rotate(-90 ${bx+w/2+3.5} ${H-pb+8})`,style:"font-size:10px"}); l.textContent=lab; svg.append(l);
+        return [bx,w];
+      };
+      const [x0,w0]=bar(0,base,pn.start.val,COL[pn.color],pn.start.val.toFixed(1)+"%",COL[pn.color],pn.start.label);
+      pn.steps.forEach((s,i)=>{
+        const a=cum[i],b=cum[i+1], c=s.otros?"#98A2B3":(s.val>=0?"#027A48":"#B42318");
+        const [bx,w]=bar(i+1,a,b,c,sg(s.val),c,s.name);
+        svg.append(sv("line",{x1:bx-bw*.28+w*0,x2:bx,y1:y(a),y2:y(a),stroke:"#98A2B3","stroke-width":1,"stroke-dasharray":"2 2"}));
+      });
+      const [xe]=bar(n-1,base,pn.end.val,COL[pn.color],pn.end.val.toFixed(1)+"%",COL[pn.color],pn.end.label);
+      svg.append(sv("line",{x1:xe-bw*.28,x2:xe,y1:y(cum[cum.length-1]),y2:y(cum[cum.length-1]),stroke:"#98A2B3","stroke-width":1,"stroke-dasharray":"2 2"}));
+      wrap.append(svg); grid.append(wrap);
+    });
+    return ()=>{};
+  },
+  cards(sc, el){
+    el.append($("div","eyebrow",sc.eyebrow), $("h2",0,sc.title)); if(sc.sub) el.append($("p","sub",sc.sub));
+    const g=$("div","cardsgrid");
+    sc.brands.forEach(b=>{ const c=$("div","bcard"); c.style.borderTopColor=COL[b.color];
+      c.append($("h3",0,b.name), $("div","bigv "+(b.big.cls||""),b.big.value), $("div","bigl",b.big.label));
+      b.small.forEach(x=>c.append($("div","bsmall",x)));
+      g.append(c); });
+    el.append(g);
+    const ul=$("ul","read"); sc.items.forEach((t,i)=>ul.append($("li",0,`<i>${i+1}</i><span>${t}</span>`))); el.append(ul);
+    if(sc.note) el.append($("p","note",sc.note));
+    return ()=>{};
   },
   read(sc, el){
     el.append($("div","eyebrow",sc.eyebrow), $("h2",0,sc.title));
