@@ -42,6 +42,7 @@ BANCOS = {
     "BANCO GNB SUDAMERIS S.A.": "GNB Sudameris",
     "NU O NU FINANCIERA": "Nu",
     "TUYA S.A C.F": "Tuya",
+    '"BOLD C.F.", "BOLD CF S.A.", O "BOLD. CF"': "Bold",   # así viene el nombre en la SFC
 }
 
 
@@ -97,17 +98,21 @@ class Datos:
     def __init__(self, raw):
         self.fac = collections.defaultdict(float)
         self.vig = collections.defaultdict(float)
-        self.banco_visa = collections.defaultdict(float)   # (mes, entidad) -> facturación Visa
+        self.banco_f = collections.defaultdict(float)      # (mes, entidad, franquicia) -> facturación (alcance T)
+        self.card = collections.defaultdict(lambda: [0.0, 0.0])   # (alcance, mes, entidad, franquicia) -> [vigentes, canceladas]
         for esc, clave in (("T", "RAW_TOTAL"), ("C", "RAW_CREDITO"), ("D", "RAW_DEBITO")):
             for r in raw[clave]:
                 f = r["FRANQUICIA"] if r["FRANQUICIA"] in ("VISA", "MASTERCARD") else "OTRAS"
                 v = (r.get("MTO_COMPRAS_NAL") or 0) + (r.get("MTO_COMPRAS_EXT") or 0)
                 self.fac[(esc, r["MES"], f)] += v
                 self.vig[(esc, r["MES"], f)] += r.get("VIGENTES_FECHA_CORTE") or 0
-                if esc == "T" and f == "VISA":
-                    self.banco_visa[(r["MES"], r["ENTIDAD"])] += v
+                if esc == "T" and f in ("VISA", "MASTERCARD"):
+                    self.banco_f[(r["MES"], r["ENTIDAD"], f)] += v
+                c = self.card[(esc, r["MES"], r["ENTIDAD"], r["FRANQUICIA"])]
+                c[0] += r.get("VIGENTES_FECHA_CORTE") or 0
+                c[1] += r.get("CANCELADAS") or 0
         self.meses = sorted({k[1] for k in self.fac})
-        self.entidades = sorted({k[1] for k in self.banco_visa})
+        self.entidades = sorted({k[1] for k in self.banco_f})
 
     def monto(self, meses, esc="T", f=None):
         fs = (f,) if f else ("VISA", "MASTERCARD", "OTRAS")
@@ -123,18 +128,42 @@ class Datos:
         fs = (f,) if f else ("VISA", "MASTERCARD", "OTRAS")
         return sum(self.vig[(esc, mes, x)] for x in fs)
 
-    def aportes(self, meses_a, meses_b):
-        """Aporte de cada banco al cambio de cuota de Visa (pp) entre dos períodos."""
+    def aportes(self, meses_a, meses_b, f="VISA"):
+        """Aporte de cada banco al cambio de cuota de una marca (pp) entre dos períodos."""
         ta, tb = self.monto(meses_a), self.monto(meses_b)
         res = []
         for e in self.entidades:
-            va = sum(self.banco_visa[(m, e)] for m in meses_a) / ta
-            vb = sum(self.banco_visa[(m, e)] for m in meses_b) / tb
+            va = sum(self.banco_f[(m, e, f)] for m in meses_a) / ta
+            vb = sum(self.banco_f[(m, e, f)] for m in meses_b) / tb
             res.append((banco(e), 100 * (vb - va)))
         agg = collections.defaultdict(float)
         for n, v in res:
             agg[n] += v
         return sorted(agg.items(), key=lambda x: x[1])
+
+
+    def tarjetas(self, esc, last, prev):
+        """Vigentes, variación, cancelaciones y colocación (variación neta + cancelaciones, sin pasar de 0)
+        por marca. Mismo criterio que el ranking de colocación del dashboard."""
+        cur, pre = {}, {}
+        for (e_sc, m, ent, fr), (vig, canc) in self.card.items():
+            if e_sc != esc:
+                continue
+            if m == last:
+                cur[(ent, fr)] = (vig, canc)
+            elif m == prev:
+                pre[(ent, fr)] = vig
+        out = {f: {"vig": 0.0, "prev": 0.0, "canc": 0.0, "coloc": 0.0} for f in ("VISA", "MASTERCARD", "OTRAS")}
+        for k in set(cur) | set(pre):
+            vig, canc = cur.get(k, (0.0, 0.0))
+            pv = pre.get(k, 0.0)
+            f = k[1] if k[1] in ("VISA", "MASTERCARD") else "OTRAS"
+            o = out[f]
+            o["vig"] += vig
+            o["prev"] += pv
+            o["canc"] += canc
+            o["coloc"] += max(0.0, vig - pv + canc)
+        return out
 
 
 def tendencia(d, umbral=0.10):
@@ -148,14 +177,29 @@ def top_aportes(ap, n=3, minimo=0.01):
     return suben, bajan
 
 
-def escena_aportes(eyebrow, titulo, sub, suben, bajan):
-    items = [{"name": n, "val": round(v, 4)} for n, v in suben]
-    if suben and bajan:
-        items.append(None)
-    items += [{"name": n, "val": round(v, 4)} for n, v in sorted(bajan, key=lambda x: x[1], reverse=True)]
-    mx = max([abs(i["val"]) for i in items if i] or [0.1])
-    return {"type": "contrib", "eyebrow": eyebrow, "title": titulo, "sub": sub,
-            "items": items, "max": round(mx * 1.15, 4), "dur": 7000}
+def pasos_waterfall(ap, delta, n=3, minimo=0.01):
+    """Pasos del puente: los n bancos que más suman, 'Otros bancos' (lo que cierra la suma) y los n que más restan."""
+    suben, bajan = top_aportes(ap, n, minimo)
+    otros = delta - sum(v for _, v in suben) - sum(v for _, v in bajan)
+    pasos = [{"name": nm, "val": round(v, 4)} for nm, v in suben]
+    if abs(otros) >= 0.005:
+        pasos.append({"name": "Otros bancos", "val": round(otros, 4), "otros": True})
+    pasos += [{"name": nm, "val": round(v, 4)} for nm, v in sorted(bajan, key=lambda x: -x[1])]
+    return pasos, suben, bajan
+
+
+def escena_waterfall(d, eyebrow, titulo, sub, ma, mb, la, lb, n=3):
+    """Puente de la cuota de Visa y de Mastercard entre dos períodos, con el aporte de cada banco.
+    Devuelve la escena y, por marca, los bancos que más suben y que más bajan."""
+    qa, qb = d.cuota(ma), d.cuota(mb)
+    paneles, info = [], {}
+    for f, nombre, color in (("VISA", "Visa", "visa"), ("MASTERCARD", "Mastercard", "mc")):
+        delta = qb[f] - qa[f]
+        pasos, suben, bajan = pasos_waterfall(d.aportes(ma, mb, f), delta, n)
+        paneles.append({"name": nombre, "color": color,
+                        "start": {"label": la, "val": round(qa[f], 2)}, "end": {"label": lb, "val": round(qb[f], 2)}, "steps": pasos})
+        info[f] = (suben, bajan)
+    return {"type": "waterfall", "eyebrow": eyebrow, "title": titulo, "sub": sub, "panels": paneles, "dur": 9000}, info
 
 
 def frase_aportes(suben, bajan, verbo_sube, verbo_baja):
@@ -165,6 +209,92 @@ def frase_aportes(suben, bajan, verbo_sube, verbo_baja):
     if bajan:
         out.append(f"{verbo_baja} <b>{lista(f'{n} ({sgn(v)} pp)' for n, v in bajan)}</b>.")
     return out
+
+
+def clausula_marca(nombre, suben, bajan):
+    """'en Visa, sumaron A (+x pp) y restaron B (−y pp)' (None si ningún banco pesa)."""
+    partes = []
+    if suben:
+        partes.append(f"sumaron <b>{lista(f'{n} ({sgn(v)} pp)' for n, v in suben)}</b>")
+    if bajan:
+        partes.append(f"restaron <b>{lista(f'{n} ({sgn(v)} pp)' for n, v in bajan)}</b>")
+    return f"en {nombre}, " + " y ".join(partes) if partes else None
+
+
+def frase_marca(nombre, suben, bajan):
+    cl = clausula_marca(nombre, suben, bajan)
+    return cl[0].upper() + cl[1:] + "." if cl else None
+
+
+def cnt(x):
+    """Número de tarjetas legible: 26.0 M / 43 mil."""
+    return f"{x / 1e6:.1f} M" if abs(x) >= 1e6 else f"{x / 1e3:.0f} mil" if abs(x) >= 1e3 else f"{x:.0f}"
+
+
+def sgn_cnt(x):
+    s = cnt(abs(x))
+    return s if round(abs(x)) == 0 else ("+" if x > 0 else "−") + s
+
+
+def escena_tarjetas(d, c, last, prev):
+    """Sección de tarjetas del mes: vigentes, variación, colocación y cancelaciones de Visa vs. Mastercard.
+    Devuelve (escena, frase para la lectura final) o None si no hay parque en el mes anterior."""
+    tt = d.tarjetas("T", last, prev)
+    if not (tt["VISA"]["prev"] and tt["MASTERCARD"]["prev"]):
+        return None
+    mes, mes_p = MESES[int(last[5:7]) - 1], MESES[int(prev[5:7]) - 1]
+    total_v, total_p = sum(x["vig"] for x in tt.values()), sum(x["prev"] for x in tt.values())
+    # Cancelaciones y colocación solo existen en crédito (la SFC no reporta cancelaciones de débito)
+    tc = d.tarjetas("C", last, prev) if c.prod == "T" else tt
+    suf = " (crédito)" if c.prod == "T" else ""
+    marcas = []
+    resumen = {}
+    for f, nombre, color in (("VISA", "Visa", "visa"), ("MASTERCARD", "Mastercard", "mc")):
+        v, pv = tt[f]["vig"], tt[f]["prev"]
+        neto = v - pv
+        part, part_p = 100 * v / total_v, 100 * pv / total_p
+        filas = [{"label": "Tarjetas vigentes", "value": cnt(v)},
+                 {"label": "Participación en el parque", "value": f"{num(part, 1)}%", "delta": f"{sgn(part - part_p, 2)} pp", "cls": "flat" if abs(part - part_p) < 0.05 else "pos" if part > part_p else "neg"},
+                 {"label": "Variación en el mes", "value": sgn_cnt(neto), "cls": "flat" if round(neto) == 0 else "pos" if neto > 0 else "neg"}]
+        if c.prod != "D":
+            cc = tc[f]
+            churn = 100 * cc["canc"] / cc["prev"] if cc["prev"] else 0.0
+            filas += [{"label": "Colocación bruta" + suf, "value": cnt(cc["coloc"])},
+                      {"label": "Cancelaciones" + suf, "value": cnt(cc["canc"])},
+                      {"label": "Churn" + suf, "value": f"{churn:.2f}%"}]
+            resumen[f] = dict(neto=neto, part=part, part_p=part_p, coloc=cc["coloc"], canc=cc["canc"], churn=churn)
+        else:
+            filas.append({"label": "Cancelaciones", "value": "No reportadas"})
+            resumen[f] = dict(neto=neto, part=part, part_p=part_p)
+        marcas.append({"name": nombre, "color": color, "rows": filas})
+    V, M = resumen["VISA"], resumen["MASTERCARD"]
+    items = [f"Visa cerró {mes} con <b>{cnt(tt['VISA']['vig'])}</b> de tarjetas vigentes ({sgn_cnt(V['neto'])} en el mes) y Mastercard con "
+             f"<b>{cnt(tt['MASTERCARD']['vig'])}</b> ({sgn_cnt(M['neto'])}); Visa concentra {num(V['part'], 1)}% del parque ({sgn(V['part'] - V['part_p'], 2)} pp vs. {mes_p})."]
+    if c.prod != "D":
+        items.append(f"En <b>crédito</b>{' (dato SFC)' if c.prod == 'T' else ''} Visa colocó {cnt(V['coloc'])} tarjetas y canceló {cnt(V['canc'])} (churn {num(V['churn'], 2)}%); "
+                     f"Mastercard colocó {cnt(M['coloc'])} y canceló {cnt(M['canc'])} (churn {num(M['churn'], 2)}%).")
+    if c.prod == "T":
+        td = d.tarjetas("D", last, prev)
+        dv, dm = td["VISA"]["vig"] - td["VISA"]["prev"], td["MASTERCARD"]["vig"] - td["MASTERCARD"]["prev"]
+        items.append(f"En <b>débito</b> (estimado) las vigentes de Visa variaron {sgn_cnt(dv)} y las de Mastercard {sgn_cnt(dm)}; la SFC no reporta cancelaciones de débito.")
+    elif c.prod == "D":
+        items.append("La SFC no reporta cancelaciones de débito y la franquicia de cada tarjeta se estima, así que el movimiento por marca es indicativo.")
+    nv, nm = V["neto"], M["neto"]
+    if nv < 0 < nm or nm < 0 < nv:
+        lectura = f"{'Mastercard' if nm > 0 else 'Visa'} creció en tarjetas mientras {'Visa' if nm > 0 else 'Mastercard'} perdió parque."
+    elif nv > 0 and nm > 0:
+        lectura = f"Ambas marcas sumaron tarjetas; {'Mastercard' if nm > nv else 'Visa'} sumó más."
+    else:
+        lectura = "Ninguna de las dos marcas sumó tarjetas netas en el mes."
+    items.append(lectura)
+    if c.prod == "D":
+        nota = "En débito la franquicia y las vigentes por marca son estimadas; la SFC no reporta cancelaciones de débito."
+    else:
+        nota = ("Colocación bruta = variación neta de vigentes + cancelaciones (la SFC no reporta altas). "
+                + ("En débito la franquicia y las vigentes por marca son estimadas." if c.estimado else "Dato reportado por la SFC."))
+    escena = {"type": "cards", "eyebrow": "Tarjetas", "title": f"Tarjetas en {mes}: Visa vs. Mastercard",
+              "sub": f"Parque al cierre de {mes} y movimiento frente a {mes_p}.", "brands": marcas, "items": items, "note": nota, "dur": 11000}
+    return escena, f"En tarjetas vigentes, Visa {sgn_cnt(V['neto'])} y Mastercard {sgn_cnt(M['neto'])} en el mes (detalle en la sección de tarjetas)."
 
 
 def barra(label, right, cuota):
@@ -247,7 +377,12 @@ def relato_mes(d, c=None):
     titulo = {0: f"Visa casi no se movió: mantiene su cuota {c.en_mercado}",
               1: f"Visa ganó cuota en {MESES[int(last[5:7]) - 1]}",
               -1: f"Visa cedió cuota en {MESES[int(last[5:7]) - 1]}"}[t]
-    suben, bajan = top_aportes(d.aportes([prev], [last])) if not c.banco else ([], [])
+    wf = info = None
+    if not c.banco:
+        wf, info = escena_waterfall(d, "Quién movió la aguja", "Aporte de cada banco al cambio de cuota: Visa y Mastercard",
+                                    "Puntos porcentuales (pp) de cuota entre ambos meses. Los puentes suman el aporte de todos los bancos; \"Otros bancos\" agrupa el resto. Eje truncado.",
+                                    [prev], [last], MESES[int(prev[5:7]) - 1].capitalize(), MESES[int(last[5:7]) - 1].capitalize())
+    tj = escena_tarjetas(d, c, last, prev)
     serie = d.meses[-13:]
     sv = [round(d.cuota([m])["VISA"], 2) for m in serie]
 
@@ -258,13 +393,19 @@ def relato_mes(d, c=None):
         f"{c.del_mercado} ({sgn(gt)}%)."]
     if yo in d.meses and d.monto([yo]) > 0:
         cy = d.cuota([yo])
-        items.append(f"Frente a {mes_largo(yo)}, la cuota de Visa {'subió' if cu['VISA'] > cy['VISA'] else 'bajó'} "
-                     f"{num(abs(cu['VISA'] - cy['VISA']), 2)} pp ({num(cy['VISA'], 1)}% → {num(cu['VISA'], 1)}%).")
-    items += frase_aportes(suben, bajan, "Sumaron cuota para Visa", "Restaron")
+        if round(abs(cu["VISA"] - cy["VISA"]), 2) == 0:
+            items.append(f"Frente a {mes_largo(yo)}, la cuota de Visa se mantuvo igual ({num(cu['VISA'], 1)}%).")
+        else:
+            items.append(f"Frente a {mes_largo(yo)}, la cuota de Visa {'subió' if cu['VISA'] > cy['VISA'] else 'bajó'} "
+                         f"{num(abs(cu['VISA'] - cy['VISA']), 2)} pp ({num(cy['VISA'], 1)}% → {num(cu['VISA'], 1)}%).")
+    if info:
+        items += [x for x in (frase_marca("Visa", *info["VISA"]), frase_marca("Mastercard", *info["MASTERCARD"])) if x]
     if c.prod == "T":
         cc, cd = d.cuota([last], "C")["VISA"], d.cuota([last], "D")["VISA"]
         items.append(f"Por producto: Visa tiene <b>{num(cc, 1)}%</b> en crédito (dato SFC) y "
                      f"<b>{num(cd, 1)}%</b> en débito (estimado).")
+    if tj:
+        items.append(tj[1])
     lo, hi = min(sv), max(sv)
     pos = ("es el máximo del período" if sv[-1] == hi else "es el mínimo del período" if sv[-1] == lo
            else "está dentro del rango habitual")
@@ -286,10 +427,10 @@ def relato_mes(d, c=None):
                    {"value": sgn(gt) + "%", "label": f"{c.mercado_total} vs. {MESES[int(prev[5:7]) - 1]}"}],
          "dur": 6200},
     ]
-    if not c.banco:
-        escenas.append(escena_aportes("Quién movió la aguja", "Aporte de cada banco al cambio de cuota de Visa",
-                                      "Puntos porcentuales (pp) de cuota de mercado. Los aportes de todos los bancos suman el cambio total.",
-                                      suben, bajan))
+    if wf:
+        escenas.append(wf)
+    if tj:
+        escenas.append(tj[0])
     escenas += [
         {"type": "line", "eyebrow": "Contexto", "title": f"Cuota de Visa, últimos {len(serie)} meses",
          "labels": [mes_corto(m).replace("-", " ") for m in serie],
@@ -317,13 +458,18 @@ def relato_ytd(d, c=None):
     titulo = {0: f"En {y}, Visa sostiene su cuota frente a {y - 1}",
               1: f"En {y}, Visa gana cuota frente a {y - 1}",
               -1: f"En {y}, Visa cede cuota frente a {y - 1}"}[t]
-    suben, bajan = top_aportes(d.aportes(py, cy)) if not c.banco else ([], [])
+    wf = info = None
+    if not c.banco:
+        wf, info = escena_waterfall(d, "Quién movió la aguja", f"Aporte de cada banco al cambio de cuota, {ec} vs. {ep}: Visa y Mastercard",
+                                    "Puntos porcentuales (pp) de cuota entre ambos períodos. Los puentes suman el aporte de todos los bancos; \"Otros bancos\" agrupa el resto. Eje truncado.",
+                                    py, cy, ep, ec)
 
-    # Cuota Visa mensual, año en curso vs anterior
-    etq = [MES3[i] for i in range(m_last)]
-    s_cy = [round(d.cuota([m])["VISA"], 2) for m in cy]
-    s_py = [round(d.cuota([m])["VISA"], 2) for m in py]
-    mejor = max(range(m_last), key=lambda i: s_cy[i])
+    # Cuota mensual de las dos marcas en los últimos 12 meses
+    u12 = d.meses[-12:]
+    q12 = [d.cuota([m]) for m in u12]
+    s_v12 = [round(q["VISA"], 2) for q in q12]
+    s_m12 = [round(q["MASTERCARD"], 2) for q in q12]
+    i_lo, i_hi = s_v12.index(min(s_v12)), s_v12.index(max(s_v12))
 
     items = [
         f"La cuota de Visa en {ec} es <b>{num(qc['VISA'], 1)}%</b> ({sgn(dv)} pp vs. {ep}); "
@@ -349,12 +495,14 @@ def relato_ytd(d, c=None):
                                  {"value": num(dd_c["VISA"], 1) + "%", "label": f"Visa en débito ({sgn(dd_c['VISA'] - dd_p['VISA'], 1)} pp)"},
                                  {"value": num(mix_c, 1) + "%", "label": f"Peso del débito ({sgn(mix_c - mix_p, 1)} pp)"}],
                        "dur": 6200}
-    items += frase_aportes(suben, bajan, "Más cuota para Visa vino de", "Restaron")
-    mejor_txt = f"el mejor mes de Visa en {y} fue {MESES[mejor]} ({num(s_cy[mejor], 1)}%)."
+    if info:
+        items += [x for x in (frase_marca("Visa", *info["VISA"]), frase_marca("Mastercard", *info["MASTERCARD"])) if x]
+    rango12 = (f"en los últimos 12 meses la cuota de Visa osciló entre {num(s_v12[i_lo], 1)}% ({mes_corto(u12[i_lo])}) "
+               f"y {num(s_v12[i_hi], 1)}% ({mes_corto(u12[i_hi])}).")
     if c.prod == "T":
-        items.append(f"El débito pesa {num(mix_c, 1)}% de la facturación ({'+' if mix_c >= mix_p else '−'}{num(abs(mix_c - mix_p), 1)} pp vs. {ep}); " + mejor_txt)
+        items.append(f"El débito pesa {num(mix_c, 1)}% de la facturación ({'+' if mix_c >= mix_p else '−'}{num(abs(mix_c - mix_p), 1)} pp vs. {ep}); " + rango12)
     else:
-        items.append(mejor_txt[0].upper() + mejor_txt[1:])
+        items.append(rango12[0].upper() + rango12[1:])
 
     escenas = [
         {"type": "hero", "eyebrow": f"Año a la fecha · {ec}", "title": titulo,
@@ -369,17 +517,16 @@ def relato_ytd(d, c=None):
                    {"value": sgn(gm, 1) + "%", "label": f"Facturación Mastercard vs. {ep}"},
                    {"value": sgn(gt, 1) + "%", "label": f"{c.mercado_total} vs. {ep}"}],
          "dur": 6200},
-        {"type": "line", "eyebrow": "Mes a mes", "title": f"Cuota de Visa por mes: {y} vs. {y - 1}",
-         "labels": etq,
-         "series": [{"name": str(y - 1), "color": "muted", "values": s_py, "dash": True},
-                    {"name": str(y), "color": "visa", "values": s_cy}], "fmt": "%", "dur": 6200},
+        {"type": "line", "eyebrow": "Mes a mes", "title": "Cuota de Visa y Mastercard, últimos 12 meses",
+         "sub": f"Cuota mensual de {mes_corto(u12[0])} a {mes_corto(u12[-1])}.",
+         "labels": [mes_corto(m).replace("-", " ") for m in u12],
+         "series": [{"name": "Visa", "color": "visa", "values": s_v12},
+                    {"name": "Mastercard", "color": "mc", "values": s_m12}], "fmt": "%", "dur": 6200},
     ]
     if escena_prod:
         escenas.append(escena_prod)
-    if not c.banco:
-        escenas.append(escena_aportes("Quién movió la aguja", f"Aporte de cada banco al cambio de cuota de Visa, {ec} vs. {ep}",
-                                      "Puntos porcentuales (pp) de cuota de mercado. Los aportes de todos los bancos suman el cambio total.",
-                                      suben, bajan))
+    if wf:
+        escenas.append(wf)
     escenas.append({"type": "read", "eyebrow": "Lectura del año", "title": f"Qué ha pasado en {y}", "items": items,
                     "note": c.nota_sfc, "dur": 10000})
     return {"id": "ytd", "tab": "Año a la fecha", "label": ec, "scenes": escenas}
@@ -464,6 +611,15 @@ def relato_historia(d, c=None):
     sub_ms = (f"Mastercard subió de {num(mm[0], 1)}% a {num(mm[-1], 1)}%"
               + ("; en los últimos años la cuota de Visa se estabiliza." if estable else "."))
 
+    wf = info = None
+    if not c.banco:
+        i_a = i_pico if i_pico != len(vv) - 1 else 0     # del mejor momento de Visa a hoy (o del inicio si hoy es el pico)
+        wf, info = escena_waterfall(d, "Quién movió la aguja",
+                                    f"Aporte de cada banco al cambio de cuota, {etq[i_a]} → {etq[-1]}: Visa y Mastercard",
+                                    "Puntos porcentuales (pp) de cuota entre ambos períodos; \"Otros bancos\" agrupa el resto. Eje truncado. "
+                                    "Nequi se separa de Bancolombia solo desde 2025, así que los aportes de ambos no son comparables con años anteriores.",
+                                    per[i_a], per[-1], etq[i_a], etq[-1], n=4)
+
     items = [
         f"{c.mercado_cap} se multiplicó por <b>{num(veces, 1)}</b> en pesos corrientes ({pesos}), "
         f"un crecimiento anual compuesto de {num(cagr, 1)}%."
@@ -476,6 +632,12 @@ def relato_historia(d, c=None):
          f"Visa está hoy en su mejor momento: <b>{num(vv[-1], 1)}%</b> (era {num(vv[0], 1)}% en {primero}); ")
         + f"Mastercard pasó de {num(mm[0], 1)}% a {num(mm[-1], 1)}%.",
     ]
+    if info:
+        cv = clausula_marca("Visa", info["VISA"][0][:3], info["VISA"][1][:3])
+        cm = clausula_marca("Mastercard", info["MASTERCARD"][0][:3], info["MASTERCARD"][1][:3])
+        partes = [x for x in (cv, cm) if x]
+        if partes:
+            items.append(f"Entre {etq[i_a]} y {etq[-1]} el cambio de cuota se explica por los bancos: " + "; ".join(partes) + ".")
     if c.prod == "T":
         dc = vc[-1] - vc[0]
         items += [
@@ -512,6 +674,8 @@ def relato_historia(d, c=None):
          "labels": etq, "series": [{"name": "Visa", "color": "visa", "values": vv},
                                    {"name": "Mastercard", "color": "mc", "values": mm}], "fmt": "%", "dur": 7000},
     ]
+    if wf:
+        escenas.append(wf)
     if c.prod == "T":
         lider_c = "Visa lidera el crédito" if vc[-1] > mc_c[-1] else "Mastercard lidera el crédito"
         t_prod = (f"{lider_c}: {num(vc[-1], 1)}% de la facturación en crédito; "
