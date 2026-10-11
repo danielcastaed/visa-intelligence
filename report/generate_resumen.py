@@ -375,15 +375,18 @@ def relato_mes(d, c=None):
     gv, gm, gt = crecimiento(d, [prev], [last])
     ml, mp = mes_largo(last), mes_largo(prev)
 
-    titulo = {0: f"Visa casi no se movió: mantiene su cuota {c.en_mercado}",
-              1: f"Visa ganó cuota en {MESES[int(last[5:7]) - 1]}",
-              -1: f"Visa cedió cuota en {MESES[int(last[5:7]) - 1]}"}[t]
     ya = yo in d.meses and d.monto([yo]) > 0
-    # Escena 2: mismo mes del año anterior (si no existe, el mes anterior)
+    # Comparación principal: mismo mes del año anterior (si no existe, el mes anterior)
     ref = yo if ya else prev
     cr = d.cuota([ref])
     gvy, gmy, gty = crecimiento(d, [ref], [last])
     mr, mr_l = MESES[int(ref[5:7]) - 1], mes_largo(ref)
+    dvr = cu["VISA"] - cr["VISA"]
+    tr = tendencia(dvr)
+    sufijo = f" frente a {mr_l}" if ya else f" en {MESES[int(last[5:7]) - 1]}"
+    titulo = {0: f"Visa casi no se movió{sufijo}: mantiene su cuota {c.en_mercado}",
+              1: f"Visa ganó cuota{sufijo}",
+              -1: f"Visa cedió cuota{sufijo}"}[tr]
     wf = info = None
     if not c.banco:
         a_, la_ = ([yo], mes_largo(yo).capitalize()) if ya else ([prev], mes_largo(prev).capitalize())   # mismo mes del año anterior
@@ -403,21 +406,17 @@ def relato_mes(d, c=None):
            else "está dentro del rango habitual")
     rango13 = f"en los últimos {len(serie)} meses la cuota oscila entre {num(lo, 1)}% y {num(hi, 1)}% y el dato de {mes_l} {pos}"
     # Orden: 1-2 mensajes clave, 3 tarjetas, 4 productos y, al final, el desglose por banco
+    verbo = lambda tt: "quedó prácticamente igual" if tt == 0 else "subió" if tt > 0 else "bajó"
+    comp = lambda a, b, c_: (f"{comparativo(a, b, c_)} ({sgn(b)}%) y "
+                             f"{'por debajo' if a < c_ - 0.15 else 'cerca' if abs(a - c_) <= 0.15 else 'por encima'} {c.del_mercado} ({sgn(c_)}%)")
     items = [
-        f"La cuota de Visa {'quedó prácticamente igual' if t == 0 else 'subió' if t > 0 else 'bajó'} frente a {MESES[int(prev[5:7]) - 1]} "
-        f"(<b>{num(cu['VISA'], 2)}%</b>, {sgn(dv)} pp): su facturación creció <b>{sgn(gv)}%</b>, "
-        f"{comparativo(gv, gm, gt)} ({sgn(gm)}%) y {'por debajo' if gv < gt - 0.15 else 'cerca' if abs(gv - gt) <= 0.15 else 'por encima'} "
-        f"{c.del_mercado} ({sgn(gt)}%)."]
-    if ya:
-        cy = d.cuota([yo])
-        fy = (f"su facturación creció <b>{sgn(gvy)}%</b>, {comparativo(gvy, gmy, gty)} ({sgn(gmy)}%) y "
-              f"{'por debajo' if gvy < gty - 0.15 else 'cerca' if abs(gvy - gty) <= 0.15 else 'por encima'} {c.del_mercado} ({sgn(gty)}%)")
-        if round(abs(cu["VISA"] - cy["VISA"]), 2) == 0:
-            items.append(f"Año contra año, frente a {mes_largo(yo)}, la cuota de Visa se mantuvo igual ({num(cu['VISA'], 1)}%) y {fy}; {rango13}.")
-        else:
-            items.append(f"Año contra año, frente a {mes_largo(yo)}, la cuota de Visa {'subió' if cu['VISA'] > cy['VISA'] else 'bajó'} "
-                         f"{num(abs(cu['VISA'] - cy['VISA']), 2)} pp ({num(cy['VISA'], 1)}% → {num(cu['VISA'], 1)}%) y {fy}; {rango13}.")
-    else:
+        f"La cuota de Visa {verbo(tr)} frente a {mr_l} (<b>{num(cu['VISA'], 2)}%</b>, {sgn(dvr)} pp; era {num(cr['VISA'], 1)}%): "
+        f"su facturación creció <b>{sgn(gvy)}%</b>, {comp(gvy, gmy, gty)}."]
+    mom = (f"Mes contra mes, la cuota de Visa {verbo(t)} frente a {MESES[int(prev[5:7]) - 1]} ({sgn(dv)} pp, de {num(cp['VISA'], 2)}% a {num(cu['VISA'], 2)}%) "
+           f"con una facturación de {sgn(gv)}%")
+    items.append(f"{mom}; {rango13}." if ya else None)
+    if not ya:
+        items.pop()
         items[0] = items[0][:-1] + f"; {rango13}."
     if tj:
         items.append(tj[1])
@@ -433,12 +432,12 @@ def relato_mes(d, c=None):
         if fm:
             items.append(fm)
 
-    chip_cls = "flat" if t == 0 else "pos" if t > 0 else "neg"
+    chip_cls = "flat" if tr == 0 else "pos" if tr > 0 else "neg"
     escenas = [
         {"type": "hero", "eyebrow": f"Resumen del mes · {ml}", "title": titulo,
-         "num": {"from": round(cp["VISA"], 2), "to": round(cu["VISA"], 2), "decimals": 2, "suffix": "%"},
-         "chip": {"text": f"{sgn(dv)} pp vs {MESES[int(prev[5:7]) - 1]}", "cls": chip_cls},
-         "sub": f"Participación de Visa en la facturación total de {c.tarjetas_largo}.",
+         "num": {"from": round(cr["VISA"], 2), "to": round(cu["VISA"], 2), "decimals": 2, "suffix": "%"},
+         "chip": {"text": f"{sgn(dvr)} pp vs {mr_l if ya else mr}", "cls": chip_cls},
+         "sub": f"Participación de Visa en la facturación total de {c.tarjetas_largo}, {ml} frente a {mr_l}.",
          "dur": 5200},
         {"type": "stack", "eyebrow": c.reparte, "title": f"Visa vs. Mastercard, {mr_l} → {ml}",
          "rows": [barra(mr_l, f"${num(d.monto([ref]) / 1e12, 1)} billones facturados", cr),
