@@ -46,6 +46,20 @@ BANCOS = {
 }
 
 
+# Eventos corporativos que mueven cifras entre entidades (no son pérdida ni captación comercial).
+# Se muestran como nota cuando el período del relato incluye el mes del evento.
+EVENTOS = [
+    {"mes": "2026-08", "bancos": ("Itaú", "Banco de Bogotá"),
+     "nota": "En agosto de 2026 la cartera de tarjetas de crédito de Itaú pasó a Banco de Bogotá: las cancelaciones de Itaú y la "
+             "colocación de Bogotá de ese mes reflejan el traspaso, no una pérdida ni una captación comercial."},
+]
+
+
+def notas_evento(c, meses):
+    """Notas de los eventos cuyo mes está en `meses`; con banco filtrado, solo si es uno de los involucrados."""
+    return [e["nota"] for e in EVENTOS if e["mes"] in meses and (c.banco is None or c.banco in e["bancos"])]
+
+
 def banco(ent):
     if ent in BANCOS:
         return BANCOS[ent]
@@ -294,6 +308,7 @@ def escena_tarjetas(d, c, last, ref, canc_meses, eyebrow, periodo, sub, tramo):
         items.append("En débito la SFC no reporta cancelaciones y la franquicia de cada tarjeta se estima: el movimiento por marca es indicativo.")
     nota = ("Colocación = variación neta de vigentes + cancelaciones (la SFC no reporta altas). "
             + ("Débito: franquicia estimada y sin cancelaciones reportadas." if c.estimado else "Dato reportado por la SFC."))
+    nota = " ".join([nota] + notas_evento(c, canc_meses))
     escena = {"type": "cards", "eyebrow": eyebrow, "title": titulo, "sub": sub, "brands": marcas, "items": items, "note": nota, "dur": 9000}
     return escena, f"En tarjetas vigentes, Visa {sgn_cnt(nv)} y Mastercard {sgn_cnt(nm)} {tramo} (detalle en la sección de tarjetas)."
 
@@ -457,7 +472,7 @@ def relato_mes(d, c=None):
     if tj:
         escenas.append(tj[0])
     escenas.append({"type": "read", "eyebrow": "Lectura del mes", "title": "Qué pasó y qué mirar", "items": items,
-                    "note": c.nota_sfc, "dur": 9000})
+                    "note": " ".join([c.nota_sfc] + notas_evento(c, [last])), "dur": 9000})
     return {"id": "mes", "tab": "Mes", "label": ml, "scenes": escenas}
 
 
@@ -554,7 +569,7 @@ def relato_ytd(d, c=None):
     if tj:
         escenas.append(tj[0])
     escenas.append({"type": "read", "eyebrow": "Lectura del año", "title": f"Qué ha pasado en {y}", "items": items,
-                    "note": c.nota_sfc, "dur": 10000})
+                    "note": " ".join([c.nota_sfc] + notas_evento(c, cy)), "dur": 10000})
     return {"id": "ytd", "tab": "Año a la fecha", "label": ec, "scenes": escenas}
 
 
@@ -729,7 +744,7 @@ def relato_historia(d, c=None):
          "tiles": [ficha("Parque total", vig_t, "{:.%df} M" % max(dec_v, 1)), ficha("Visa", vig_v, "{:.%df} M" % max(dec_v, 1)),
                    ficha("Mastercard", vig_m, "{:.%df} M" % max(dec_v, 1))], "dur": 8000},
         {"type": "read", "eyebrow": "Mensajes clave", "title": f"La historia en {NUMEROS.get(len(items), len(items))} ideas", "items": items,
-         "note": c.nota_hist, "dur": 12000},
+         "note": " ".join([c.nota_hist] + notas_evento(c, ltm)), "dur": 12000},
     ]
     return {"id": "historia", "tab": "Historia", "label": f"{primero}–{mes_corto(last)}", "scenes": escenas}
 
