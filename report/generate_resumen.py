@@ -953,12 +953,22 @@ def filtrar(raw, prod="T", entidad=None):
     return {"RAW_TOTAL": sel(raw[clave]), "RAW_CREDITO": sel(raw["RAW_CREDITO"]), "RAW_DEBITO": sel(raw["RAW_DEBITO"])}
 
 
-def reportes(raw, prod="T", entidad=None, peso=None):
-    """Los tres relatos para un filtro; omite los que no tienen datos suficientes."""
+def fin_de_mes(mes):
+    y, m = int(mes[:4]), int(mes[5:7])
+    return f"{calendar.monthrange(y, m)[1]}-{MES3[m - 1]}-{y}"
+
+
+def reportes(raw, prod="T", entidad=None, peso=None, corte=None):
+    """Los tres relatos para un filtro; omite los que no tienen datos suficientes.
+    `corte` (AAAA-MM) los calcula como si ese fuera el último mes con datos."""
     f = filtrar(raw, prod, entidad)
     if not f["RAW_TOTAL"]:
         return []
     d = Datos(f)
+    if corte:
+        d.meses = [m for m in d.meses if m <= corte]
+        if len(d.meses) < 14:
+            return []
     c = Ctx(prod, banco(entidad) if entidad else None)
     ltm = d.meses[-12:]
     tiene_v, tiene_m = d.monto(ltm, "T", "VISA") > 0, d.monto(ltm, "T", "MASTERCARD") > 0
@@ -983,6 +993,7 @@ def reportes(raw, prod="T", entidad=None, peso=None):
             r = fn(d, c)
             if fn is relato_historia and len(r["scenes"][1]["labels"]) < 3:
                 continue
+            r["corte"] = fin_de_mes(d.meses[-1])
             out.append(r)
         except (ZeroDivisionError, ValueError, IndexError):
             continue
@@ -1012,20 +1023,25 @@ def main():
     raw = cargar(src)
     d = Datos(raw)
     last = d.meses[-1]
-    y, m = int(last[:4]), int(last[5:7])
-    corte = f"{calendar.monthrange(y, m)[1]}-{MES3[m - 1]}-{y}"
+    corte = fin_de_mes(last)
+    cortes = d.meses[-12:]      # meses de corte que se pueden elegir (el último es el actual)
 
     ents = bancos_filtrables(d, raw)
     bancos = [{"id": f"b{i}", "nombre": banco(e)} for i, (e, _) in enumerate(ents)]
     combos = {}
     for prod in ("T", "C", "D"):
         combos[prod] = reportes(raw, prod, None)
+        for c_ in cortes[:-1]:      # el período solo se puede elegir a nivel mercado (no por banco)
+            r = reportes(raw, prod, None, corte=c_)
+            if r:
+                combos[f"{prod}@{c_}"] = r
         for b, (e, peso) in zip(bancos, ents):
             r = reportes(raw, prod, e, peso)
             if r:
                 combos[f"{b['id']}.{prod}"] = r
     bancos = [b for b in bancos if any(f"{b['id']}.{p}" in combos for p in "TCD")]   # solo bancos con algún resumen
-    data = {"corte": corte, "bancos": bancos, "combos": combos}
+    data = {"corte": corte, "cortes": [{"id": c_, "label": mes_largo(c_)} for c_ in reversed(cortes)],
+            "bancos": bancos, "combos": combos}
     html = TEMPLATE.read_text(encoding="utf-8")
     assert html.count("/*__DATA__*/null") == 1
     payload = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")

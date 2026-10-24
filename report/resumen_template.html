@@ -148,6 +148,7 @@ svg.chart .vlab{opacity:0;transition:opacity .4s ease .9s;font-weight:700;fill:v
 <div class="filters" id="filters">
   <div class="f">Producto <div class="seg2" id="f-prod"></div></div>
   <div class="f">Banco <select id="f-banco" aria-label="Banco"></select></div>
+  <div class="f">Período <select id="f-corte" aria-label="Mes de corte"></select></div>
   <button class="reset" id="f-reset" hidden>Quitar filtros</button>
 </div>
 <p class="foot" id="foot"></p>
@@ -340,15 +341,18 @@ const stage=document.getElementById("stage"), tabs=document.getElementById("tabs
       playBtn=document.getElementById("play"), foot=document.getElementById("foot");
 let cur=0, rep=null, scenes=[], enters=[], playing=!reduce, timer=null, raf=null, t0=0;
 const PRODS=[["T","Total"],["C","Crédito"],["D","Débito"]], PN={T:"Total (crédito + débito)",C:"Crédito",D:"Débito"};
-const st={prod:"T",banco:""};
-const comboKey=()=>st.banco?st.banco+"."+st.prod:st.prod;
+const ULT=DATA.cortes[0].id;     // mes de corte más reciente
+const st={prod:"T",banco:"",corte:ULT};
+// Con banco solo hay último mes; a nivel mercado se puede elegir el mes de corte (p. ej. julio = "T@2026-07")
+const keyDe=(prod,banco,corte)=>banco?banco+"."+prod:(corte&&corte!==ULT?prod+"@"+corte:prod);
+const comboKey=()=>keyDe(st.prod,st.banco,st.corte);
 const reps=()=>DATA.combos[comboKey()]||[];
 const bancoNombre=()=>{const b=DATA.bancos.find(x=>x.id===st.banco); return b?b.nombre:""};
 function parseHash(){ const h=location.hash.slice(1); if(!h) return {};
   if(!h.includes("=")) return {id:h};
-  const p=new URLSearchParams(h); return {id:p.get("id")||"", prod:p.get("prod")||"T", banco:p.get("banco")||""}; }
-function writeHash(){ try{ const f=(st.prod!=="T"||st.banco);
-  history.replaceState(null,"","#"+(f?`id=${rep?rep.id:""}&prod=${st.prod}&banco=${st.banco}`:(rep?rep.id:""))) }catch(e){} }
+  const p=new URLSearchParams(h); return {id:p.get("id")||"", prod:p.get("prod")||"T", banco:p.get("banco")||"", corte:p.get("corte")||""}; }
+function writeHash(){ try{ const f=(st.prod!=="T"||st.banco||st.corte!==ULT);
+  history.replaceState(null,"","#"+(f?`id=${rep?rep.id:""}&prod=${st.prod}&banco=${st.banco}&corte=${st.corte}`:(rep?rep.id:""))) }catch(e){} }
 const prog=$("div","progress");
 
 function buildReport(id, idx=0){
@@ -364,9 +368,10 @@ function buildReport(id, idx=0){
     const b=$("button"); b.setAttribute("aria-label","Escena "+(i+1)); b.onclick=()=>go(i); dots.append(b);
   });
   stage.append(prog);
-  [...tabs.children].forEach(b=>{ b.classList.toggle("on",b.dataset.id===rep.id); b.disabled=!lista.some(r=>r.id===b.dataset.id); b.title=b.disabled?"Sin datos suficientes con este filtro":"" });
+  [...tabs.children].forEach(b=>{ const r=lista.find(x=>x.id===b.dataset.id); b.classList.toggle("on",b.dataset.id===rep.id); b.disabled=!r; b.title=b.disabled?"Sin datos suficientes con este filtro":"";
+    if(r) b.querySelector("small").textContent=r.label; });
   const vista=(st.banco||st.prod!=="T")?`Vista filtrada: ${st.banco?bancoNombre()+" · ":""}${PN[st.prod]}. `:"";
-  foot.textContent=vista+`Fuente: Superintendencia Financiera de Colombia (datos.gov.co), corte ${DATA.corte}. Facturación = compras nacionales + exterior, crédito + débito. En débito la franquicia es estimada por proxy (la SFC no la reporta); Nequi se muestra separado de Bancolombia. Textos generados automáticamente con las cifras del período.`;
+  foot.textContent=vista+`Fuente: Superintendencia Financiera de Colombia (datos.gov.co), corte ${rep.corte||DATA.corte}. Facturación = compras nacionales + exterior, crédito + débito. En débito la franquicia es estimada por proxy (la SFC no la reporta); Nequi se muestra separado de Bancolombia. Textos generados automáticamente con las cifras del período.`;
   go(idx);
 }
 function go(i){
@@ -389,12 +394,18 @@ DATA.combos.T.forEach(r=>{const b=$("button",0,`${r.tab}<small>${r.label}</small
 /* Filtros */
 const fProd=document.getElementById("f-prod"), fBanco=document.getElementById("f-banco"), fReset=document.getElementById("f-reset");
 PRODS.forEach(([k,n])=>{const b=$("button",0,n); b.dataset.k=k; b.onclick=()=>{st.prod=k; buildReport(rep?rep.id:"",0)}; fProd.append(b)});
+const fCorte=document.getElementById("f-corte");
 fBanco.append(new Option("Todos los bancos",""));
 DATA.bancos.forEach(b=>fBanco.append(new Option(b.nombre,b.id)));
-const hay=(k,b=st.banco)=>!!DATA.combos[b?b+"."+k:k];
-fBanco.onchange=()=>{st.banco=fBanco.value; if(!hay(st.prod)) st.prod=PRODS.map(x=>x[0]).find(k=>hay(k))||"T"; buildReport(rep?rep.id:"",0)};
-fReset.onclick=()=>{st.prod="T"; st.banco=""; buildReport(rep?rep.id:"",0)};
-function syncFilters(){ [...fProd.children].forEach(b=>{b.classList.toggle("on",b.dataset.k===st.prod); b.disabled=!hay(b.dataset.k); b.title=b.disabled?"Este banco no tiene datos suficientes para este producto":""}); fBanco.value=st.banco; fReset.hidden=!(st.banco||st.prod!=="T"); }
+DATA.cortes.forEach((c,i)=>fCorte.append(new Option(c.label+(i===0?" (último)":""),c.id)));
+const hay=(k,b=st.banco)=>!!DATA.combos[keyDe(k,b,st.corte)];
+fBanco.onchange=()=>{st.banco=fBanco.value; if(st.banco) st.corte=ULT; if(!hay(st.prod)) st.prod=PRODS.map(x=>x[0]).find(k=>hay(k))||"T"; buildReport(rep?rep.id:"",0)};
+fCorte.onchange=()=>{st.corte=fCorte.value; buildReport(rep?rep.id:"",0)};
+fReset.onclick=()=>{st.prod="T"; st.banco=""; st.corte=ULT; buildReport(rep?rep.id:"",0)};
+function syncFilters(){ [...fProd.children].forEach(b=>{b.classList.toggle("on",b.dataset.k===st.prod); b.disabled=!hay(b.dataset.k); b.title=b.disabled?"Sin datos suficientes para este producto":""});
+  fBanco.value=st.banco; fCorte.value=st.corte; fCorte.disabled=!!st.banco;
+  fCorte.title=st.banco?"Con un banco solo está disponible el último mes":"Mes de corte del resumen";
+  fReset.hidden=!(st.banco||st.prod!=="T"||st.corte!==ULT); }
 const motionBtn=document.getElementById("motion");
 if(reduce){ motionBtn.hidden=false; motionBtn.title="Tu sistema tiene las animaciones reducidas; la página las respeta hasta que las actives aquí." }
 motionBtn.onclick=()=>{ reduce=false; try{localStorage.setItem("resumen-motion","1")}catch(e){}
@@ -403,8 +414,9 @@ playBtn.onclick=()=>setPlaying(!playing); playBtn.textContent=playing?"⏸":"▶
 document.getElementById("prev").onclick=()=>go(cur-1);
 document.getElementById("next").onclick=()=>go(cur+1);
 addEventListener("keydown",e=>{ if(e.key==="ArrowRight")go(cur+1); else if(e.key==="ArrowLeft")go(cur-1); else if(e.key===" "){e.preventDefault();setPlaying(!playing)} });
-function aplicarHash(){ const h=parseHash(); st.prod=h.prod&&DATA.combos[h.prod]?h.prod:"T"; st.banco=h.banco&&DATA.bancos.some(b=>b.id===h.banco)?h.banco:""; buildReport(h.id||""); }
-addEventListener("hashchange",()=>{ const h=parseHash(); if((h.id||"")!==(rep?rep.id:"")||(h.prod||"T")!==st.prod||(h.banco||"")!==st.banco) aplicarHash() });
+function aplicarHash(){ const h=parseHash(); st.prod=h.prod&&DATA.combos[h.prod]?h.prod:"T"; st.banco=h.banco&&DATA.bancos.some(b=>b.id===h.banco)?h.banco:"";
+  st.corte=(!st.banco&&h.corte&&DATA.cortes.some(c=>c.id===h.corte))?h.corte:ULT; buildReport(h.id||""); }
+addEventListener("hashchange",()=>{ const h=parseHash(); if((h.id||"")!==(rep?rep.id:"")||(h.prod||"T")!==st.prod||(h.banco||"")!==st.banco||((h.corte||ULT)!==st.corte&&!st.banco)) aplicarHash() });
 aplicarHash();
 let rt=null, lw=stage.clientWidth, lh=stage.clientHeight;
 addEventListener("resize",()=>{ clearTimeout(rt); rt=setTimeout(()=>{
