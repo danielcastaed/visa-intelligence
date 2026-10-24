@@ -1061,7 +1061,7 @@ function viewPeriods(periods, fullHistory) {
   const meses = getPillVals("mes");
   let vp = periods;
   if (years) vp = vp.filter(p => years.includes(p.slice(0,4)));
-  if (meses) vp = vp.filter(p => meses.includes(p.slice(5,7)));
+  if (meses && currentView !== "anual") vp = vp.filter(p => meses.includes(p.slice(5,7)));
   if (!years && !meses) {
     if (currentView === "anual" || fullHistory) return periods;
     return periods.slice(-24);
@@ -1168,6 +1168,14 @@ function mselUpdateBtn(group) {
 // Alias for backward compat with getPillVals references
 function getPillVals(group) { return mselGetVals(group); }
 
+// En vista anual, elegir un mes significa "el año hasta ese mes" (enero..mes), comparable contra el
+// mismo tramo de los años anteriores; en vista mensual, solo los meses elegidos.
+function mesPasa(mm) {
+  const meses = getPillVals("mes");
+  if (!meses) return true;
+  if (currentView === "anual") return Number(mm) <= Math.max(...meses.map(Number));
+  return meses.includes(mm);
+}
 function filtered() {
   let rows = RAW;
   const bancos = getPillVals("banco");
@@ -1177,7 +1185,7 @@ function filtered() {
   const years = getPillVals("year");
   if (years) rows = rows.filter(r => years.includes(r.MES.slice(0,4)));
   const meses = getPillVals("mes");
-  if (meses) rows = rows.filter(r => meses.includes(r.MES.slice(5,7)));
+  if (meses) rows = rows.filter(r => mesPasa(r.MES.slice(5,7)));
   return rows;
 }
 
@@ -1439,7 +1447,7 @@ function renderAll() {
   // Comparable annual map: for prior year, only sum months available in current year
   const ultimoYear = currentView==="anual" ? periods[periods.length-1] : null;
   const ultimoMonthSet = ultimoYear
-    ? new Set(rowsBanco.filter(r=>r.MES.slice(0,4)===ultimoYear).map(r=>r.MES.slice(5,7)))
+    ? new Set(rowsBanco.filter(r=>r.MES.slice(0,4)===ultimoYear && mesPasa(r.MES.slice(5,7))).map(r=>r.MES.slice(5,7)))
     : null;
   const rowsComparable = ultimoYear
     ? rowsBanco.filter(r => r.MES.slice(0,4) !== ultimoYear || ultimoMonthSet.has(r.MES.slice(5,7)))
@@ -1448,7 +1456,7 @@ function renderAll() {
   const rowsForPrior = ultimoYear
     ? rowsBanco.filter(r => {
         const yr = r.MES.slice(0,4);
-        if (yr === ultimoYear) return true;  // current year: include all
+        if (yr === ultimoYear) return ultimoMonthSet.has(r.MES.slice(5,7));  // current year: hasta el mes elegido (todos si no hay filtro de mes)
         return ultimoMonthSet.has(r.MES.slice(5,7));  // prior years: only comparable months
       })
     : rowsBanco;
@@ -1797,7 +1805,7 @@ function renderCreditDebit() {
     let r = rows;
     if (bancos) r = r.filter(x => bancos.includes(x.ENTIDAD));
     if (years)  r = r.filter(x => years.includes(x.MES.slice(0,4)));
-    if (meses)  r = r.filter(x => meses.includes(x.MES.slice(5,7)));
+    if (meses)  r = r.filter(x => mesPasa(x.MES.slice(5,7)));
     return r;
   };
   // Filtro de franquicia: solo aplica a los gráficos que NO comparan
@@ -2079,7 +2087,7 @@ function renderVigFranqChart(rows, vigMain) {
   // año/mes activo — sí respeta esos filtros cuando están puestos.
   const _yrs = getPillVals("year"), _mss = getPillVals("mes");
   const _filteredPeriods = (_yrs || _mss)
-    ? periods.filter(p => (!_yrs || _yrs.includes(p.slice(0,4))) && (!_mss || _mss.includes(p.slice(5,7))))
+    ? periods.filter(p => (!_yrs || _yrs.includes(p.slice(0,4))) && (!_mss || currentView === "anual" || _mss.includes(p.slice(5,7))))
     : periods;
   const shown = _filteredPeriods.length ? _filteredPeriods : periods;
   const labels = shown.map(p => p.length===7 ? p.slice(0,7) : p);
@@ -3027,6 +3035,7 @@ function renderRetiros() {
   function buildRatioMap(rowsSrc, mode) {
     const map = {};
     for (const r of rowsSrc) {
+      if (mode === "anual" && !mesPasa(r.MES.slice(5,7))) continue;   // año hasta el mes elegido
       const key = mode === "anual" ? r.MES.slice(0,4) : r.MES;
       if (!map[key]) map[key] = {ret_v:0, comp_v:0, ret_m:0, comp_m:0, ret_all:0, comp_all:0};
       const d = map[key];
@@ -3418,8 +3427,8 @@ function renderYoY(rows) {
     // completos. Mismo criterio que usa renderAll (rowsForPrior) y renderCohort.
     const allYears = [...new Set(rowsBanco.map(r => r.MES.slice(0,4)))].sort();
     const lastYear = allYears[allYears.length-1];
-    const monthSet = new Set(rowsBanco.filter(r => r.MES.slice(0,4) === lastYear).map(r => r.MES.slice(5,7)));
-    rowsBanco = rowsBanco.filter(r => r.MES.slice(0,4) === lastYear || monthSet.has(r.MES.slice(5,7)));
+    const monthSet = new Set(rowsBanco.filter(r => r.MES.slice(0,4) === lastYear && mesPasa(r.MES.slice(5,7))).map(r => r.MES.slice(5,7)));
+    rowsBanco = rowsBanco.filter(r => monthSet.has(r.MES.slice(5,7)));
   }
   const {map:fullMap, periods:fullPeriods} = buildPeriod(rowsBanco, isAnual ? "anual" : "mensual");
 
