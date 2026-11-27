@@ -148,7 +148,7 @@ def main():
     last_bill = bill.last
 
     # ---------- Anual (corte 4T; año en curso: último trimestre + facturación acumulada)
-    anual, contrib_by = [], {}
+    anual, contrib_by, cut_by_label = [], {}, {}
     for y in sorted({int(d[:4]) for d in fechas if int(d[:4]) >= y0}):
         cuts = [d for d in fechas if d.startswith(str(y))]
         q4 = f"{y}-10-01"
@@ -161,6 +161,7 @@ def main():
         r, cs = share_row(label, y, cut, cre, deb, cf, rib, {"completo": full})
         anual.append(r)
         contrib_by[label] = cs
+        cut_by_label[label] = cut
 
     # ---------- Trimestral (desde 1T del año inicial)
     trimestral = []
@@ -194,15 +195,34 @@ def main():
     ultimo = completos[-1]["periodo"]
     first = anual[0]["periodo"]
 
-    # ---------- Contribución por banco al Δ share de crédito (escenario saldo)
-    contrib = []
-    for k in list(banks) + ["R"]:
-        a, b = contrib_by[first].get(k, (0, 0)), contrib_by[ultimo].get(k, (0, 0))
-        contrib.append({"letra": k, "banco": banks[k]["banco"] if k in banks else "Resto (no emparejados)",
-                        "visa_pp": round((b[0] - a[0]) * 100, 2), "mc_pp": round((b[1] - a[1]) * 100, 2)})
+    def debit_contrib(label):
+        cut = next(c for l, c in cut_by_label.items() if l == label)
+        dt = triple(cf["debito"]["totales"], cut)
+        den = sum(dt) or 1
+        return {k: (triple(s, cut)[0] / den, triple(s, cut)[1] / den) for k, s in cf["debito"]["letras"].items()}
+    w_by = {r["periodo"]: (r["fact_credito"] / (r["fact_credito"] + r["fact_debito"]), r["fact_debito"] / (r["fact_credito"] + r["fact_debito"])) for r in anual}
+    def contrib_list(kind):
+        a0, a1 = first, ultimo
+        if kind == "credito":
+            A, B = contrib_by[a0], contrib_by[a1]
+        elif kind == "debito":
+            A, B = debit_contrib(a0), debit_contrib(a1)
+        else:
+            def tot(lbl):
+                wc, wd = w_by[lbl]
+                c, d = contrib_by[lbl], debit_contrib(lbl)
+                keys = set(c) | set(d)
+                return {k: (wc * c.get(k, (0, 0))[0] + wd * d.get(k, (0, 0))[0], wc * c.get(k, (0, 0))[1] + wd * d.get(k, (0, 0))[1]) for k in keys}
+            A, B = tot(a0), tot(a1)
+        rows_ = []
+        for k in sorted(set(A) | set(B)):
+            va = A.get(k, (0, 0)); vb = B.get(k, (0, 0))
+            nm = "Resto crédito (no emparejados)" if k == "R" else nombre(k, "credito" if kind == "credito" else kind)
+            rows_.append({"letra": k, "banco": nm, "visa_pp": round((vb[0] - va[0]) * 100, 2), "mc_pp": round((vb[1] - va[1]) * 100, 2)})
+        return rows_
 
     def nombre(k, producto):
-        if k in banks and not (producto == "debito" and k in ("S", "P")):
+        if k in banks and not (producto in ("debito", "total") and k in ("S", "P")):
             return banks[k]["banco"]
         return "¿Mifel?" if k == "B" else f"Emisor {k}"
 
@@ -250,7 +270,16 @@ def main():
         return {"periodos": list(cuts.keys()), "heat": heat, "concentracion": conc,
                 "nombres": {k: nombre(k, producto) for k in letras}}
 
-    emisores = {p: issuer_views(p) for p in ("credito", "debito")}
+    # Total = crédito + débito sumados por letra (supone que la misma letra es el mismo banco en ambos productos)
+    merged = {}
+    for prod in ("credito", "debito"):
+        for k, ser in cf[prod]["letras"].items():
+            m = merged.setdefault(k, {b: {} for b in BRANDS})
+            for b in BRANDS:
+                for d, v in ser.get(b, {}).items():
+                    m[b][d] = m[b].get(d, 0) + (v or 0)
+    cf["total"] = {"letras": merged}
+    emisores = {p: issuer_views(p) for p in ("credito", "debito", "total")}
 
     # ---------- Tablas de emisores
     last_cut, first_cut = fechas[-1], f"{y0}-10-01"
@@ -269,6 +298,16 @@ def main():
             "pct_visa": round(a[0] / tot * 100, 1) if tot else None,
             "saldo_pct_ult": round(info["saldo"][2] / rib["totales_saldo_mdp"]["2025"] * 100, 1) if info else None})
     emis_cr.sort(key=lambda r: -(r["total"] or r["total_inicial"]))
+    def prod_table(producto):
+        out_ = []
+        for k, ser in cf[producto]["letras"].items():
+            v, m, o = triple(ser, last_cut)
+            tt = v + m + o
+            if tt > 0:
+                out_.append({"letra": k, "banco": nombre(k, producto), "visa": v, "mc": m, "otras": o,
+                             "total": tt, "pct_visa": round(v / tt * 100, 1)})
+        return sorted(out_, key=lambda r: -r["total"])
+    emis_total = prod_table("total")
     emis_db = []
     for k, ser in cf["debito"]["letras"].items():
         v, m, o = triple(ser, last_cut)
@@ -278,6 +317,26 @@ def main():
                             "total": t, "pct_visa": round(v / t * 100, 1)})
     emis_db.sort(key=lambda r: -r["total"])
 
+    def fintech_view():
+        F = inp.get("fintech")
+        if not F:
+            return None
+        last = anual[-1]
+        ct = triple(cf["credito"]["totales"], last_cut)
+        add_mc = sum(e["tarjetas_credito"] or 0 for e in F["entidades"] if e["marca"].startswith("Mastercard"))
+        base_v, base_m = ct[0] / sum(ct) * 100, ct[1] / sum(ct) * 100
+        tot2 = sum(ct) + add_mc
+        pro_v, pro_m = ct[0] / tot2 * 100, (ct[1] + add_mc) / tot2 * 100
+        add_saldo = sum(e["saldo_tdc_mdp"] or 0 for e in F["entidades"] if e["marca"].startswith("Mastercard"))
+        w = add_saldo / (F["saldo_sistema_tdc_mdp"] + add_saldo)
+        cv, cm = last["cr_visa_saldo"], last["cr_mc_saldo"]
+        return {"corte": F["corte"], "entidades": F["entidades"], "corte_banxico": qlabel(last_cut),
+                "plast": {"visa": round(base_v, 1), "mc": round(base_m, 1), "visa_pro": round(pro_v, 1),
+                          "mc_pro": round(pro_m, 1), "agregadas_mc": add_mc},
+                "fact": {"visa": cv, "mc": cm, "visa_pro": round(cv * (1 - w), 1), "mc_pro": round(cm * (1 - w) + w * 100, 1),
+                         "peso_saldo": round(w * 100, 1), "periodo": last["periodo"]},
+                "saldo_fuente": F["saldo_sistema_fuente"]}
+
     out = {
         "meta": {"corte_tarjetas": qlabel(last_cut), "corte_tarjetas_inicial": qlabel(first_cut),
                  "corte_facturacion": f"{MESES[int(last_bill[5:7]) - 1]}-{last_bill[:4]}",
@@ -285,8 +344,9 @@ def main():
                  "empalme": {p: round(f, 4) for p, f in bill.factor.items()},
                  "descargado": cf.get("descargado", "")},
         "anual": anual, "trimestral": trimestral, "tarjetas_hist": hist, "facturacion_mensual": mensual,
-        "contribucion_credito": contrib, "emisores": emisores,
-        "emisores_credito": emis_cr, "emisores_debito": emis_db,
+        "contribucion": {k: contrib_list(k) for k in ("credito", "debito", "total")}, "emisores": emisores,
+        "emisores_credito": emis_cr, "emisores_debito": emis_db, "emisores_total": emis_total,
+        "fintech": fintech_view(),
     }
     with open(os.path.join(HERE, "output.json"), "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))

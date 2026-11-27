@@ -116,6 +116,7 @@ button.tab:disabled{opacity:.4;cursor:not-allowed;background:var(--bg)}
 .kpi-delta{font-size:11px;margin-top:3px}
 .row-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .mini-title{font-size:12px;font-weight:700;margin-bottom:4px}
+.intl-bar{display:flex;border-radius:4px;overflow:hidden;height:14px;background:var(--grid)}
 .contrib-total{border-top:1px solid var(--border);margin-top:6px;padding-top:8px;font-weight:700}
 .hm td.hm-c{text-align:center;font-size:11px;font-variant-numeric:tabular-nums;min-width:54px;border:2px solid var(--card)}
 @media(max-width:720px){.mkt-grid{grid-template-columns:repeat(2,1fr)}.row-3{grid-template-columns:1fr}}
@@ -255,16 +256,16 @@ button.tab:disabled{opacity:.4;cursor:not-allowed;background:var(--bg)}
     <div class="chart-wrap" style="height:220px"><canvas id="escChart"></canvas></div>
   </div>
 
-  <div class="slabel">Contribución al &Delta; MS &mdash; Crédito <span id="contrib-range"></span></div>
+  <div class="slabel">Contribución al &Delta; MS &mdash; <span id="contrib-range"></span></div>
   <div class="row-2s">
     <div class="card">
       <div class="card-title">Aporte por banco &mdash; Visa</div>
-      <div class="card-sub">&Delta;pp del share de facturación de crédito explicado por cada emisor (escenario saldo)</div>
+      <div class="card-sub contrib-sub"></div>
       <div id="contrib-visa"></div>
     </div>
     <div class="card">
       <div class="card-title">Aporte por banco &mdash; Mastercard</div>
-      <div class="card-sub">&Delta;pp del share de facturación de crédito explicado por cada emisor (escenario saldo)</div>
+      <div class="card-sub contrib-sub"></div>
       <div id="contrib-mc"></div>
     </div>
   </div>
@@ -276,10 +277,6 @@ button.tab:disabled{opacity:.4;cursor:not-allowed;background:var(--bg)}
         <div class="card-title">Tarjetas vigentes por emisor</div>
         <div class="card-sub" id="banco-sub"></div>
       </div>
-      <div style="display:flex;gap:4px">
-        <button class="tab active" data-bancotab="credito">Crédito</button>
-        <button class="tab" data-bancotab="debito">Débito</button>
-      </div>
     </div>
     <div class="leg-row">
       <span class="leg"><span class="leg-sq" style="background:var(--visa)"></span>Visa</span>
@@ -290,14 +287,23 @@ button.tab:disabled{opacity:.4;cursor:not-allowed;background:var(--bg)}
     <div class="note">Banxico publica cada emisor como una letra; el nombre del banco es una inferencia (ver Identificación de Emisores). En débito solo se sugiere el banco si la misma letra está identificada en crédito; no está verificado que las letras coincidan entre productos.</div>
   </div>
 
+  <div class="slabel">Neobancos y Fintech</div>
+  <div class="card">
+    <div class="card-title">Lo que no está en la serie de Banxico</div>
+    <div class="card-sub" id="fin-sub"></div>
+    <div style="overflow-x:auto"><table class="tbl" id="fin-table"></table></div>
+    <div class="row-2s" style="margin-top:14px">
+      <div><div class="mini-title">Share de tarjetas de crédito (plásticos)</div><div class="card-sub" id="fin-plast-sub"></div><div id="fin-plast"></div></div>
+      <div><div class="mini-title">Share de facturación de crédito (escenario saldo)</div><div class="card-sub" id="fin-fact-sub"></div><div id="fin-fact"></div></div>
+    </div>
+    <div class="note" id="fin-note"></div>
+  </div>
+
   <div class="slabel">Mapa de Calor</div>
   <div class="card">
     <div class="card-title">Mapa de Calor</div>
-    <div class="card-sub">&Delta;pp anual de participación en tarjetas vigentes por emisor · verde = ganó · rojo = perdió · corte 4T (año en curso: último trimestre)</div>
+    <div class="card-sub" id="heat-sub"></div>
     <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px">
-      <button class="tab active" data-heatprod="credito">Crédito</button>
-      <button class="tab" data-heatprod="debito">Débito</button>
-      <span class="sep"></span>
       <button class="tab active" data-heatmarca="total">Total mercado</button>
       <button class="tab" data-heatmarca="visa">Dentro de Visa</button>
       <button class="tab" data-heatmarca="mc">Dentro de Mastercard</button>
@@ -311,10 +317,6 @@ button.tab:disabled{opacity:.4;cursor:not-allowed;background:var(--bg)}
       <div>
         <div class="card-title">Top Emisores</div>
         <div class="card-sub">¿Qué tan dependiente es cada marca de sus principales emisores? Share de cada banco dentro de las tarjetas vigentes de la marca · &Delta;pp vs mismo trimestre del año anterior · el <b>índice HHI</b> mide concentración: cercano a 0 = muchos emisores con peso similar · cercano a 10.000 = un solo emisor domina</div>
-      </div>
-      <div style="display:flex;gap:4px">
-        <button class="tab active" data-conctab="credito">Crédito</button>
-        <button class="tab" data-conctab="debito">Débito</button>
       </div>
     </div>
     <div id="hhi-summary" style="font-size:11px;color:var(--muted);margin:4px 0 12px;line-height:1.5"></div>
@@ -331,8 +333,8 @@ button.tab:disabled{opacity:.4;cursor:not-allowed;background:var(--bg)}
     <div style="overflow-x:auto"><table class="tbl" id="emis-cr"></table></div>
   </div>
   <div class="card" style="margin-top:14px">
-    <div class="card-title">Emisores de débito</div>
-    <div class="card-sub">Tarjetas de débito vigentes por emisor y marca · sin datos públicos para ponderar débito por actividad</div>
+    <div class="card-title" id="emis-prod-title"></div>
+    <div class="card-sub" id="emis-prod-sub"></div>
     <div style="overflow-x:auto"><table class="tbl" id="emis-db"></table></div>
   </div>
 
@@ -419,7 +421,7 @@ button.tab:disabled{opacity:.4;cursor:not-allowed;background:var(--bg)}
       <li>La identificación de letras, sobre todo C = Banamex y E = Santander (juntos ~43% del saldo y mayoritariamente MC).</li>
       <li>Que el saldo sea un buen proxy de facturación (mezcla gasto mensual con deuda revolvente).</li>
       <li>Débito sin ponderar: probablemente sobreestima a emisores con muchas tarjetas inactivas.</li>
-      <li>Los Indicadores Básicos cubren la cartera comparable de bancos y sofomes reguladas; fintechs no bancarias quedan en "resto".</li>
+      <li>Cobertura: CF256 solo incluye bancos que reportan a Banxico. Nu (banco desde ago-2026) y Plata (banco desde mar-2026) aún no aparecen al 2T26; cuando entren habrá un quiebre fuerte hacia Mastercard en plásticos de crédito (ver Neobancos y Fintech). Mercado Pago no es banco y no aparece.</li>
     </ul>
     <h3>Validación sugerida</h3>
     <p>Contrastar con el volumen interno de VisaNet México por producto y año.</p>
@@ -433,7 +435,7 @@ button.tab:disabled{opacity:.4;cursor:not-allowed;background:var(--bg)}
 <script>
 const D = __DATA__;
 const S = {periodo: 'anual', tipo: 'total', esc: 'saldo', voltab: 'marca', vigtab: 'hist', yoytab: 'fact',
-           bancotab: 'credito', heatprod: 'credito', heatmarca: 'total', conctab: 'credito', rango: '60'};
+           heatmarca: 'total', rango: '60'};
 const charts = {};
 const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const nf = (v, d) => v.toLocaleString('es-MX', {minimumFractionDigits: d, maximumFractionDigits: d});
@@ -622,7 +624,7 @@ function renderYoY() {
     labels.push(b.periodo); v.push(+((y.v / x.v - 1) * 100).toFixed(1)); m.push(+((y.m / x.m - 1) * 100).toFixed(1));
   }
   document.getElementById('yoy-sub').textContent = (S.yoytab === 'fact' ? 'Facturación estimada' : 'Tarjetas vigentes') + ' vs ' + (S.periodo === 'trimestral' ? 'mismo trimestre del año anterior' : 'año anterior') + ' · ' + TIPO[S.tipo];
-  mk('yoyChart', {type: 'bar', data: {labels, datasets: [bar('Visa', v, css('--visa')), bar('Mastercard', m, css('--mc'))]},
+  mk('yoyChart', {type: 'line', data: {labels, datasets: [line('Visa', v, css('--visa')), line('Mastercard', m, css('--mc'))]},
     options: opts(deepMerge({scales: {y: {ticks: {callback: (x) => x + '%'}}}}, tipPct))});
 }
 
@@ -636,27 +638,32 @@ function renderEsc() {
 }
 
 function renderContrib() {
-  const rws = D.contribucion_credito.filter(r => Math.abs(r.visa_pp) >= 0.05 || Math.abs(r.mc_pp) >= 0.05);
+  const rws = D.contribucion[S.tipo].filter(r => Math.abs(r.visa_pp) >= 0.05 || Math.abs(r.mc_pp) >= 0.05);
   const maxAbs = Math.max(...rws.map(r => Math.max(Math.abs(r.visa_pp), Math.abs(r.mc_pp))), 0.5);
   const a0 = D.anual.find(r => r.periodo === D.meta.primer_anio), a1 = D.anual.find(r => r.periodo === D.meta.ultimo_anio_completo);
-  document.getElementById('contrib-range').innerHTML = D.meta.primer_anio + ' &rarr; ' + D.meta.ultimo_anio_completo;
+  const f = {credito: ['cr_visa_saldo', 'cr_mc_saldo'], debito: ['db_visa', 'db_mc'], total: ['tot_visa_saldo', 'tot_mc_saldo']}[S.tipo];
+  document.getElementById('contrib-range').innerHTML = TIPO[S.tipo] + ' ' + D.meta.primer_anio + ' &rarr; ' + D.meta.ultimo_anio_completo;
+  const sub = {credito: 'Δpp del share de facturación de crédito explicado por cada emisor (peso por saldo × % de la marca en sus tarjetas)',
+    debito: 'Δpp del share de débito explicado por cada emisor (sus tarjetas de la marca ÷ total de tarjetas de débito)',
+    total: 'Δpp del share total: aporte de crédito y de débito de cada emisor, ponderados por la facturación de cada producto · supone que la misma letra es el mismo banco en ambos productos'}[S.tipo];
+  document.querySelectorAll('.contrib-sub').forEach(e => { e.textContent = sub; });
   const draw = (key, el, total) => {
     el.innerHTML = rws.slice().sort((x, y) => y[key] - x[key]).map(r => {
       const v = r[key], w = Math.abs(v) / maxAbs * 50, col = v >= 0 ? 'var(--green)' : 'var(--red)';
-      return `<div class="contrib-row"><span>${r.banco}${r.letra !== 'R' ? ' <span style="color:var(--faint)">(' + r.letra + ')</span>' : ''}</span>
+      const lbl = /^Emisor /.test(r.banco) || /^Resto/.test(r.banco) ? r.banco : r.banco + ' <span style="color:var(--faint)">(' + r.letra + ')</span>';
+      return `<div class="contrib-row"><span>${lbl}</span>
         <div class="contrib-track"><div class="mid"></div><div class="fill" style="left:${v >= 0 ? 50 : 50 - w}%;width:${w}%;background:${col}"></div></div>
         <span class="contrib-val" style="color:${col}">${v > 0 ? '+' : ''}${f2(v)}</span></div>`;
     }).join('') + `<div class="contrib-row contrib-total"><span>Total</span><span></span><span class="contrib-val">${total > 0 ? '+' : ''}${f2(total)}</span></div>`;
   };
-  draw('visa_pp', document.getElementById('contrib-visa'), a1.cr_visa_saldo - a0.cr_visa_saldo);
-  draw('mc_pp', document.getElementById('contrib-mc'), a1.cr_mc_saldo - a0.cr_mc_saldo);
+  draw('visa_pp', document.getElementById('contrib-visa'), a1[f[0]] - a0[f[0]]);
+  draw('mc_pp', document.getElementById('contrib-mc'), a1[f[1]] - a0[f[1]]);
 }
 
 const issuerLabel = (r) => (/^Emisor /.test(r.banco) || r.banco === 'Sin identificar' ? 'Emisor ' + r.letra : r.banco + ' (' + r.letra + ')');
 function renderBancos() {
-  const isCr = S.bancotab === 'credito';
-  const src = (isCr ? D.emisores_credito : D.emisores_debito).filter(r => r.total > 0).slice(0, 15);
-  document.getElementById('banco-sub').textContent = (isCr ? 'Crédito' : 'Débito') + ' · ' + D.meta.corte_tarjetas + ' · millones de tarjetas · top ' + src.length + ' emisores';
+  const src = ({credito: D.emisores_credito, debito: D.emisores_debito, total: D.emisores_total}[S.tipo]).filter(r => r.total > 0).slice(0, 15);
+  document.getElementById('banco-sub').textContent = TIPO[S.tipo] + ' · ' + D.meta.corte_tarjetas + ' · millones de tarjetas · top ' + src.length + ' emisores';
   document.getElementById('banco-wrap').style.height = (src.length * 26 + 40) + 'px';
   mk('bancoChart', {type: 'bar', data: {labels: src.map(issuerLabel), datasets: [
     bar('Visa', src.map(r => +(r.visa / 1e6).toFixed(3)), css('--visa'), {stack: 's'}),
@@ -667,7 +674,8 @@ function renderBancos() {
 }
 
 function renderHeat() {
-  const E = D.emisores[S.heatprod], H = E.heat[S.heatmarca], P = E.periodos;
+  const E = D.emisores[S.tipo], H = E.heat[S.heatmarca], P = E.periodos;
+  document.getElementById('heat-sub').textContent = 'Δpp anual de participación en tarjetas vigentes por emisor · ' + TIPO[S.tipo] + ' · verde = ganó · rojo = perdió · corte 4T (año en curso: último trimestre)';
   const lastP = P[P.length - 1];
   const keys = Object.keys(H).filter(k => (H[k][lastP] || 0) > 0 || P.some(p => (H[k][p] || 0) > 1))
     .sort((a, b) => (H[b][lastP] || 0) - (H[a][lastP] || 0)).slice(0, 15);
@@ -687,10 +695,10 @@ function renderHeat() {
 }
 
 function renderConc() {
-  const C = D.emisores[S.conctab].concentracion;
+  const C = D.emisores[S.tipo].concentracion;
   const risk = (h) => (h == null ? '—' : h >= 2500 ? 'alta' : h >= 1500 ? 'moderada' : 'baja');
   const hd = (b) => (C[b].hhi != null && C[b].hhi_anterior != null ? ` (${C[b].hhi - C[b].hhi_anterior > 0 ? '+' : ''}${fN(C[b].hhi - C[b].hhi_anterior)} vs ${C[b].corte_anterior})` : '');
-  document.getElementById('hhi-summary').innerHTML = `${TIPO[S.conctab]} · ${C.visa.corte}. <b style="color:var(--visa)">Visa</b>: HHI ${C.visa.hhi != null ? fN(C.visa.hhi) : '—'}${hd('visa')}, concentración ${risk(C.visa.hhi)}; top emisor ${C.visa.top[0] ? C.visa.top[0].banco + ' con ' + f1(C.visa.top[0].share) + '%' : '—'}. <b style="color:var(--mc)">Mastercard</b>: HHI ${C.mc.hhi != null ? fN(C.mc.hhi) : '—'}${hd('mc')}, concentración ${risk(C.mc.hhi)}; top emisor ${C.mc.top[0] ? C.mc.top[0].banco + ' con ' + f1(C.mc.top[0].share) + '%' : '—'}.`;
+  document.getElementById('hhi-summary').innerHTML = `${TIPO[S.tipo]} · ${C.visa.corte}. <b style="color:var(--visa)">Visa</b>: HHI ${C.visa.hhi != null ? fN(C.visa.hhi) : '—'}${hd('visa')}, concentración ${risk(C.visa.hhi)}; top emisor ${C.visa.top[0] ? C.visa.top[0].banco + ' con ' + f1(C.visa.top[0].share) + '%' : '—'}. <b style="color:var(--mc)">Mastercard</b>: HHI ${C.mc.hhi != null ? fN(C.mc.hhi) : '—'}${hd('mc')}, concentración ${risk(C.mc.hhi)}; top emisor ${C.mc.top[0] ? C.mc.top[0].banco + ' con ' + f1(C.mc.top[0].share) + '%' : '—'}.`;
   const draw = (b, el, col) => {
     el.innerHTML = C[b].top.map(r => `<div style="margin-bottom:7px"><div style="display:flex;justify-content:space-between;font-size:12px"><span>${r.banco} <span style="color:var(--faint)">(${r.letra})</span></span><span><b>${f1(r.share)}%</b> ${r.delta_pp == null ? '' : chip(r.delta_pp)}</span></div><div class="bar-bg"><div class="bar-fill" style="width:${r.share}%;background:${col}"></div></div></div>`).join('');
   };
@@ -702,8 +710,29 @@ function renderTables() {
   const confCls = (c) => (/^alta$/i.test(c) ? 'conf-alta' : /media/i.test(c) ? 'conf-media' : /baja/i.test(c) ? 'conf-baja' : 'conf-na');
   document.getElementById('emis-cr').innerHTML = '<thead><tr><th>Letra</th><th>Banco probable</th><th>Confianza</th><th class="n">Tarjetas ' + D.meta.corte_tarjetas + '</th><th class="n">% Visa</th><th class="n">Tarjetas ' + D.meta.corte_tarjetas_inicial + '</th><th class="n">% saldo (último RIB)</th><th>Evidencia</th></tr></thead><tbody>' +
     D.emisores_credito.map(r => `<tr><td><b>${r.letra}</b></td><td>${r.banco}</td><td><span class="conf ${confCls(r.confianza)}">${r.confianza}</span></td><td class="n">${fN(r.total)}</td><td class="n">${r.pct_visa == null ? '—' : f1(r.pct_visa) + '%'}</td><td class="n">${fN(r.total_inicial)}</td><td class="n">${r.saldo_pct_ult == null ? '—' : f1(r.saldo_pct_ult) + '%'}</td><td class="ev">${r.evidencia}</td></tr>`).join('') + '</tbody>';
-  document.getElementById('emis-db').innerHTML = '<thead><tr><th>Letra</th><th>Banco (si es la misma letra)</th><th class="n">Tarjetas ' + D.meta.corte_tarjetas + '</th><th class="n">Visa</th><th class="n">Mastercard</th><th class="n">Otras</th><th class="n">% Visa</th></tr></thead><tbody>' +
-    D.emisores_debito.map(r => `<tr><td><b>${r.letra}</b></td><td>${r.banco}</td><td class="n">${fN(r.total)}</td><td class="n">${fN(r.visa)}</td><td class="n">${fN(r.mc)}</td><td class="n">${fN(r.otras)}</td><td class="n">${f1(r.pct_visa)}%</td></tr>`).join('') + '</tbody>';
+  const PT = {credito: D.emisores_credito, debito: D.emisores_debito, total: D.emisores_total}[S.tipo];
+  document.getElementById('emis-prod-title').textContent = 'Emisores · ' + TIPO[S.tipo];
+  document.getElementById('emis-prod-sub').textContent = 'Tarjetas vigentes por emisor y marca al ' + D.meta.corte_tarjetas + (S.tipo === 'credito' ? '' : ' · el banco solo se sugiere si la misma letra está identificada en crédito') + (S.tipo === 'total' ? ' · total = crédito + débito sumados por letra' : '');
+  document.getElementById('emis-db').innerHTML = '<thead><tr><th>Letra</th><th>Banco</th><th class="n">Tarjetas ' + D.meta.corte_tarjetas + '</th><th class="n">Visa</th><th class="n">Mastercard</th><th class="n">Otras</th><th class="n">% Visa</th></tr></thead><tbody>' +
+    PT.map(r => `<tr><td><b>${r.letra}</b></td><td>${r.banco}</td><td class="n">${fN(r.total)}</td><td class="n">${fN(r.visa)}</td><td class="n">${fN(r.mc)}</td><td class="n">${fN(r.otras)}</td><td class="n">${f1(r.pct_visa)}%</td></tr>`).join('') + '</tbody>';
+}
+
+
+function renderFintech() {
+  const F = D.fintech;
+  if (!F) return;
+  document.getElementById('fin-sub').textContent = 'Banxico arma el cuadro CF256 solo con los bancos que le reportan. Al corte ' + F.corte_banxico + ' no aparecen estos neobancos y fintech · cifras públicas al ' + F.corte;
+  const fmt = (v) => (v == null ? '—' : fN(v));
+  document.getElementById('fin-table').innerHTML = '<thead><tr><th>Entidad</th><th>Marca</th><th>Figura regulatoria</th><th>¿En CF256?</th><th class="n">Tarjetas de crédito</th><th>Fuente</th></tr></thead><tbody>' +
+    F.entidades.map(e => `<tr><td><b>${e.nombre}</b></td><td>${e.marca}</td><td>${e.figura}</td><td>${e.en_cf256}</td><td class="n">${fmt(e.tarjetas_credito)}</td><td class="ev">${e.tarjetas_fuente}${e.saldo_fuente ? ' · ' + e.saldo_fuente : ''}</td></tr>`).join('') + '</tbody>';
+  const pair = (a, b, la, lb) => `<div style="margin:6px 0 10px"><div style="display:flex;justify-content:space-between;font-size:12px"><span>${la}</span><span><b style="color:var(--visa)">${f1(a.v)}%</b> · <b style="color:var(--mc)">${f1(a.m)}%</b></span></div><div class="intl-bar"><div style="width:${a.v}%;background:var(--visa)"></div><div style="width:${a.m}%;background:var(--mc)"></div></div></div>` +
+    `<div><div style="display:flex;justify-content:space-between;font-size:12px"><span>${lb}</span><span><b style="color:var(--visa)">${f1(b.v)}%</b> · <b style="color:var(--mc)">${f1(b.m)}%</b></span></div><div class="intl-bar"><div style="width:${b.v}%;background:var(--visa)"></div><div style="width:${b.m}%;background:var(--mc)"></div></div></div>`;
+  const P = F.plast, Fa = F.fact;
+  document.getElementById('fin-plast-sub').textContent = 'Visa · Mastercard · sumando ' + fM(P.agregadas_mc) + ' tarjetas Mastercard de Nu y Plata';
+  document.getElementById('fin-plast').innerHTML = pair({v: P.visa, m: P.mc}, {v: P.visa_pro, m: P.mc_pro}, 'Banxico ' + F.corte_banxico, 'Pro forma con Nu y Plata');
+  document.getElementById('fin-fact-sub').textContent = 'Visa · Mastercard · sumando la cartera de tarjetas de Nu (' + f1(Fa.peso_saldo) + '% del saldo del sistema)';
+  document.getElementById('fin-fact').innerHTML = pair({v: Fa.visa, m: Fa.mc}, {v: Fa.visa_pro, m: Fa.mc_pro}, 'Modelo ' + Fa.periodo, 'Pro forma con Nu');
+  document.getElementById('fin-note').textContent = 'Pro forma ilustrativo: la CNBV cuenta contratos y Banxico tarjetas vigentes (con adicionales), así que no son estrictamente comparables. Plata no tiene saldo público a la mano y no entra en el pro forma de facturación (lo movería más hacia Mastercard). Mercado Pago (Visa en crédito) no reporta tarjetas de crédito por separado. Saldo del sistema: ' + F.saldo_fuente + '.';
 }
 
 // ───────── Deep dive
@@ -728,12 +757,12 @@ function renderDeep() {
   document.getElementById('adq-tipo').textContent = TIPO[S.tipo];
   const al = [], av = [], am = [];
   H.slice(-24).forEach((h, i, arr) => { if (i === 0) return; const a = histCards(arr[i - 1], S.tipo), b = histCards(h, S.tipo); al.push(h.corte); av.push(+((b.v - a.v) / 1e6).toFixed(2)); am.push(+((b.m - a.m) / 1e6).toFixed(2)); });
-  mk('adqChart', {type: 'bar', data: {labels: al, datasets: [bar('Visa', av, css('--visa')), bar('Mastercard', am, css('--mc'))]},
+  mk('adqChart', {type: 'line', data: {labels: al, datasets: [line('Visa', av, css('--visa')), line('Mastercard', am, css('--mc'))]},
     options: opts({plugins: {tooltip: {callbacks: {label: (c) => `${c.dataset.label}: ${c.raw > 0 ? '+' : ''}${f2(c.raw)}M`}}}})});
 }
 
 // ───────── Controles
-const VIEW_RENDER = {dashboard: () => { renderSnapshot(); renderMS(); renderProducto(); renderVol(); renderVig(); renderYoY(); renderEsc(); renderContrib(); renderBancos(); renderHeat(); renderConc(); renderTables(); }, deepdive: renderDeep, metodologia: () => {}};
+const VIEW_RENDER = {dashboard: () => { renderSnapshot(); renderMS(); renderProducto(); renderVol(); renderVig(); renderYoY(); renderEsc(); renderContrib(); renderBancos(); renderFintech(); renderHeat(); renderConc(); renderTables(); }, deepdive: renderDeep, metodologia: () => {}};
 let vista = 'dashboard';
 function renderAll() {
   document.getElementById('sel-esc').disabled = S.tipo === 'debito';
@@ -750,8 +779,7 @@ function bind(attr, key, fn) {
 }
 bind('data-periodo', 'periodo'); bind('data-tipo', 'tipo');
 bind('data-voltab', 'voltab', renderVol); bind('data-vigtab', 'vigtab', renderVig); bind('data-yoytab', 'yoytab', renderYoY);
-bind('data-bancotab', 'bancotab', renderBancos); bind('data-heatprod', 'heatprod', renderHeat); bind('data-heatmarca', 'heatmarca', renderHeat);
-bind('data-conctab', 'conctab', renderConc); bind('data-rango', 'rango', renderDeep);
+bind('data-heatmarca', 'heatmarca', renderHeat); bind('data-rango', 'rango', renderDeep);
 document.getElementById('sel-esc').addEventListener('change', (e) => { S.esc = e.target.value; renderAll(); });
 function setVista(v) {
   vista = v; setGroup('data-vista', v);

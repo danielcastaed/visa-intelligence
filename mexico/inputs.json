@@ -245,5 +245,53 @@
    "Q": "Residual (<2k tarjetas)"
   },
   "_doc": "saldo (mdp) y tarjetas (miles) de la cartera comparable en jun-2019, dic-2024 y jun-2025. Los años entre 2019 y 2024 se interpolan; de 2025 en adelante se usa el último reporte."
+ },
+ "fintech": {
+  "_doc": "Neobancos y fintech que no aparecen en CF256 de Banxico al último corte. Cifras públicas (CNBV vía prensa y reportes de las empresas); actualizar a mano.",
+  "corte": "ago-2026",
+  "saldo_sistema_tdc_mdp": 721733,
+  "saldo_sistema_fuente": "CNBV, saldo de cartera de tarjetas de crédito de la banca, abr-2026",
+  "entidades": [
+   {
+    "nombre": "Nu México",
+    "marca": "Mastercard",
+    "figura": "Banco desde el 6-ago-2026 (antes SOFIPO)",
+    "en_cf256": "No (entra después del 2T26)",
+    "tarjetas_credito": 10100000,
+    "tarjetas_fuente": "CNBV, ago-2026",
+    "saldo_tdc_mdp": 27497,
+    "saldo_fuente": "CNBV, ago-2026 (cartera de tarjetas)"
+   },
+   {
+    "nombre": "Banco Plata",
+    "marca": "Mastercard",
+    "figura": "Banco desde mar-2026",
+    "en_cf256": "No al 2T26 (el total de Banxico no muestra su entrada)",
+    "tarjetas_credito": 8200000,
+    "tarjetas_fuente": "CNBV, ago-2026",
+    "saldo_tdc_mdp": null,
+    "saldo_fuente": "Sin dato público a la mano"
+   },
+   {
+    "nombre": "Revolut México",
+    "marca": "Mastercard (única marca en México)",
+    "figura": "Banco desde nov-2025",
+    "en_cf256": "Marginal / no identificable",
+    "tarjetas_credito": null,
+    "tarjetas_fuente": "Participación pequeña según CNBV",
+    "saldo_tdc_mdp": null,
+    "saldo_fuente": ""
+   },
+   {
+    "nombre": "Mercado Pago",
+    "marca": "Visa (crédito) · Mastercard (débito)",
+    "figura": "No es banco: IFPE + Mercado Crédito; licencia bancaria en trámite",
+    "en_cf256": "No (fuera de la regulación bancaria)",
+    "tarjetas_credito": null,
+    "tarjetas_fuente": "La empresa reporta >18M tarjetas emitidas (sin separar crédito y débito)",
+    "saldo_tdc_mdp": null,
+    "saldo_fuente": "Cartera total de crédito 42,572 mdp a 1T26 (no solo tarjetas)"
+   }
+  ]
  }
 }
