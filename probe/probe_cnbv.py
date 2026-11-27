@@ -36,16 +36,21 @@ for per in ["202603","202012"]:
         ext = "xlsx" if per>="202212" else "xlsm"
         url=f"https://www.cnbv.gob.mx/Inclusi%C3%B3n/BasesDeDatos/Base_de_Datos_de_Inclusion_Financiera_{per}.{ext}"
         r=requests.get(url,headers=UA,timeout=300,verify=CA)
-        log(f"== {per} {r.status_code} {len(r.content):,} bytes {r.headers.get('content-type')}")
-        if r.status_code!=200:
-            log(r.text[:500]); continue
+        log(f"== {per} {r.status_code} {len(r.content):,} bytes")
+        if r.status_code!=200: continue
         import openpyxl
         wb=openpyxl.load_workbook(io.BytesIO(r.content),read_only=True,data_only=True)
+        log("sheets: "+" || ".join(ws.title for ws in wb.worksheets))
         for ws in wb.worksheets:
-            log(f"-- sheet '{ws.title}' dims={ws.max_row}x{ws.max_column}")
-            for i,row in enumerate(ws.iter_rows(values_only=True)):
-                if i>=10: break
-                log("   "+" | ".join("" if v is None else str(v)[:40] for v in row[:40]))
+            if "Banca" in ws.title and "Mun" not in ws.title and "Edo" not in ws.title or ws.title.startswith("BD Crédito Edo"):
+                log(f"-- sheet '{ws.title}' dims={ws.max_row}x{ws.max_column}")
+                for i,row in enumerate(ws.iter_rows(values_only=True)):
+                    if ws.title.startswith("BD Crédito Edo") and not (7<=i<=13): 
+                        if i>13: break
+                        continue
+                    if i>=75: break
+                    if any(v not in (None,"") for v in row):
+                        log(f"  r{i}: "+" | ".join("" if v is None else str(v)[:45] for v in row[:60]))
     except Exception:
         log(traceback.format_exc()[-1500:])
 open("probe/cnbv_probe.txt","w").write("\n".join(out))
