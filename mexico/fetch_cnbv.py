@@ -74,9 +74,14 @@ def main():
         rec={}
         for key,name in (("banca","BD Banca"),("eacp","BD EACP")):
             sh=[s for s in wb.sheetnames if norm(s)==norm(name)]
+            if not sh:
+                kw={"banca":["banca"],"eacp":["eacp","sofipo","socap","popular"]}[key]
+                sh=[s for s in wb.sheetnames if any(k in norm(s) for k in kw)
+                    and not any(x in norm(s) for x in ("mun","edo","sexo","estado","hist","infra","capta","créd","cred"))]
             if sh:
                 try: rec[key]=parse_sheet(wb[sh[0]])
                 except Exception as e: log(f"{per} {name} parse error {e}")
+        if not rec.get("banca"): log(f"{per} hojas: {wb.sheetnames}")
         log(f"{per}: banca={len(rec.get('banca',[]))} eacp={len(rec.get('eacp',[]))} "
             f"TC banca={sum(x['tc'] for x in rec.get('banca',[])):,}")
         if rec: data["periodos"][per]=rec
