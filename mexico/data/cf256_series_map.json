@@ -1,5 +1,5 @@
 {
-"_doc": "Respaldo del mapa de series del cuadro CF256 (extraído 2026-11-27). fetch_banxico.py lo regenera leyendo el cuadro; este archivo solo se usa si esa lectura falla.",
+"_doc": "Mapa de series del cuadro CF256 (extraído 2026-11-27).",
 "series": [
 {
 "nodo": "nodo_0_0_0",
