@@ -165,14 +165,14 @@ button.tab:disabled{opacity:.4;cursor:not-allowed;background:var(--bg)}
       <span class="leg"><span class="leg-sq" style="background:var(--mc)"></span>Mastercard</span>
     </div>
     <div class="chart-wrap" style="height:220px"><canvas id="volChart"></canvas></div>
-    <div class="note">2019–2022 provienen de CF888, ajustado al nivel de CF914 con el traslape de dic-2022. 2026* = enero–octubre.</div>
+    <div class="note" id="vol-note">2019–2022 provienen de CF888, ajustado al nivel de CF914 con el traslape de dic-2022.</div>
   </div>
 
   <div class="card" style="margin-top:14px">
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:2px">
       <div>
         <div class="card-title" id="vig-title">Tarjetas vigentes</div>
-        <div class="card-sub" id="vig-sub">Millones de tarjetas al cierre del periodo (4T; 2T en 2026)</div>
+        <div class="card-sub" id="vig-sub"></div>
       </div>
       <div style="display:flex;gap:4px">
         <button class="tab active" data-vigtab="vig">Tarjetas vigentes</button>
@@ -183,7 +183,7 @@ button.tab:disabled{opacity:.4;cursor:not-allowed;background:var(--bg)}
     <div class="chart-wrap" style="height:220px"><canvas id="vigChart"></canvas></div>
   </div>
 
-  <div class="slabel">Contribución al &Delta; MS &mdash; Crédito 2019 &rarr; 2025</div>
+  <div class="slabel">Contribución al &Delta; MS &mdash; Crédito <span id="contrib-range"></span></div>
   <div class="row-2s">
     <div class="card">
       <div class="card-title">Aporte por banco &mdash; Visa</div>
@@ -256,7 +256,7 @@ button.tab:disabled{opacity:.4;cursor:not-allowed;background:var(--bg)}
     <h3>Validación sugerida</h3>
     <p>Contrastar con el volumen interno de VisaNet México: si la facturación de crédito Visa 2025 ronda 1.5 billones de pesos, el escenario por saldo es razonable; si ronda 1.8 billones, la realidad está más cerca del conteo de plásticos.</p>
     <h3>Reproducir</h3>
-    <p><code>python mexico/model.py</code> (insumos en <code>mexico/inputs.json</code>) y luego <code>python report/generate_mexico.py</code>.</p>
+    <p>Se actualiza solo cada semana con GitHub Actions (<code>mexico_dashboard.yml</code>): <code>mexico/fetch_banxico.py</code> descarga CF256 y CF914, <code>mexico/model.py</code> recalcula y <code>report/generate_mexico.py</code> publica esta página. Los Indicadores Básicos (pesos por banco) salen en PDF semestral y se actualizan a mano en <code>mexico/inputs.json</code>.</p>
   </div>
 </div>
 
@@ -316,6 +316,7 @@ function renderSnapshot() {
   const A = D.anual, last = A.find(r => r.periodo === D.meta.ultimo_anio_completo);
   const prev = A[A.indexOf(last) - 1], first = A[0], ytd = A[A.length - 1];
   const sf = shareFields(S.tipo, S.esc);
+  const ytdLbl = 'ene–' + D.meta.corte_facturacion.split('-')[0];
   document.getElementById('snap-period').textContent = '· ' + last.periodo + ' · ' + TIPO_LBL[S.tipo];
   const brands = [
     {k: 'v', name: 'Visa', col: 'var(--visa)', fld: sf.v},
@@ -333,7 +334,7 @@ function renderSnapshot() {
       <table class="snap-tbl">
         <tr><td class="td-lbl">vs ${prev.periodo}</td><td>${chip(share - prev[b.fld])}</td></tr>
         <tr><td class="td-lbl">vs ${first.periodo}</td><td>${chip(share - first[b.fld])}</td></tr>
-        <tr><td class="td-lbl">${ytd.periodo} (ene–oct)</td><td><b>${f1(ytd[b.fld])}%</b> ${chip(ytd[b.fld] - share)}</td></tr>
+        ${ytd.completo ? '' : `<tr><td class="td-lbl">${ytd.periodo} (${ytdLbl})</td><td><b>${f1(ytd[b.fld])}%</b> ${chip(ytd[b.fld] - share)}</td></tr>`}
         <tr><td class="td-lbl">Facturación ${last.periodo}</td><td><b>${f2(bill)}</b> bn MXN</td></tr>
         <tr><td class="td-lbl">Tarjetas vigentes (${last.corte_tarjetas})</td><td>${fM(cd[b.k])} · ${f1(cardShare)}%</td></tr>
       </table>
@@ -371,7 +372,7 @@ function renderVig() {
   const A = D.anual, leg = document.getElementById('vig-leg');
   if (S.vigtab === 'vig') {
     document.getElementById('vig-title').textContent = 'Tarjetas vigentes · ' + TIPO_LBL[S.tipo];
-    document.getElementById('vig-sub').textContent = 'Millones de tarjetas al cierre del periodo (4T; 2T en 2026) · Banxico CF256';
+    document.getElementById('vig-sub').textContent = 'Millones de tarjetas al cierre del periodo (4T; último trimestre publicado en el año en curso) · Banxico CF256';
     leg.innerHTML = '<span class="leg"><span class="leg-sq" style="background:var(--visa)"></span>Visa</span><span class="leg"><span class="leg-sq" style="background:var(--mc)"></span>Mastercard</span>';
     const c = A.map(r => cards(r, S.tipo));
     mk('vigChart', {type: 'bar', data: {labels: A.map(r => r.periodo + ' (' + r.corte_tarjetas + ')'), datasets: [
@@ -393,9 +394,9 @@ function renderVig() {
 }
 
 function renderContrib() {
-  const rows = D.contribucion_credito_2019_2025.filter(r => Math.abs(r.visa_pp) >= 0.05 || Math.abs(r.mc_pp) >= 0.05);
+  const rows = D.contribucion_credito.filter(r => Math.abs(r.visa_pp) >= 0.05 || Math.abs(r.mc_pp) >= 0.05);
   const maxAbs = Math.max(...rows.map(r => Math.max(Math.abs(r.visa_pp), Math.abs(r.mc_pp))), 0.5);
-  const a0 = D.anual.find(r => r.periodo === '2019'), a1 = D.anual.find(r => r.periodo === '2025');
+  const a0 = D.anual.find(r => r.periodo === D.meta.primer_anio), a1 = D.anual.find(r => r.periodo === D.meta.ultimo_anio_completo);
   const draw = (key, el, total) => {
     const sorted = rows.slice().sort((x, y) => y[key] - x[key]);
     const body = sorted.map(r => {
@@ -428,10 +429,10 @@ function renderBancos() {
 
 function renderTable() {
   const confCls = (c) => /alta/i.test(c) && !/media/i.test(c) ? 'conf-alta' : (/media/i.test(c) ? 'conf-media' : (/baja/i.test(c) ? 'conf-baja' : 'conf-na'));
-  const head = '<tr><th>Letra</th><th>Banco probable</th><th>Confianza</th><th class="n">Tarjetas ' + D.meta.corte_tarjetas + '</th><th class="n">% Visa</th><th class="n">Tarjetas 4T19</th><th class="n">% saldo jun-25</th><th>Evidencia</th></tr>';
+  const head = '<tr><th>Letra</th><th>Banco probable</th><th>Confianza</th><th class="n">Tarjetas ' + D.meta.corte_tarjetas + '</th><th class="n">% Visa</th><th class="n">Tarjetas ' + D.meta.corte_tarjetas_inicial + '</th><th class="n">% saldo (último RIB)</th><th>Evidencia</th></tr>';
   const body = D.emisores_credito.map(r => `<tr><td><b>${r.letra}</b></td><td>${r.banco}</td><td><span class="conf ${confCls(r.confianza)}">${r.confianza}</span></td>
-    <td class="n">${fN(r.total)}</td><td class="n">${r.pct_visa == null ? '—' : f1(r.pct_visa) + '%'}</td><td class="n">${fN(r.total_4T19)}</td>
-    <td class="n">${r.saldo_pct_jun25 == null ? '—' : f1(r.saldo_pct_jun25) + '%'}</td><td class="ev">${r.evidencia}</td></tr>`).join('');
+    <td class="n">${fN(r.total)}</td><td class="n">${r.pct_visa == null ? '—' : f1(r.pct_visa) + '%'}</td><td class="n">${fN(r.total_inicial)}</td>
+    <td class="n">${r.saldo_pct_ult == null ? '—' : f1(r.saldo_pct_ult) + '%'}</td><td class="ev">${r.evidencia}</td></tr>`).join('');
   document.getElementById('emis-table').innerHTML = '<thead>' + head + '</thead><tbody>' + body + '</tbody>';
 }
 
@@ -461,8 +462,11 @@ document.getElementById('theme-btn').addEventListener('click', () => {
   document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
   renderAll();
 });
+const partial = D.anual.filter(r => !r.completo).map(r => r.periodo + ' = facturación ene–' + D.meta.corte_facturacion.split('-')[0] + ' y tarjetas al ' + r.corte_tarjetas).join('; ');
+document.getElementById('vol-note').textContent += partial ? ' ' + partial + '.' : '';
+document.getElementById('contrib-range').innerHTML = D.meta.primer_anio + ' &rarr; ' + D.meta.ultimo_anio_completo;
 document.getElementById('eyebrow-corte').textContent = 'Tarjetas ' + D.meta.corte_tarjetas + ' · Facturación ' + D.meta.corte_facturacion;
-document.getElementById('footer').textContent = 'Banxico · SIE CF256, CF888, CF914 · Indicadores Básicos de Tarjetas de Crédito · Generado ' + D.meta.generado;
+document.getElementById('footer').textContent = 'Banxico · SIE CF256, CF888, CF914 · Indicadores Básicos de Tarjetas de Crédito · Datos descargados ' + (D.meta.descargado || '').slice(0, 10) + ' · Generado ' + D.meta.generado;
 renderAll();
 </script>
 </body>

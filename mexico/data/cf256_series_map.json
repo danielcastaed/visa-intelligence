@@ -1,0 +1,1091 @@
+{
+"_doc": "Respaldo del mapa de series del cuadro CF256 (extraído 2026-11-27). fetch_banxico.py lo regenera leyendo el cuadro; este archivo solo se usa si esa lectura falla.",
+"series": [
+{
+"nodo": "nodo_0_0_0",
+"serie": "SF61870",
+"param": "SF61870,CF256,2",
+"etiqueta": "TOTAL"
+},
+{
+"nodo": "nodo_0_0_0_0",
+"serie": "SF325977",
+"param": "SF325977,CF256,3",
+"etiqueta": "A"
+},
+{
+"nodo": "nodo_0_0_0_1",
+"serie": "SF325978",
+"param": "SF325978,CF256,4",
+"etiqueta": "B"
+},
+{
+"nodo": "nodo_0_0_0_2",
+"serie": "SF325979",
+"param": "SF325979,CF256,5",
+"etiqueta": "C"
+},
+{
+"nodo": "nodo_0_0_0_3",
+"serie": "SF325980",
+"param": "SF325980,CF256,6",
+"etiqueta": "D"
+},
+{
+"nodo": "nodo_0_0_0_4",
+"serie": "SF325981",
+"param": "SF325981,CF256,7",
+"etiqueta": "E"
+},
+{
+"nodo": "nodo_0_0_0_5",
+"serie": "SF325982",
+"param": "SF325982,CF256,8",
+"etiqueta": "F"
+},
+{
+"nodo": "nodo_0_0_0_6",
+"serie": "SF325983",
+"param": "SF325983,CF256,9",
+"etiqueta": "G"
+},
+{
+"nodo": "nodo_0_0_0_7",
+"serie": "SF325984",
+"param": "SF325984,CF256,10",
+"etiqueta": "H"
+},
+{
+"nodo": "nodo_0_0_0_8",
+"serie": "SF325985",
+"param": "SF325985,CF256,11",
+"etiqueta": "I"
+},
+{
+"nodo": "nodo_0_0_0_9",
+"serie": "SF325986",
+"param": "SF325986,CF256,12",
+"etiqueta": "J"
+},
+{
+"nodo": "nodo_0_0_0_10",
+"serie": "SF325987",
+"param": "SF325987,CF256,13",
+"etiqueta": "K"
+},
+{
+"nodo": "nodo_0_0_0_11",
+"serie": "SF325988",
+"param": "SF325988,CF256,14",
+"etiqueta": "L"
+},
+{
+"nodo": "nodo_0_0_0_12",
+"serie": "SF325989",
+"param": "SF325989,CF256,15",
+"etiqueta": "M"
+},
+{
+"nodo": "nodo_0_0_0_13",
+"serie": "SF325990",
+"param": "SF325990,CF256,16",
+"etiqueta": "N"
+},
+{
+"nodo": "nodo_0_0_0_14",
+"serie": "SF325991",
+"param": "SF325991,CF256,17",
+"etiqueta": "O"
+},
+{
+"nodo": "nodo_0_0_0_15",
+"serie": "SF325992",
+"param": "SF325992,CF256,18",
+"etiqueta": "P"
+},
+{
+"nodo": "nodo_0_0_0_16",
+"serie": "SF325993",
+"param": "SF325993,CF256,19",
+"etiqueta": "Q"
+},
+{
+"nodo": "nodo_0_0_0_17",
+"serie": "SF325994",
+"param": "SF325994,CF256,20",
+"etiqueta": "R"
+},
+{
+"nodo": "nodo_0_0_0_18",
+"serie": "SF325995",
+"param": "SF325995,CF256,21",
+"etiqueta": "S"
+},
+{
+"nodo": "nodo_0_0_0_19",
+"serie": "SF325996",
+"param": "SF325996,CF256,22",
+"etiqueta": "T"
+},
+{
+"nodo": "nodo_0_0_0_20",
+"serie": "SF325997",
+"param": "SF325997,CF256,23",
+"etiqueta": "U"
+},
+{
+"nodo": "nodo_0_0_0_21",
+"serie": "SF325998",
+"param": "SF325998,CF256,24",
+"etiqueta": "V"
+},
+{
+"nodo": "nodo_0_0_0_22",
+"serie": "SF325999",
+"param": "SF325999,CF256,25",
+"etiqueta": "W"
+},
+{
+"nodo": "nodo_0_0_0_23",
+"serie": "SF326000",
+"param": "SF326000,CF256,26",
+"etiqueta": "X"
+},
+{
+"nodo": "nodo_0_0_0_24",
+"serie": "SF326001",
+"param": "SF326001,CF256,27",
+"etiqueta": "Y"
+},
+{
+"nodo": "nodo_0_0_1",
+"serie": "SF325442",
+"param": "SF325442,CF256,28",
+"etiqueta": "TOTAL"
+},
+{
+"nodo": "nodo_0_0_1_0",
+"serie": "SF326002",
+"param": "SF326002,CF256,29",
+"etiqueta": "B"
+},
+{
+"nodo": "nodo_0_0_1_1",
+"serie": "SF326003",
+"param": "SF326003,CF256,30",
+"etiqueta": "C"
+},
+{
+"nodo": "nodo_0_0_1_2",
+"serie": "SF326004",
+"param": "SF326004,CF256,31",
+"etiqueta": "D"
+},
+{
+"nodo": "nodo_0_0_1_3",
+"serie": "SF326005",
+"param": "SF326005,CF256,32",
+"etiqueta": "E"
+},
+{
+"nodo": "nodo_0_0_1_4",
+"serie": "SF326006",
+"param": "SF326006,CF256,33",
+"etiqueta": "F"
+},
+{
+"nodo": "nodo_0_0_1_5",
+"serie": "SF326007",
+"param": "SF326007,CF256,34",
+"etiqueta": "G"
+},
+{
+"nodo": "nodo_0_0_1_6",
+"serie": "SF326008",
+"param": "SF326008,CF256,35",
+"etiqueta": "H"
+},
+{
+"nodo": "nodo_0_0_1_7",
+"serie": "SF326009",
+"param": "SF326009,CF256,36",
+"etiqueta": "I"
+},
+{
+"nodo": "nodo_0_0_1_8",
+"serie": "SF326010",
+"param": "SF326010,CF256,37",
+"etiqueta": "J"
+},
+{
+"nodo": "nodo_0_0_1_9",
+"serie": "SF326011",
+"param": "SF326011,CF256,38",
+"etiqueta": "K"
+},
+{
+"nodo": "nodo_0_0_1_10",
+"serie": "SF326012",
+"param": "SF326012,CF256,39",
+"etiqueta": "M"
+},
+{
+"nodo": "nodo_0_0_1_11",
+"serie": "SF326013",
+"param": "SF326013,CF256,40",
+"etiqueta": "N"
+},
+{
+"nodo": "nodo_0_0_1_12",
+"serie": "SF326014",
+"param": "SF326014,CF256,41",
+"etiqueta": "O"
+},
+{
+"nodo": "nodo_0_0_1_13",
+"serie": "SF326015",
+"param": "SF326015,CF256,42",
+"etiqueta": "T"
+},
+{
+"nodo": "nodo_0_0_1_14",
+"serie": "SF326016",
+"param": "SF326016,CF256,43",
+"etiqueta": "U"
+},
+{
+"nodo": "nodo_0_0_1_15",
+"serie": "SF326017",
+"param": "SF326017,CF256,44",
+"etiqueta": "V"
+},
+{
+"nodo": "nodo_0_0_1_16",
+"serie": "SF326018",
+"param": "SF326018,CF256,45",
+"etiqueta": "W"
+},
+{
+"nodo": "nodo_0_0_1_17",
+"serie": "SF326019",
+"param": "SF326019,CF256,46",
+"etiqueta": "X"
+},
+{
+"nodo": "nodo_0_0_1_18",
+"serie": "SF326020",
+"param": "SF326020,CF256,47",
+"etiqueta": "Y"
+},
+{
+"nodo": "nodo_0_0_2",
+"serie": "SF325443",
+"param": "SF325443,CF256,48",
+"etiqueta": "TOTAL"
+},
+{
+"nodo": "nodo_0_0_2_0",
+"serie": "SF326021",
+"param": "SF326021,CF256,49",
+"etiqueta": "A"
+},
+{
+"nodo": "nodo_0_0_2_1",
+"serie": "SF326022",
+"param": "SF326022,CF256,50",
+"etiqueta": "B"
+},
+{
+"nodo": "nodo_0_0_2_2",
+"serie": "SF326023",
+"param": "SF326023,CF256,51",
+"etiqueta": "C"
+},
+{
+"nodo": "nodo_0_0_2_3",
+"serie": "SF326024",
+"param": "SF326024,CF256,52",
+"etiqueta": "D"
+},
+{
+"nodo": "nodo_0_0_2_4",
+"serie": "SF326025",
+"param": "SF326025,CF256,53",
+"etiqueta": "E"
+},
+{
+"nodo": "nodo_0_0_2_5",
+"serie": "SF326026",
+"param": "SF326026,CF256,54",
+"etiqueta": "F"
+},
+{
+"nodo": "nodo_0_0_2_6",
+"serie": "SF326027",
+"param": "SF326027,CF256,55",
+"etiqueta": "G"
+},
+{
+"nodo": "nodo_0_0_2_7",
+"serie": "SF326028",
+"param": "SF326028,CF256,56",
+"etiqueta": "H"
+},
+{
+"nodo": "nodo_0_0_2_8",
+"serie": "SF326029",
+"param": "SF326029,CF256,57",
+"etiqueta": "I"
+},
+{
+"nodo": "nodo_0_0_2_9",
+"serie": "SF326030",
+"param": "SF326030,CF256,58",
+"etiqueta": "J"
+},
+{
+"nodo": "nodo_0_0_2_10",
+"serie": "SF326031",
+"param": "SF326031,CF256,59",
+"etiqueta": "K"
+},
+{
+"nodo": "nodo_0_0_2_11",
+"serie": "SF326032",
+"param": "SF326032,CF256,60",
+"etiqueta": "L"
+},
+{
+"nodo": "nodo_0_0_2_12",
+"serie": "SF326033",
+"param": "SF326033,CF256,61",
+"etiqueta": "M"
+},
+{
+"nodo": "nodo_0_0_2_13",
+"serie": "SF326034",
+"param": "SF326034,CF256,62",
+"etiqueta": "N"
+},
+{
+"nodo": "nodo_0_0_2_14",
+"serie": "SF326035",
+"param": "SF326035,CF256,63",
+"etiqueta": "O"
+},
+{
+"nodo": "nodo_0_0_2_15",
+"serie": "SF326036",
+"param": "SF326036,CF256,64",
+"etiqueta": "Q"
+},
+{
+"nodo": "nodo_0_0_2_16",
+"serie": "SF326037",
+"param": "SF326037,CF256,65",
+"etiqueta": "R"
+},
+{
+"nodo": "nodo_0_0_2_17",
+"serie": "SF326038",
+"param": "SF326038,CF256,66",
+"etiqueta": "S"
+},
+{
+"nodo": "nodo_0_0_2_18",
+"serie": "SF326039",
+"param": "SF326039,CF256,67",
+"etiqueta": "T"
+},
+{
+"nodo": "nodo_0_0_2_19",
+"serie": "SF326040",
+"param": "SF326040,CF256,68",
+"etiqueta": "U"
+},
+{
+"nodo": "nodo_0_0_2_20",
+"serie": "SF326041",
+"param": "SF326041,CF256,69",
+"etiqueta": "Y"
+},
+{
+"nodo": "nodo_0_0_3",
+"serie": "SF325444",
+"param": "SF325444,CF256,70",
+"etiqueta": "TOTAL"
+},
+{
+"nodo": "nodo_0_0_3_0",
+"serie": "SF326042",
+"param": "SF326042,CF256,71",
+"etiqueta": "A"
+},
+{
+"nodo": "nodo_0_0_3_1",
+"serie": "SF326043",
+"param": "SF326043,CF256,72",
+"etiqueta": "C"
+},
+{
+"nodo": "nodo_0_0_3_2",
+"serie": "SF326044",
+"param": "SF326044,CF256,73",
+"etiqueta": "E"
+},
+{
+"nodo": "nodo_0_0_3_3",
+"serie": "SF326045",
+"param": "SF326045,CF256,74",
+"etiqueta": "G"
+},
+{
+"nodo": "nodo_0_0_3_4",
+"serie": "SF326046",
+"param": "SF326046,CF256,75",
+"etiqueta": "Q"
+},
+{
+"nodo": "nodo_0_0_3_5",
+"serie": "SF326047",
+"param": "SF326047,CF256,76",
+"etiqueta": "P"
+},
+{
+"nodo": "nodo_0_0_3_6",
+"serie": "SF326048",
+"param": "SF326048,CF256,77",
+"etiqueta": "V"
+},
+{
+"nodo": "nodo_1_0_0",
+"serie": "SF61871",
+"param": "SF61871,CF256,82",
+"etiqueta": "TOTAL"
+},
+{
+"nodo": "nodo_1_0_0_0",
+"serie": "SF326049",
+"param": "SF326049,CF256,83",
+"etiqueta": "B"
+},
+{
+"nodo": "nodo_1_0_0_1",
+"serie": "SF326050",
+"param": "SF326050,CF256,84",
+"etiqueta": "C"
+},
+{
+"nodo": "nodo_1_0_0_2",
+"serie": "SF326051",
+"param": "SF326051,CF256,85",
+"etiqueta": "D"
+},
+{
+"nodo": "nodo_1_0_0_3",
+"serie": "SF326052",
+"param": "SF326052,CF256,86",
+"etiqueta": "E"
+},
+{
+"nodo": "nodo_1_0_0_4",
+"serie": "SF326053",
+"param": "SF326053,CF256,87",
+"etiqueta": "F"
+},
+{
+"nodo": "nodo_1_0_0_5",
+"serie": "SF326054",
+"param": "SF326054,CF256,88",
+"etiqueta": "G"
+},
+{
+"nodo": "nodo_1_0_0_6",
+"serie": "SF326055",
+"param": "SF326055,CF256,89",
+"etiqueta": "H"
+},
+{
+"nodo": "nodo_1_0_0_7",
+"serie": "SF326056",
+"param": "SF326056,CF256,90",
+"etiqueta": "I"
+},
+{
+"nodo": "nodo_1_0_0_8",
+"serie": "SF326057",
+"param": "SF326057,CF256,91",
+"etiqueta": "J"
+},
+{
+"nodo": "nodo_1_0_0_9",
+"serie": "SF326058",
+"param": "SF326058,CF256,92",
+"etiqueta": "K"
+},
+{
+"nodo": "nodo_1_0_0_10",
+"serie": "SF326059",
+"param": "SF326059,CF256,93",
+"etiqueta": "L"
+},
+{
+"nodo": "nodo_1_0_0_11",
+"serie": "SF326060",
+"param": "SF326060,CF256,94",
+"etiqueta": "M"
+},
+{
+"nodo": "nodo_1_0_0_12",
+"serie": "SF326061",
+"param": "SF326061,CF256,95",
+"etiqueta": "N"
+},
+{
+"nodo": "nodo_1_0_0_13",
+"serie": "SF326062",
+"param": "SF326062,CF256,96",
+"etiqueta": "O"
+},
+{
+"nodo": "nodo_1_0_0_14",
+"serie": "SF326063",
+"param": "SF326063,CF256,97",
+"etiqueta": "P"
+},
+{
+"nodo": "nodo_1_0_0_15",
+"serie": "SF326064",
+"param": "SF326064,CF256,98",
+"etiqueta": "Q"
+},
+{
+"nodo": "nodo_1_0_0_16",
+"serie": "SF326065",
+"param": "SF326065,CF256,99",
+"etiqueta": "R"
+},
+{
+"nodo": "nodo_1_0_0_17",
+"serie": "SF326066",
+"param": "SF326066,CF256,100",
+"etiqueta": "S"
+},
+{
+"nodo": "nodo_1_0_0_18",
+"serie": "SF326067",
+"param": "SF326067,CF256,101",
+"etiqueta": "T"
+},
+{
+"nodo": "nodo_1_0_0_19",
+"serie": "SF326068",
+"param": "SF326068,CF256,102",
+"etiqueta": "U"
+},
+{
+"nodo": "nodo_1_0_0_20",
+"serie": "SF326069",
+"param": "SF326069,CF256,103",
+"etiqueta": "V"
+},
+{
+"nodo": "nodo_1_0_0_21",
+"serie": "SF326070",
+"param": "SF326070,CF256,104",
+"etiqueta": "W"
+},
+{
+"nodo": "nodo_1_0_0_22",
+"serie": "SF326071",
+"param": "SF326071,CF256,105",
+"etiqueta": "Y"
+},
+{
+"nodo": "nodo_1_0_0_23",
+"serie": "SF326072",
+"param": "SF326072,CF256,106",
+"etiqueta": "Z"
+},
+{
+"nodo": "nodo_1_0_0_24",
+"serie": "SF326073",
+"param": "SF326073,CF256,107",
+"etiqueta": "AA"
+},
+{
+"nodo": "nodo_1_0_0_25",
+"serie": "SF326074",
+"param": "SF326074,CF256,108",
+"etiqueta": "AB"
+},
+{
+"nodo": "nodo_1_0_0_26",
+"serie": "SF326075",
+"param": "SF326075,CF256,109",
+"etiqueta": "AC"
+},
+{
+"nodo": "nodo_1_0_0_27",
+"serie": "SF326076",
+"param": "SF326076,CF256,110",
+"etiqueta": "AD"
+},
+{
+"nodo": "nodo_1_0_0_28",
+"serie": "SF326077",
+"param": "SF326077,CF256,111",
+"etiqueta": "AE"
+},
+{
+"nodo": "nodo_1_0_0_29",
+"serie": "SF326078",
+"param": "SF326078,CF256,112",
+"etiqueta": "AF"
+},
+{
+"nodo": "nodo_1_0_0_30",
+"serie": "SF326079",
+"param": "SF326079,CF256,113",
+"etiqueta": "AG"
+},
+{
+"nodo": "nodo_1_0_0_31",
+"serie": "SF326080",
+"param": "SF326080,CF256,114",
+"etiqueta": "AH"
+},
+{
+"nodo": "nodo_1_0_0_32",
+"serie": "SF326081",
+"param": "SF326081,CF256,115",
+"etiqueta": "AI"
+},
+{
+"nodo": "nodo_1_0_0_33",
+"serie": "SF326082",
+"param": "SF326082,CF256,116",
+"etiqueta": "AJ"
+},
+{
+"nodo": "nodo_1_0_0_34",
+"serie": "SF326083",
+"param": "SF326083,CF256,117",
+"etiqueta": "AK"
+},
+{
+"nodo": "nodo_1_0_0_35",
+"serie": "SF326084",
+"param": "SF326084,CF256,118",
+"etiqueta": "AL"
+},
+{
+"nodo": "nodo_1_0_0_36",
+"serie": "SF326085",
+"param": "SF326085,CF256,119",
+"etiqueta": "AM"
+},
+{
+"nodo": "nodo_1_0_1",
+"serie": "SF325445",
+"param": "SF325445,CF256,120",
+"etiqueta": "TOTAL"
+},
+{
+"nodo": "nodo_1_0_1_0",
+"serie": "SF326086",
+"param": "SF326086,CF256,121",
+"etiqueta": "C"
+},
+{
+"nodo": "nodo_1_0_1_1",
+"serie": "SF326087",
+"param": "SF326087,CF256,122",
+"etiqueta": "D"
+},
+{
+"nodo": "nodo_1_0_1_2",
+"serie": "SF326088",
+"param": "SF326088,CF256,123",
+"etiqueta": "E"
+},
+{
+"nodo": "nodo_1_0_1_3",
+"serie": "SF326089",
+"param": "SF326089,CF256,124",
+"etiqueta": "G"
+},
+{
+"nodo": "nodo_1_0_1_4",
+"serie": "SF326090",
+"param": "SF326090,CF256,125",
+"etiqueta": "I"
+},
+{
+"nodo": "nodo_1_0_1_5",
+"serie": "SF326091",
+"param": "SF326091,CF256,126",
+"etiqueta": "K"
+},
+{
+"nodo": "nodo_1_0_1_6",
+"serie": "SF326092",
+"param": "SF326092,CF256,127",
+"etiqueta": "N"
+},
+{
+"nodo": "nodo_1_0_1_7",
+"serie": "SF326093",
+"param": "SF326093,CF256,128",
+"etiqueta": "O"
+},
+{
+"nodo": "nodo_1_0_1_8",
+"serie": "SF326094",
+"param": "SF326094,CF256,129",
+"etiqueta": "Z"
+},
+{
+"nodo": "nodo_1_0_1_9",
+"serie": "SF326095",
+"param": "SF326095,CF256,130",
+"etiqueta": "Q"
+},
+{
+"nodo": "nodo_1_0_1_10",
+"serie": "SF326096",
+"param": "SF326096,CF256,131",
+"etiqueta": "R"
+},
+{
+"nodo": "nodo_1_0_1_11",
+"serie": "SF326097",
+"param": "SF326097,CF256,132",
+"etiqueta": "S"
+},
+{
+"nodo": "nodo_1_0_1_12",
+"serie": "SF326098",
+"param": "SF326098,CF256,133",
+"etiqueta": "U"
+},
+{
+"nodo": "nodo_1_0_1_13",
+"serie": "SF326099",
+"param": "SF326099,CF256,134",
+"etiqueta": "V"
+},
+{
+"nodo": "nodo_1_0_1_14",
+"serie": "SF326100",
+"param": "SF326100,CF256,135",
+"etiqueta": "W"
+},
+{
+"nodo": "nodo_1_0_1_15",
+"serie": "SF326101",
+"param": "SF326101,CF256,136",
+"etiqueta": "Y"
+},
+{
+"nodo": "nodo_1_0_1_16",
+"serie": "SF326102",
+"param": "SF326102,CF256,137",
+"etiqueta": "AA"
+},
+{
+"nodo": "nodo_1_0_1_17",
+"serie": "SF326103",
+"param": "SF326103,CF256,138",
+"etiqueta": "AB"
+},
+{
+"nodo": "nodo_1_0_1_18",
+"serie": "SF326104",
+"param": "SF326104,CF256,139",
+"etiqueta": "AC"
+},
+{
+"nodo": "nodo_1_0_1_19",
+"serie": "SF326105",
+"param": "SF326105,CF256,140",
+"etiqueta": "AD"
+},
+{
+"nodo": "nodo_1_0_1_20",
+"serie": "SF326106",
+"param": "SF326106,CF256,141",
+"etiqueta": "AJ"
+},
+{
+"nodo": "nodo_1_0_1_21",
+"serie": "SF326107",
+"param": "SF326107,CF256,142",
+"etiqueta": "AK"
+},
+{
+"nodo": "nodo_1_0_1_22",
+"serie": "SF326108",
+"param": "SF326108,CF256,143",
+"etiqueta": "AL"
+},
+{
+"nodo": "nodo_1_0_2",
+"serie": "SF325446",
+"param": "SF325446,CF256,144",
+"etiqueta": "TOTAL"
+},
+{
+"nodo": "nodo_1_0_2_0",
+"serie": "SF326109",
+"param": "SF326109,CF256,145",
+"etiqueta": "B"
+},
+{
+"nodo": "nodo_1_0_2_1",
+"serie": "SF326110",
+"param": "SF326110,CF256,146",
+"etiqueta": "C"
+},
+{
+"nodo": "nodo_1_0_2_2",
+"serie": "SF326111",
+"param": "SF326111,CF256,147",
+"etiqueta": "D"
+},
+{
+"nodo": "nodo_1_0_2_3",
+"serie": "SF326112",
+"param": "SF326112,CF256,148",
+"etiqueta": "E"
+},
+{
+"nodo": "nodo_1_0_2_4",
+"serie": "SF326113",
+"param": "SF326113,CF256,149",
+"etiqueta": "F"
+},
+{
+"nodo": "nodo_1_0_2_5",
+"serie": "SF326114",
+"param": "SF326114,CF256,150",
+"etiqueta": "G"
+},
+{
+"nodo": "nodo_1_0_2_6",
+"serie": "SF326115",
+"param": "SF326115,CF256,151",
+"etiqueta": "H"
+},
+{
+"nodo": "nodo_1_0_2_7",
+"serie": "SF326116",
+"param": "SF326116,CF256,152",
+"etiqueta": "I"
+},
+{
+"nodo": "nodo_1_0_2_8",
+"serie": "SF326117",
+"param": "SF326117,CF256,153",
+"etiqueta": "J"
+},
+{
+"nodo": "nodo_1_0_2_9",
+"serie": "SF326118",
+"param": "SF326118,CF256,154",
+"etiqueta": "L"
+},
+{
+"nodo": "nodo_1_0_2_10",
+"serie": "SF326119",
+"param": "SF326119,CF256,155",
+"etiqueta": "N"
+},
+{
+"nodo": "nodo_1_0_2_11",
+"serie": "SF326120",
+"param": "SF326120,CF256,156",
+"etiqueta": "O"
+},
+{
+"nodo": "nodo_1_0_2_12",
+"serie": "SF326121",
+"param": "SF326121,CF256,157",
+"etiqueta": "Q"
+},
+{
+"nodo": "nodo_1_0_2_13",
+"serie": "SF326122",
+"param": "SF326122,CF256,158",
+"etiqueta": "R"
+},
+{
+"nodo": "nodo_1_0_2_14",
+"serie": "SF326123",
+"param": "SF326123,CF256,159",
+"etiqueta": "S"
+},
+{
+"nodo": "nodo_1_0_2_15",
+"serie": "SF326124",
+"param": "SF326124,CF256,160",
+"etiqueta": "T"
+},
+{
+"nodo": "nodo_1_0_2_16",
+"serie": "SF326125",
+"param": "SF326125,CF256,161",
+"etiqueta": "U"
+},
+{
+"nodo": "nodo_1_0_2_17",
+"serie": "SF326126",
+"param": "SF326126,CF256,162",
+"etiqueta": "Y"
+},
+{
+"nodo": "nodo_1_0_2_18",
+"serie": "SF326127",
+"param": "SF326127,CF256,163",
+"etiqueta": "AA"
+},
+{
+"nodo": "nodo_1_0_2_19",
+"serie": "SF326128",
+"param": "SF326128,CF256,164",
+"etiqueta": "AD"
+},
+{
+"nodo": "nodo_1_0_2_20",
+"serie": "SF326129",
+"param": "SF326129,CF256,165",
+"etiqueta": "AE"
+},
+{
+"nodo": "nodo_1_0_2_21",
+"serie": "SF326130",
+"param": "SF326130,CF256,166",
+"etiqueta": "AF"
+},
+{
+"nodo": "nodo_1_0_2_22",
+"serie": "SF326131",
+"param": "SF326131,CF256,167",
+"etiqueta": "AG"
+},
+{
+"nodo": "nodo_1_0_2_23",
+"serie": "SF326132",
+"param": "SF326132,CF256,168",
+"etiqueta": "AH"
+},
+{
+"nodo": "nodo_1_0_2_24",
+"serie": "SF326133",
+"param": "SF326133,CF256,169",
+"etiqueta": "AI"
+},
+{
+"nodo": "nodo_1_0_2_25",
+"serie": "SF326134",
+"param": "SF326134,CF256,170",
+"etiqueta": "AM"
+},
+{
+"nodo": "nodo_1_0_3",
+"serie": "SF325447",
+"param": "SF325447,CF256,171",
+"etiqueta": "TOTAL"
+},
+{
+"nodo": "nodo_1_0_3_0",
+"serie": "SF326135",
+"param": "SF326135,CF256,172",
+"etiqueta": "C"
+},
+{
+"nodo": "nodo_1_0_3_1",
+"serie": "SF326136",
+"param": "SF326136,CF256,173",
+"etiqueta": "D"
+},
+{
+"nodo": "nodo_1_0_3_2",
+"serie": "SF326137",
+"param": "SF326137,CF256,174",
+"etiqueta": "F"
+},
+{
+"nodo": "nodo_1_0_3_3",
+"serie": "SF326147",
+"param": "SF326147,CF256,175",
+"etiqueta": "G"
+},
+{
+"nodo": "nodo_1_0_3_4",
+"serie": "SF326138",
+"param": "SF326138,CF256,176",
+"etiqueta": "I"
+},
+{
+"nodo": "nodo_1_0_3_5",
+"serie": "SF326139",
+"param": "SF326139,CF256,177",
+"etiqueta": "K"
+},
+{
+"nodo": "nodo_1_0_3_6",
+"serie": "SF326140",
+"param": "SF326140,CF256,178",
+"etiqueta": "M"
+},
+{
+"nodo": "nodo_1_0_3_7",
+"serie": "SF326141",
+"param": "SF326141,CF256,179",
+"etiqueta": "O"
+},
+{
+"nodo": "nodo_1_0_3_8",
+"serie": "SF326142",
+"param": "SF326142,CF256,180",
+"etiqueta": "P"
+},
+{
+"nodo": "nodo_1_0_3_9",
+"serie": "SF326143",
+"param": "SF326143,CF256,181",
+"etiqueta": "Q"
+},
+{
+"nodo": "nodo_1_0_3_10",
+"serie": "SF326144",
+"param": "SF326144,CF256,182",
+"etiqueta": "R"
+},
+{
+"nodo": "nodo_1_0_3_11",
+"serie": "SF326145",
+"param": "SF326145,CF256,183",
+"etiqueta": "Z"
+},
+{
+"nodo": "nodo_1_0_3_12",
+"serie": "SF326146",
+"param": "SF326146,CF256,184",
+"etiqueta": "W"
+},
+{
+"nodo": "nodo_1_0_3_13",
+"serie": "SF326148",
+"param": "SF326148,CF256,185",
+"etiqueta": "AD"
+},
+{
+"nodo": "nodo_1_0_3_14",
+"serie": "SF326149",
+"param": "SF326149,CF256,186",
+"etiqueta": "AF"
+}
+]
+}

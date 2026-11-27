@@ -1,0 +1,56 @@
+name: Mexico Dashboard (Banxico)
+
+on:
+  schedule:
+    - cron: "17 14 * * 1"   # Lunes 14:17 UTC (9:17 AM Colombia/CDMX)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mexico-dashboard
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      # Descarga CF256 (tarjetas por marca y emisor) y CF914 (montos) de Banxico.
+      # Si Banxico no responde, el job falla y la página publicada se queda con los datos anteriores.
+      # BANXICO_TOKEN es opcional: solo se usa como respaldo vía SIE REST API.
+      - name: Fetch Banxico data
+        env:
+          BANXICO_TOKEN: ${{ secrets.BANXICO_TOKEN }}
+        run: python mexico/fetch_banxico.py
+
+      - name: Run model
+        run: python mexico/model.py
+
+      - name: Generate dashboard
+        run: python report/generate_mexico.py
+
+      - name: Commit and push
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/mexico/index.html mexico/data mexico/output.json
+          if git diff --cached --quiet; then
+            echo "Sin cambios en los datos de Banxico."
+            exit 0
+          fi
+          git commit -m "chore: update Mexico dashboard $(date +'%Y-%m-%d')"
+          git pull --rebase origin main
+          git push origin HEAD:main

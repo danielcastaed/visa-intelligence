@@ -30,6 +30,7 @@ Dos pipelines corren en GitHub Actions:
 |---|---|---|
 | `monthly_report.yml` | Primer martes del mes | Dashboard actualizado + email con snapshot de market share |
 | `visa_intelligence.yml` | Día 1 del mes | Email con tracking de noticias/lanzamientos Visa–Mastercard |
+| `mexico_dashboard.yml` | Cada lunes | Dashboard México actualizado con datos de Banxico |
 
 ## Resumen animado
 
@@ -55,10 +56,13 @@ A diferencia de la SFC, **ninguna fuente pública mexicana reporta facturación 
 - Las letras de CF256 se emparejan con bancos por tamaño, mezcla de marcas, fechas de entrada/salida y crecimiento. La tabla de identificación en el dashboard muestra la evidencia y la confianza de cada una.
 
 ```
-mexico/inputs.json → mexico/model.py → mexico/output.json → report/generate_mexico.py → docs/mexico/index.html
+Banxico SIE → mexico/fetch_banxico.py → mexico/data/ ┐
+                 mexico/inputs.json (manual) ─────────┴→ mexico/model.py → report/generate_mexico.py → docs/mexico/index.html
 ```
 
-Para regenerar: `python mexico/model.py && python report/generate_mexico.py`. Los insumos se actualizan a mano por ahora (no hay workflow automático para México).
+El workflow `mexico_dashboard.yml` corre cada lunes: descarga CF256 y CF914, recalcula y publica solo si hay datos nuevos. Lo único manual son los pesos por banco de los Indicadores Básicos (PDF semestral de Banxico) en `mexico/inputs.json`. Opcional: un secret `BANXICO_TOKEN` (token gratuito del SIE) sirve de respaldo si el endpoint público falla.
+
+Para correrlo local: `python mexico/fetch_banxico.py && python mexico/model.py && python report/generate_mexico.py`.
 
 ## Stack
 
