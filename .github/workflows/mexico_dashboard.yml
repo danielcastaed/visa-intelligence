@@ -4,6 +4,15 @@ on:
   schedule:
     - cron: "17 14 * * 1"   # Lunes 14:17 UTC (9:17 AM Colombia/CDMX)
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "mexico/fetch_banxico.py"
+      - "mexico/model.py"
+      - "mexico/inputs.json"
+      - "report/generate_mexico.py"
+      - "report/mexico_template.html"
+      - ".github/workflows/mexico_dashboard.yml"
 
 permissions:
   contents: write

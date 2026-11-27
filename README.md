@@ -46,7 +46,7 @@ Se genera con `python report/generate_resumen.py` a partir de los datos embebido
 
 ## México (estimado con datos de Banxico)
 
-[`docs/mexico/`](https://danielcastaed.github.io/visa-intelligence/mexico/) replica la estructura del dashboard de Colombia para México: snapshot, market share, facturación, tarjetas vigentes, contribución por banco y participación por emisor, con filtros de producto (crédito / débito / total) y escenario.
+[`docs/mexico/`](https://danielcastaed.github.io/visa-intelligence/mexico/) replica la estructura del dashboard de Colombia para México: snapshot, market share, share por producto, facturación, tarjetas vigentes (histórico desde 2006), crecimiento YoY, sensibilidad por escenario, contribución por banco, participación por emisor, mapa de calor, concentración (HHI) y una vista Deep Dive con facturación mensual. Filtros: período (anual / trimestral), producto (crédito / débito / total) y escenario. Las tarjetas por marca solo existen trimestrales en Banxico; la facturación total por producto se ve mensual.
 
 A diferencia de la SFC, **ninguna fuente pública mexicana reporta facturación por marca**, así que el share es un estimado:
 
@@ -60,7 +60,7 @@ Banxico SIE → mexico/fetch_banxico.py → mexico/data/ ┐
                  mexico/inputs.json (manual) ─────────┴→ mexico/model.py → report/generate_mexico.py → docs/mexico/index.html
 ```
 
-El workflow `mexico_dashboard.yml` corre cada lunes: descarga CF256 y CF914, recalcula y publica solo si hay datos nuevos. Lo único manual son los pesos por banco de los Indicadores Básicos (PDF semestral de Banxico) en `mexico/inputs.json`. Opcional: un secret `BANXICO_TOKEN` (token gratuito del SIE) sirve de respaldo si el endpoint público falla.
+El workflow `mexico_dashboard.yml` corre cada lunes (y cada vez que cambia el código del modelo o la plantilla): descarga CF256, CF888 y CF914, recalcula y publica solo si hay datos nuevos. Lo único manual son los pesos por banco de los Indicadores Básicos (PDF semestral de Banxico) en `mexico/inputs.json`. Opcional: un secret `BANXICO_TOKEN` (token gratuito del SIE) sirve de respaldo si el endpoint público falla.
 
 Para correrlo local: `python mexico/fetch_banxico.py && python mexico/model.py && python report/generate_mexico.py`.
 

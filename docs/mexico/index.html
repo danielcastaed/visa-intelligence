@@ -11,6 +11,7 @@
   --visa:#1A1F71; --visa-light:#E8EAF6;
   --mc:#CC2200;   --mc-light:#FDE8E4;
   --amex:#8E9296; --amex-light:#F0F1F2;
+  --visa-2:#7B83C9; --mc-2:#F08B73;
   --bg:#F7F8FA; --card:#FFFFFF; --border:#E4E7EC;
   --text:#101828; --muted:#667085; --faint:#98A2B3;
   --green:#027A48; --green-bg:#ECFDF3;
@@ -25,6 +26,7 @@
   --visa:#6B79F5; --visa-light:#1C2150;
   --mc:#FF6B4A;   --mc-light:#3A1F1A;
   --amex:#A3A9B0; --amex-light:#23262B;
+  --visa-2:#3A438F; --mc-2:#9C3B27;
   --bg:#0E1117; --card:#161B26; --border:#2A3142;
   --text:#E6E9F0; --muted:#9AA3B5; --faint:#6F7A90;
   --green:#32D583; --green-bg:#0F2A1D;
@@ -106,6 +108,17 @@ button.tab:disabled{opacity:.4;cursor:not-allowed;background:var(--bg)}
   .filters .filter-label{width:100%;margin-top:4px}
   .contrib-row{grid-template-columns:110px 1fr 50px}
 }
+
+.slabel-sub{text-transform:none;letter-spacing:0;font-weight:600}
+.mkt-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 20px}
+.kpi-lbl{font-size:11px;color:var(--muted);margin-bottom:3px}
+.kpi-val{font-size:21px;font-weight:700;font-variant-numeric:tabular-nums}
+.kpi-delta{font-size:11px;margin-top:3px}
+.row-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.mini-title{font-size:12px;font-weight:700;margin-bottom:4px}
+.contrib-total{border-top:1px solid var(--border);margin-top:6px;padding-top:8px;font-weight:700}
+.hm td.hm-c{text-align:center;font-size:11px;font-variant-numeric:tabular-nums;min-width:54px;border:2px solid var(--card)}
+@media(max-width:720px){.mkt-grid{grid-template-columns:repeat(2,1fr)}.row-3{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -122,7 +135,12 @@ button.tab:disabled{opacity:.4;cursor:not-allowed;background:var(--bg)}
 <div class="filters">
   <span class="filter-label">Vista</span>
   <button class="tab active" data-vista="dashboard">Dashboard</button>
+  <button class="tab" data-vista="deepdive">Deep Dive</button>
   <button class="tab" data-vista="metodologia">Metodología</button>
+  <span class="sep"></span>
+  <span class="filter-label">Período</span>
+  <button class="tab" data-periodo="trimestral">Trimestral</button>
+  <button class="tab active" data-periodo="anual">Anual</button>
   <span class="sep"></span>
   <span class="filter-label">Tipo</span>
   <button class="tab" data-tipo="credito">Crédito</button>
@@ -139,16 +157,21 @@ button.tab:disabled{opacity:.4;cursor:not-allowed;background:var(--bg)}
   <span id="filter-note" style="font-size:11px;color:var(--faint)"></span>
 </div>
 
+<!-- ═════════════ DASHBOARD ═════════════ -->
 <div id="view-dashboard">
-  <div class="warnbox">Ninguna fuente pública reporta facturación por marca en México. Estas cifras son un <b>estimado</b>: la facturación total por producto es oficial (Banxico), pero el reparto entre Visa y Mastercard en crédito pondera a cada banco por su saldo y le aplica su mezcla de marcas. Ver <a href="#" data-goto="metodologia" style="color:var(--visa)">Metodología</a>.</div>
+  <div class="warnbox">Ninguna fuente pública reporta facturación por marca en México. Estas cifras son un <b>estimado</b>: la facturación total por producto y las tarjetas por marca son oficiales (Banxico), pero el reparto de la facturación de crédito entre Visa y Mastercard pondera a cada banco por su saldo y le aplica su mezcla de marcas. Ver <a href="#" data-goto="metodologia" style="color:var(--visa)">Metodología</a>.</div>
 
-  <div class="slabel">Snapshot <span id="snap-period" style="text-transform:none;letter-spacing:0;font-weight:600"></span></div>
+  <div class="slabel">Snapshot <span id="snap-period" class="slabel-sub"></span></div>
+  <div class="card" style="margin-bottom:14px">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Mercado total <span id="mkt-sub" style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0"></span></div>
+    <div class="mkt-grid" id="mkt-grid"></div>
+  </div>
   <div class="snap-grid" id="snap-grid"></div>
 
   <div class="slabel">Market Share</div>
   <div class="card">
-    <div class="card-title" id="ms-title">Share de facturación por año</div>
-    <div class="card-sub" id="ms-sub">Participación porcentual sobre la facturación. Cada barra suma 100%.</div>
+    <div class="card-title" id="ms-title"></div>
+    <div class="card-sub" id="ms-sub"></div>
     <div class="leg-row">
       <span class="leg"><span class="leg-sq" style="background:var(--visa)"></span>Visa</span>
       <span class="leg"><span class="leg-sq" style="background:var(--mc)"></span>Mastercard</span>
@@ -158,41 +181,90 @@ button.tab:disabled{opacity:.4;cursor:not-allowed;background:var(--bg)}
   </div>
 
   <div class="card" style="margin-top:14px">
-    <div class="card-title">Facturación</div>
-    <div class="card-sub" id="vol-sub">Billones de pesos por año y franquicia</div>
+    <div class="card-title">Share de facturación por producto</div>
+    <div class="card-sub" id="prod-sub"></div>
     <div class="leg-row">
       <span class="leg"><span class="leg-sq" style="background:var(--visa)"></span>Visa</span>
       <span class="leg"><span class="leg-sq" style="background:var(--mc)"></span>Mastercard</span>
     </div>
-    <div class="chart-wrap" style="height:220px"><canvas id="volChart"></canvas></div>
-    <div class="note" id="vol-note">2019–2022 provienen de CF888, ajustado al nivel de CF914 con el traslape de dic-2022.</div>
+    <div class="row-3">
+      <div><div class="mini-title">Crédito</div><div class="chart-wrap" style="height:200px"><canvas id="prodCr"></canvas></div></div>
+      <div><div class="mini-title">Débito</div><div class="chart-wrap" style="height:200px"><canvas id="prodDb"></canvas></div></div>
+      <div><div class="mini-title">Total</div><div class="chart-wrap" style="height:200px"><canvas id="prodTot"></canvas></div></div>
+    </div>
   </div>
 
   <div class="card" style="margin-top:14px">
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:2px">
       <div>
-        <div class="card-title" id="vig-title">Tarjetas vigentes</div>
-        <div class="card-sub" id="vig-sub"></div>
+        <div class="card-title">Facturación</div>
+        <div class="card-sub" id="vol-sub"></div>
       </div>
       <div style="display:flex;gap:4px">
-        <button class="tab active" data-vigtab="vig">Tarjetas vigentes</button>
+        <button class="tab active" data-voltab="marca">Por marca</button>
+        <button class="tab" data-voltab="mix">Crédito y débito</button>
+      </div>
+    </div>
+    <div class="leg-row" id="vol-leg"></div>
+    <div class="chart-wrap" style="height:240px"><canvas id="volChart"></canvas></div>
+    <div class="note" id="vol-note"></div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:2px">
+      <div>
+        <div class="card-title" id="vig-title"></div>
+        <div class="card-sub" id="vig-sub"></div>
+      </div>
+      <div style="display:flex;gap:4px;flex-wrap:wrap">
+        <button class="tab active" data-vigtab="hist">Tarjetas vigentes</button>
+        <button class="tab" data-vigtab="share">Share en plásticos</button>
         <button class="tab" data-vigtab="gap">Plásticos vs facturación</button>
       </div>
     </div>
     <div class="leg-row" id="vig-leg"></div>
-    <div class="chart-wrap" style="height:220px"><canvas id="vigChart"></canvas></div>
+    <div class="chart-wrap" style="height:240px"><canvas id="vigChart"></canvas></div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:2px">
+      <div>
+        <div class="card-title">Crecimiento YoY</div>
+        <div class="card-sub" id="yoy-sub"></div>
+      </div>
+      <div style="display:flex;gap:4px">
+        <button class="tab active" data-yoytab="fact">Facturación</button>
+        <button class="tab" data-yoytab="vig">Tarjetas</button>
+      </div>
+    </div>
+    <div class="leg-row">
+      <span class="leg"><span class="leg-sq" style="background:var(--visa)"></span>Visa</span>
+      <span class="leg"><span class="leg-sq" style="background:var(--mc)"></span>Mastercard</span>
+    </div>
+    <div class="chart-wrap" style="height:220px"><canvas id="yoyChart"></canvas></div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <div class="card-title">Sensibilidad del share de crédito al escenario</div>
+    <div class="card-sub">Share Visa en facturación de crédito según cómo se pondera a cada banco · la distancia entre líneas es la incertidumbre del método</div>
+    <div class="leg-row">
+      <span class="leg"><span class="leg-sq" style="background:var(--visa)"></span>Ponderado por saldo (central)</span>
+      <span class="leg"><span class="leg-sq" style="background:var(--credito)"></span>Tarjetas comparables</span>
+      <span class="leg"><span class="leg-sq" style="background:var(--faint)"></span>Solo plásticos</span>
+    </div>
+    <div class="chart-wrap" style="height:220px"><canvas id="escChart"></canvas></div>
   </div>
 
   <div class="slabel">Contribución al &Delta; MS &mdash; Crédito <span id="contrib-range"></span></div>
   <div class="row-2s">
     <div class="card">
       <div class="card-title">Aporte por banco &mdash; Visa</div>
-      <div class="card-sub">&Delta;pp de share de facturación de crédito explicado por cada emisor (escenario saldo)</div>
+      <div class="card-sub">&Delta;pp del share de facturación de crédito explicado por cada emisor (escenario saldo)</div>
       <div id="contrib-visa"></div>
     </div>
     <div class="card">
       <div class="card-title">Aporte por banco &mdash; Mastercard</div>
-      <div class="card-sub">&Delta;pp de share de facturación de crédito explicado por cada emisor (escenario saldo)</div>
+      <div class="card-sub">&Delta;pp del share de facturación de crédito explicado por cada emisor (escenario saldo)</div>
       <div id="contrib-mc"></div>
     </div>
   </div>
@@ -215,257 +287,484 @@ button.tab:disabled{opacity:.4;cursor:not-allowed;background:var(--bg)}
       <span class="leg"><span class="leg-sq" style="background:var(--amex)"></span>Otras</span>
     </div>
     <div class="chart-wrap" id="banco-wrap"><canvas id="bancoChart"></canvas></div>
-    <div class="note">Banxico publica cada emisor como una letra. El nombre del banco es una inferencia (ver tabla abajo). En débito solo se sugiere el banco si la misma letra está identificada en crédito; no está verificado que las letras coincidan entre productos.</div>
+    <div class="note">Banxico publica cada emisor como una letra; el nombre del banco es una inferencia (ver Identificación de Emisores). En débito solo se sugiere el banco si la misma letra está identificada en crédito; no está verificado que las letras coincidan entre productos.</div>
+  </div>
+
+  <div class="slabel">Mapa de Calor</div>
+  <div class="card">
+    <div class="card-title">Mapa de Calor</div>
+    <div class="card-sub">&Delta;pp anual de participación en tarjetas vigentes por emisor · verde = ganó · rojo = perdió · corte 4T (año en curso: último trimestre)</div>
+    <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px">
+      <button class="tab active" data-heatprod="credito">Crédito</button>
+      <button class="tab" data-heatprod="debito">Débito</button>
+      <span class="sep"></span>
+      <button class="tab active" data-heatmarca="total">Total mercado</button>
+      <button class="tab" data-heatmarca="visa">Dentro de Visa</button>
+      <button class="tab" data-heatmarca="mc">Dentro de Mastercard</button>
+    </div>
+    <div id="heatmap" style="overflow-x:auto"></div>
+  </div>
+
+  <div class="slabel">Concentración de Emisores</div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:2px">
+      <div>
+        <div class="card-title">Top Emisores</div>
+        <div class="card-sub">¿Qué tan dependiente es cada marca de sus principales emisores? Share de cada banco dentro de las tarjetas vigentes de la marca · &Delta;pp vs mismo trimestre del año anterior · el <b>índice HHI</b> mide concentración: cercano a 0 = muchos emisores con peso similar · cercano a 10.000 = un solo emisor domina</div>
+      </div>
+      <div style="display:flex;gap:4px">
+        <button class="tab active" data-conctab="credito">Crédito</button>
+        <button class="tab" data-conctab="debito">Débito</button>
+      </div>
+    </div>
+    <div id="hhi-summary" style="font-size:11px;color:var(--muted);margin:4px 0 12px;line-height:1.5"></div>
+    <div class="row-2s" style="margin-top:0">
+      <div><div style="font-size:11px;font-weight:700;color:var(--visa);margin-bottom:8px">VISA — top 10 emisores</div><div id="hhi-visa"></div></div>
+      <div><div style="font-size:11px;font-weight:700;color:var(--mc);margin-bottom:8px">MASTERCARD — top 10 emisores</div><div id="hhi-mc"></div></div>
+    </div>
   </div>
 
   <div class="slabel">Identificación de Emisores</div>
   <div class="card">
     <div class="card-title">Letra de Banxico &rarr; banco probable (crédito)</div>
     <div class="card-sub">Emparejamiento por tamaño, mezcla de marcas, fechas de entrada/salida y crecimiento frente a los Indicadores Básicos de Tarjetas de Crédito</div>
-    <div style="overflow-x:auto"><table class="tbl" id="emis-table"></table></div>
+    <div style="overflow-x:auto"><table class="tbl" id="emis-cr"></table></div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <div class="card-title">Emisores de débito</div>
+    <div class="card-sub">Tarjetas de débito vigentes por emisor y marca · sin datos públicos para ponderar débito por actividad</div>
+    <div style="overflow-x:auto"><table class="tbl" id="emis-db"></table></div>
   </div>
 
   <div style="margin-top:28px;font-size:11px;color:var(--faint);text-align:center" id="footer"></div>
 </div>
 
+<!-- ═════════════ DEEP DIVE ═════════════ -->
+<div id="view-deepdive" style="display:none">
+  <div class="slabel">Facturación Mensual (oficial)</div>
+  <div class="card">
+    <div class="card-title">Facturación mensual por producto</div>
+    <div class="card-sub">Miles de millones de pesos · Banxico CF888 / CF914 · dato oficial, sin estimación por marca</div>
+    <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px">
+      <button class="tab" data-rango="24">24 meses</button>
+      <button class="tab active" data-rango="60">5 años</button>
+      <button class="tab" data-rango="all">Todo</button>
+    </div>
+    <div class="leg-row">
+      <span class="leg"><span class="leg-sq" style="background:var(--credito)"></span>Crédito</span>
+      <span class="leg"><span class="leg-sq" style="background:var(--debito)"></span>Débito</span>
+    </div>
+    <div class="chart-wrap" style="height:260px"><canvas id="mesChart"></canvas></div>
+  </div>
+  <div class="row-2s">
+    <div class="card">
+      <div class="card-title">Mix crédito vs débito</div>
+      <div class="card-sub">% de la facturación mensual que es crédito</div>
+      <div class="chart-wrap" style="height:220px"><canvas id="mixChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Crecimiento YoY mensual</div>
+      <div class="card-sub">Facturación vs mismo mes del año anterior</div>
+      <div class="leg-row">
+        <span class="leg"><span class="leg-sq" style="background:var(--credito)"></span>Crédito</span>
+        <span class="leg"><span class="leg-sq" style="background:var(--debito)"></span>Débito</span>
+      </div>
+      <div class="chart-wrap" style="height:200px"><canvas id="mesYoyChart"></canvas></div>
+    </div>
+  </div>
+  <div class="slabel">Tarjetas Vigentes &mdash; Histórico Completo</div>
+  <div class="card">
+    <div class="card-title">Ratio de tarjetas vigentes Visa / Mastercard</div>
+    <div class="card-sub">Vigentes Visa ÷ Mastercard · &gt;1.0x Visa lidera · trimestral desde 2006 · Banxico CF256</div>
+    <div class="leg-row">
+      <span class="leg"><span class="leg-sq" style="background:var(--credito)"></span>Crédito</span>
+      <span class="leg"><span class="leg-sq" style="background:var(--debito)"></span>Débito</span>
+    </div>
+    <div class="chart-wrap" style="height:240px"><canvas id="ratioChart"></canvas></div>
+    <div class="note">Quiebres conocidos en la serie: débito sube desde el 4T12 al incluir cuentas nivel 1–3; cambio metodológico de un banco en el 1T18; reexpresiones de algunos bancos en 2019–2023.</div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <div class="card-title">Adquisición neta trimestral</div>
+    <div class="card-sub">Tarjetas vigentes del trimestre − trimestre anterior · millones · <span id="adq-tipo"></span></div>
+    <div class="leg-row">
+      <span class="leg"><span class="leg-sq" style="background:var(--visa)"></span>Visa</span>
+      <span class="leg"><span class="leg-sq" style="background:var(--mc)"></span>Mastercard</span>
+    </div>
+    <div class="chart-wrap" style="height:220px"><canvas id="adqChart"></canvas></div>
+  </div>
+</div>
+
+<!-- ═════════════ METODOLOGÍA ═════════════ -->
 <div id="view-metodologia" style="display:none">
   <div class="slabel">Metodología</div>
   <div class="card method">
     <div class="card-title" style="font-size:15px">Cómo se estima el share de facturación por marca</div>
     <p style="margin-top:6px">Ninguna fuente pública mexicana reporta facturación por marca. Todos los insumos son públicos (Banxico); lo que se construye es el modelo que los combina.</p>
-    <h3>Insumos</h3>
+    <h3>Insumos y granularidad</h3>
     <ol>
-      <li><b>Facturación por producto</b>: SIE Banxico, "Monto operado a través de tarjetas", crédito y débito. Cuadro CF888 (diario, 2009–2022) y CF914 (diario, desde dic-2022), sumados por año y empalmados con dic-2022 (CF914 es 8.6% mayor en débito y 9.4% en crédito).</li>
-      <li><b>Tarjetas vigentes por marca y emisor</b>: SIE Banxico CF256, "Tarjetas vigentes al cierre del trimestre por marca", con desglose por emisor anonimizado (letras A, B, C…).</li>
-      <li><b>Tamaño de cada banco con nombre</b>: Banxico, Indicadores Básicos de Tarjetas de Crédito (jun-2019, dic-2024, jun-2025): saldo y número de tarjetas de la cartera comparable. 2020–2023 se interpolan.</li>
+      <li><b>Facturación por producto</b> (diaria): SIE Banxico, "Monto operado a través de tarjetas", crédito y débito. CF888 (2009–2022) y CF914 (desde dic-2022), empalmados con el traslape de dic-2022 (<span id="m-empalme"></span>). Se agrega por mes, trimestre y año.</li>
+      <li><b>Tarjetas vigentes por marca y emisor</b> (trimestral): SIE Banxico CF256, con desglose por emisor anonimizado (letras A, B, C…). <b>Esta serie solo existe trimestral</b>, así que el share por marca es trimestral o anual; la facturación total por producto sí puede verse mensual (Deep Dive).</li>
+      <li><b>Tamaño de cada banco con nombre</b> (semestral, PDF): Indicadores Básicos de Tarjetas de Crédito (jun-2019, dic-2024, jun-2025): saldo y tarjetas de la cartera comparable. Los años intermedios se interpolan; de 2025 en adelante se usa el último reporte.</li>
     </ol>
     <h3>Cálculo</h3>
     <ul>
-      <li><b>Crédito</b>: share Visa = &Sigma; (peso del banco &times; % Visa de sus tarjetas). Escenario central: peso = saldo. Alternativo: tarjetas de cartera comparable. Referencia: plásticos sin ponderar.</li>
-      <li><b>Débito</b>: mezcla de plásticos vigentes, sin ponderar (no hay proxy público de actividad por emisor).</li>
-      <li><b>Total</b>: promedio de crédito y débito ponderado por su facturación.</li>
-      <li><b>Contribución por banco</b>: cambio entre 2019 y 2025 de (peso &times; % Visa) de cada emisor; la suma da el &Delta;pp del share de crédito.</li>
+      <li><b>Crédito</b>: share Visa = &Sigma; (peso del banco &times; % Visa de sus tarjetas en el corte). Central: peso = saldo. Alternativo: tarjetas comparables. Referencia: plásticos sin ponderar.</li>
+      <li><b>Débito</b>: mezcla de plásticos vigentes, sin ponderar.</li>
+      <li><b>Total</b>: promedio de crédito y débito ponderado por su facturación del período.</li>
+      <li><b>Anual</b>: corte de tarjetas al 4T y facturación del año. <b>Trimestral</b>: corte de ese trimestre y su facturación. Los períodos incompletos se marcan con *.</li>
+      <li><b>Contribución por banco</b>: cambio de (peso &times; % Visa) de cada emisor entre el primer y el último año completo.</li>
     </ul>
     <h3>Supuestos que más mueven el resultado</h3>
     <ul>
       <li>La identificación de letras, sobre todo C = Banamex y E = Santander (juntos ~43% del saldo y mayoritariamente MC).</li>
       <li>Que el saldo sea un buen proxy de facturación (mezcla gasto mensual con deuda revolvente).</li>
       <li>Débito sin ponderar: probablemente sobreestima a emisores con muchas tarjetas inactivas.</li>
-      <li>Los Indicadores Básicos cubren la cartera comparable de bancos y sofomes reguladas (~26.5M tarjetas vs ~49M de CF256); fintechs no bancarias quedan fuera.</li>
+      <li>Los Indicadores Básicos cubren la cartera comparable de bancos y sofomes reguladas; fintechs no bancarias quedan en "resto".</li>
     </ul>
     <h3>Validación sugerida</h3>
-    <p>Contrastar con el volumen interno de VisaNet México: si la facturación de crédito Visa 2025 ronda 1.5 billones de pesos, el escenario por saldo es razonable; si ronda 1.8 billones, la realidad está más cerca del conteo de plásticos.</p>
-    <h3>Reproducir</h3>
-    <p>Se actualiza solo cada semana con GitHub Actions (<code>mexico_dashboard.yml</code>): <code>mexico/fetch_banxico.py</code> descarga CF256 y CF914, <code>mexico/model.py</code> recalcula y <code>report/generate_mexico.py</code> publica esta página. Los Indicadores Básicos (pesos por banco) salen en PDF semestral y se actualizan a mano en <code>mexico/inputs.json</code>.</p>
+    <p>Contrastar con el volumen interno de VisaNet México por producto y año.</p>
+    <h3>Actualización</h3>
+    <p>Cada lunes, GitHub Actions (<code>mexico_dashboard.yml</code>) corre <code>mexico/fetch_banxico.py</code> (CF256, CF888, CF914), <code>mexico/model.py</code> y <code>report/generate_mexico.py</code>, y publica solo si hay datos nuevos. Los Indicadores Básicos se actualizan a mano en <code>mexico/inputs.json</code>.</p>
   </div>
 </div>
 
-<div id="mini-tip" class="mini-tip"></div>
 </div>
 
 <script>
-const D = {"meta":{"corte_tarjetas":"2T26","corte_tarjetas_inicial":"4T19","corte_facturacion":"oct-2026","ultimo_anio_completo":"2025","primer_anio":"2019","descargado":"2026-11-27T16:00:00Z (semilla: solo cortes 4T y 2T26)","generado":"2026-11-27"},"anual":[{"periodo":"2019","anio":2019,"completo":true,"corte_tarjetas":"4T19","fact_credito":1.149,"fact_debito":1.632,"tarj_cr_visa":15870521,"tarj_cr_mc":11695007,"tarj_cr_otras":1028714,"tarj_db_visa":102230781,"tarj_db_mc":47812032,"tarj_db_otras":805483,"cr_visa_saldo":45.68,"cr_mc_saldo":49.79,"tot_visa_saldo":58.64,"tot_mc_saldo":39.17,"cr_visa_cartera":50.72,"cr_mc_cartera":46.7,"tot_visa_cartera":60.72,"tot_mc_cartera":37.9,"cr_visa_plast":55.5,"cr_mc_plast":40.9,"tot_visa_plast":62.7,"tot_mc_plast":35.5,"cr_otras_saldo":4.53,"db_visa":67.77,"db_mc":31.7},{"periodo":"2020","anio":2020,"completo":true,"corte_tarjetas":"4T20","fact_credito":1.054,"fact_debito":1.73,"tarj_cr_visa":16168786,"tarj_cr_mc":10522397,"tarj_cr_otras":988717,"tarj_db_visa":105533873,"tarj_db_mc":51630057,"tarj_db_otras":618680,"cr_visa_saldo":47.23,"cr_mc_saldo":48.31,"tot_visa_saldo":59.45,"tot_mc_saldo":38.62,"cr_visa_cartera":52.55,"cr_mc_cartera":44.92,"tot_visa_cartera":61.46,"tot_mc_cartera":37.34,"cr_visa_plast":58.41,"cr_mc_plast":38.01,"tot_visa_plast":63.68,"tot_mc_plast":34.73,"cr_otras_saldo":4.46,"db_visa":66.89,"db_mc":32.72},{"periodo":"2021","anio":2021,"completo":true,"corte_tarjetas":"4T21","fact_credito":1.35,"fact_debito":2.133,"tarj_cr_visa":16520881,"tarj_cr_mc":11448103,"tarj_cr_otras":53696,"tarj_db_visa":95004350,"tarj_db_mc":47716612,"tarj_db_otras":735455,"cr_visa_saldo":47.69,"cr_mc_saldo":52.07,"tot_visa_saldo":59.04,"tot_mc_saldo":40.55,"cr_visa_cartera":52.14,"cr_mc_cartera":47.67,"tot_visa_cartera":60.76,"tot_mc_cartera":38.85,"cr_visa_plast":58.96,"cr_mc_plast":40.85,"tot_visa_plast":63.41,"tot_mc_plast":36.2,"cr_otras_saldo":0.24,"db_visa":66.23,"db_mc":33.26},{"periodo":"2022","anio":2022,"completo":true,"corte_tarjetas":"4T22","fact_credito":1.694,"fact_debito":2.508,"tarj_cr_visa":17064109,"tarj_cr_mc":12517454,"tarj_cr_otras":111735,"tarj_db_visa":96301355,"tarj_db_mc":58506600,"tarj_db_otras":817630,"cr_visa_saldo":47.15,"cr_mc_saldo":52.4,"tot_visa_saldo":55.94,"tot_mc_saldo":43.56,"cr_visa_cartera":52.15,"cr_mc_cartera":47.5,"tot_visa_cartera":57.96,"tot_mc_cartera":41.59,"cr_visa_plast":57.47,"cr_mc_plast":42.16,"tot_visa_plast":60.1,"tot_mc_plast":39.43,"cr_otras_saldo":0.45,"db_visa":61.88,"db_mc":37.59},{"periodo":"2023","anio":2023,"completo":true,"corte_tarjetas":"4T23","fact_credito":2.027,"fact_debito":2.902,"tarj_cr_visa":22730631,"tarj_cr_mc":14846248,"tarj_cr_otras":212202,"tarj_db_visa":119723978,"tarj_db_mc":75385689,"tarj_db_otras":710689,"cr_visa_saldo":46.19,"cr_mc_saldo":52.99,"tot_visa_saldo":54.99,"tot_mc_saldo":44.46,"cr_visa_cartera":51.6,"cr_mc_cartera":47.77,"tot_visa_cartera":57.22,"tot_mc_cartera":42.31,"cr_visa_plast":60.15,"cr_mc_plast":39.29,"tot_visa_plast":60.73,"tot_mc_plast":38.82,"cr_otras_saldo":0.82,"db_visa":61.14,"db_mc":38.5},{"periodo":"2024","anio":2024,"completo":true,"corte_tarjetas":"4T24","fact_credito":2.379,"fact_debito":3.422,"tarj_cr_visa":27258959,"tarj_cr_mc":15753207,"tarj_cr_otras":306264,"tarj_db_visa":126390076,"tarj_db_mc":71045229,"tarj_db_otras":477661,"cr_visa_saldo":48.04,"cr_mc_saldo":50.83,"tot_visa_saldo":57.37,"tot_mc_saldo":42.02,"cr_visa_cartera":54.44,"cr_mc_cartera":44.71,"tot_visa_cartera":60.0,"tot_mc_cartera":39.51,"cr_visa_plast":62.93,"cr_mc_plast":36.37,"tot_visa_plast":63.48,"tot_mc_plast":36.09,"cr_otras_saldo":1.13,"db_visa":63.86,"db_mc":35.9},{"periodo":"2025","anio":2025,"completo":true,"corte_tarjetas":"4T25","fact_credito":2.953,"fact_debito":3.943,"tarj_cr_visa":31042027,"tarj_cr_mc":18661493,"tarj_cr_otras":343217,"tarj_db_visa":132582965,"tarj_db_mc":76158186,"tarj_db_otras":475852,"cr_visa_saldo":50.4,"cr_mc_saldo":48.55,"tot_visa_saldo":57.82,"tot_mc_saldo":41.6,"cr_visa_cartera":56.44,"cr_mc_cartera":42.74,"tot_visa_cartera":60.41,"tot_mc_cartera":39.11,"cr_visa_plast":62.03,"cr_mc_plast":37.29,"tot_visa_plast":62.8,"tot_mc_plast":36.78,"cr_otras_saldo":1.05,"db_visa":63.37,"db_mc":36.4},{"periodo":"2026*","anio":2026,"completo":false,"corte_tarjetas":"2T26","fact_credito":2.754,"fact_debito":3.563,"tarj_cr_visa":29259069,"tarj_cr_mc":19723219,"tarj_cr_otras":308271,"tarj_db_visa":127789399,"tarj_db_mc":81098379,"tarj_db_otras":432710,"cr_visa_saldo":50.29,"cr_mc_saldo":48.72,"tot_visa_saldo":56.36,"tot_mc_saldo":43.09,"cr_visa_cartera":56.07,"cr_mc_cartera":43.16,"tot_visa_cartera":58.88,"tot_mc_cartera":40.67,"cr_visa_plast":59.36,"cr_mc_plast":40.01,"tot_visa_plast":60.31,"tot_mc_plast":39.3,"cr_otras_saldo":0.99,"db_visa":61.05,"db_mc":38.74}],"contribucion_credito":[{"letra":"D","banco":"BBVA","visa_pp":3.71,"mc_pp":-1.46},{"letra":"C","banco":"Banamex","visa_pp":0.24,"mc_pp":-1.79},{"letra":"E","banco":"Santander","visa_pp":-1.36,"mc_pp":-1.17},{"letra":"O","banco":"Banorte","visa_pp":2.13,"mc_pp":-0.69},{"letra":"F","banco":"HSBC","visa_pp":-0.67,"mc_pp":1.92},{"letra":"I","banco":"Inbursa","visa_pp":-0.04,"mc_pp":-1.3},{"letra":"U","banco":"BanCoppel","visa_pp":-0.43,"mc_pp":0.0},{"letra":"K","banco":"Scotiabank","visa_pp":1.08,"mc_pp":-1.77},{"letra":"M","banco":"Invex","visa_pp":-1.37,"mc_pp":4.6},{"letra":"L","banco":"Banregio","visa_pp":0.44,"mc_pp":0.0},{"letra":"G","banco":"Banco del Bajío","visa_pp":0.32,"mc_pp":-0.0},{"letra":"N","banco":"Afirme","visa_pp":0.1,"mc_pp":-0.06},{"letra":"Y","banco":"Ualá (ABC Capital)","visa_pp":0.0,"mc_pp":0.05},{"letra":"P","banco":"American Express","visa_pp":0.0,"mc_pp":0.0},{"letra":"S","banco":"Banco Famsa","visa_pp":-0.19,"mc_pp":0.0},{"letra":"R","banco":"Resto (no emparejados)","visa_pp":0.75,"mc_pp":0.43}],"emisores_credito":[{"letra":"D","banco":"BBVA","confianza":"Alta","evidencia":"Mayor emisor; 92% Visa; crecimiento 2019-25 consistente con BBVA","visa":16434033,"mc":1461665,"otras":0,"total":17895698,"total_inicial":6715877,"pct_visa":91.8,"saldo_pct_ult":24.7},{"letra":"C","banco":"Banamex","confianza":"Media","evidencia":"2º emisor; 84% MC; tuvo 'otras' (AmEx) hasta 2019, como Banamex","visa":2091499,"mc":9818766,"otras":0,"total":11910265,"total_inicial":5894939,"pct_visa":17.6,"saldo_pct_ult":26.8},{"letra":"E","banco":"Santander","confianza":"Media-alta","evidencia":"80% MC + porción 'otras' desde 2014 (cobranded AmEx)","visa":1006303,"mc":3856833,"otras":308271,"total":5171407,"total_inicial":3645028,"pct_visa":19.5,"saldo_pct_ult":16.6},{"letra":"O","banco":"Banorte","confianza":"Alta","evidencia":"82% Visa; crece x1.7 vs Banorte x1.6","visa":3541328,"mc":663105,"otras":0,"total":4204433,"total_inicial":2157135,"pct_visa":84.2,"saldo_pct_ult":10.8},{"letra":"U","banco":"BanCoppel","confianza":"Alta","evidencia":"Aparece en 2008 (BanCoppel nace 2007); 100% Visa; cae x0.67 vs x0.69","visa":3252107,"mc":0,"otras":0,"total":3252107,"total_inicial":4073550,"pct_visa":100.0,"saldo_pct_ult":2.0},{"letra":"F","banco":"HSBC","confianza":"Media","evidencia":"Visa/MC mixto; crece x1.6 vs HSBC x1.5","visa":1077186,"mc":893674,"otras":0,"total":1970860,"total_inicial":1529108,"pct_visa":54.7,"saldo_pct_ult":6.6},{"letra":"M","banco":"Invex","confianza":"Media","evidencia":"Ratio estable vs Invex; crece x3.5 vs x3.1; migró de Visa a MC en 2021","visa":11009,"mc":1810351,"otras":0,"total":1821360,"total_inicial":411629,"pct_visa":0.6,"saldo_pct_ult":4.7},{"letra":"I","banco":"Inbursa","confianza":"Alta","evidencia":"Cae x0.67 vs Inbursa x0.66","visa":445525,"mc":722785,"otras":0,"total":1168310,"total_inicial":1954534,"pct_visa":38.1,"saldo_pct_ult":2.8},{"letra":"P","banco":"American Express","confianza":"Alta","evidencia":"Solo 'otras marcas'; sale en 2021","visa":0,"mc":0,"otras":0,"total":0,"total_inicial":962782,"pct_visa":null,"saldo_pct_ult":0.0},{"letra":"K","banco":"Scotiabank","confianza":"Baja-media","evidencia":"Tamaño cercano a Scotiabank/Globalcard; tendencia no coincide del todo","visa":598428,"mc":125830,"otras":0,"total":724258,"total_inicial":885186,"pct_visa":82.6,"saldo_pct_ult":2.1},{"letra":"L","banco":"Banregio","confianza":"Baja","evidencia":"Tamaño y crecimiento cercanos; débito grande no encaja","visa":441360,"mc":0,"otras":0,"total":441360,"total_inicial":144237,"pct_visa":100.0,"saldo_pct_ult":0.9},{"letra":"Y","banco":"Ualá (ABC Capital)","confianza":"Media","evidencia":"MC, aparece en 2023; tamaño ≈ Ualá","visa":0,"mc":334100,"otras":0,"total":334100,"total_inicial":0,"pct_visa":0.0,"saldo_pct_ult":0.1},{"letra":"G","banco":"Banco del Bajío","confianza":"Media","evidencia":"Crece x2.4 igual que Bajío; 100% Visa","visa":256840,"mc":1,"otras":0,"total":256841,"total_inicial":104224,"pct_visa":100.0,"saldo_pct_ult":0.5},{"letra":"N","banco":"Afirme","confianza":"Media","evidencia":"Crece x3.0 vs Afirme x3.2","visa":79995,"mc":14659,"otras":0,"total":94654,"total_inicial":31102,"pct_visa":84.5,"saldo_pct_ult":0.1},{"letra":"S","banco":"Banco Famsa","confianza":"Alta","evidencia":"100% Visa; desaparece en 2020 (cierre de Famsa)","visa":0,"mc":0,"otras":0,"total":0,"total_inicial":51568,"pct_visa":null,"saldo_pct_ult":0.0},{"letra":"B","banco":"¿Mifel?","confianza":"Baja","evidencia":"¿Mifel? Muy pequeño y estable desde 2006","visa":22334,"mc":0,"otras":0,"total":22334,"total_inicial":19271,"pct_visa":100.0,"saldo_pct_ult":null},{"letra":"J","banco":"Sin identificar","confianza":"—","evidencia":"MC pequeño desde 2021","visa":0,"mc":21450,"otras":0,"total":21450,"total_inicial":0,"pct_visa":0.0,"saldo_pct_ult":null},{"letra":"Q","banco":"Sin identificar","confianza":"—","evidencia":"Residual (<2k tarjetas)","visa":1122,"mc":0,"otras":0,"total":1122,"total_inicial":3802,"pct_visa":100.0,"saldo_pct_ult":null}],"emisores_debito":[{"letra":"D","banco":"BBVA","visa":58150814,"mc":1218,"otras":0,"total":58152032,"pct_visa":100.0},{"letra":"AD","banco":"Sin identificar","visa":0,"mc":39432536,"otras":0,"total":39432536,"pct_visa":0.0},{"letra":"U","banco":"BanCoppel","visa":25037711,"mc":0,"otras":0,"total":25037711,"pct_visa":100.0},{"letra":"C","banco":"Banamex","visa":0,"mc":17239861,"otras":27,"total":17239888,"pct_visa":0.0},{"letra":"O","banco":"Banorte","visa":14099947,"mc":856772,"otras":0,"total":14956719,"pct_visa":94.3},{"letra":"E","banco":"Santander","visa":0,"mc":13889067,"otras":0,"total":13889067,"pct_visa":0.0},{"letra":"F","banco":"HSBC","visa":9771080,"mc":0,"otras":0,"total":9771080,"pct_visa":100.0},{"letra":"Q","banco":"Sin identificar","visa":6757431,"mc":1741092,"otras":0,"total":8498523,"pct_visa":79.5},{"letra":"L","banco":"Banregio","visa":5754163,"mc":0,"otras":0,"total":5754163,"pct_visa":100.0},{"letra":"I","banco":"Inbursa","visa":1153174,"mc":2541453,"otras":229970,"total":3924597,"pct_visa":29.4},{"letra":"Y","banco":"Ualá (ABC Capital)","visa":0,"mc":2856730,"otras":0,"total":2856730,"pct_visa":0.0},{"letra":"AF","banco":"Sin identificar","visa":2854296,"mc":0,"otras":0,"total":2854296,"pct_visa":100.0},{"letra":"K","banco":"Scotiabank","visa":0,"mc":1555694,"otras":0,"total":1555694,"pct_visa":0.0},{"letra":"N","banco":"Afirme","visa":1126744,"mc":287565,"otras":0,"total":1414309,"pct_visa":79.7},{"letra":"G","banco":"Banco del Bajío","visa":1163872,"mc":16618,"otras":202713,"total":1383203,"pct_visa":84.1},{"letra":"B","banco":"¿Mifel?","visa":928160,"mc":0,"otras":0,"total":928160,"pct_visa":100.0},{"letra":"S","banco":"Sin identificar","visa":790446,"mc":0,"otras":0,"total":790446,"pct_visa":100.0},{"letra":"W","banco":"Sin identificar","visa":0,"mc":472908,"otras":0,"total":472908,"pct_visa":0.0}]};
-const S = {tipo: 'total', esc: 'saldo', vigtab: 'vig', bancotab: 'credito'};
+const D = {"meta":{"corte_tarjetas":"2T26","corte_tarjetas_inicial":"4T19","corte_facturacion":"oct-2026","ultimo_anio_completo":"2025","primer_anio":"2019","empalme":{"credito":1.0939,"debito":1.086},"descargado":"2026-11-27T16:00:00Z (semilla: solo cortes 4T y 2T26)","generado":"2026-11-27"},"anual":[{"periodo":"2019","anio":2019,"corte_tarjetas":"4T19","fact_credito":1.1491,"fact_debito":1.6318,"tarj_cr_visa":15870521,"tarj_cr_mc":11695007,"tarj_cr_otras":1028714,"tarj_db_visa":102230781,"tarj_db_mc":47812032,"tarj_db_otras":805483,"completo":true,"cr_visa_saldo":45.68,"cr_mc_saldo":49.79,"tot_visa_saldo":58.64,"tot_mc_saldo":39.17,"cr_visa_cartera":50.72,"cr_mc_cartera":46.7,"tot_visa_cartera":60.72,"tot_mc_cartera":37.9,"cr_visa_plast":55.5,"cr_mc_plast":40.9,"tot_visa_plast":62.7,"tot_mc_plast":35.5,"db_visa":67.77,"db_mc":31.7},{"periodo":"2020","anio":2020,"corte_tarjetas":"4T20","fact_credito":1.0537,"fact_debito":1.7304,"tarj_cr_visa":16168786,"tarj_cr_mc":10522397,"tarj_cr_otras":988717,"tarj_db_visa":105533873,"tarj_db_mc":51630057,"tarj_db_otras":618680,"completo":true,"cr_visa_saldo":47.23,"cr_mc_saldo":48.31,"tot_visa_saldo":59.45,"tot_mc_saldo":38.62,"cr_visa_cartera":52.55,"cr_mc_cartera":44.92,"tot_visa_cartera":61.46,"tot_mc_cartera":37.34,"cr_visa_plast":58.41,"cr_mc_plast":38.01,"tot_visa_plast":63.68,"tot_mc_plast":34.73,"db_visa":66.89,"db_mc":32.72},{"periodo":"2021","anio":2021,"corte_tarjetas":"4T21","fact_credito":1.3503,"fact_debito":2.1333,"tarj_cr_visa":16520881,"tarj_cr_mc":11448103,"tarj_cr_otras":53696,"tarj_db_visa":95004350,"tarj_db_mc":47716612,"tarj_db_otras":735455,"completo":true,"cr_visa_saldo":47.69,"cr_mc_saldo":52.07,"tot_visa_saldo":59.04,"tot_mc_saldo":40.55,"cr_visa_cartera":52.14,"cr_mc_cartera":47.67,"tot_visa_cartera":60.76,"tot_mc_cartera":38.85,"cr_visa_plast":58.96,"cr_mc_plast":40.85,"tot_visa_plast":63.41,"tot_mc_plast":36.2,"db_visa":66.23,"db_mc":33.26},{"periodo":"2022","anio":2022,"corte_tarjetas":"4T22","fact_credito":1.6934,"fact_debito":2.5077,"tarj_cr_visa":17064109,"tarj_cr_mc":12517454,"tarj_cr_otras":111735,"tarj_db_visa":96301355,"tarj_db_mc":58506600,"tarj_db_otras":817630,"completo":true,"cr_visa_saldo":47.15,"cr_mc_saldo":52.4,"tot_visa_saldo":55.94,"tot_mc_saldo":43.56,"cr_visa_cartera":52.15,"cr_mc_cartera":47.5,"tot_visa_cartera":57.96,"tot_mc_cartera":41.59,"cr_visa_plast":57.47,"cr_mc_plast":42.16,"tot_visa_plast":60.1,"tot_mc_plast":39.43,"db_visa":61.88,"db_mc":37.59},{"periodo":"2023","anio":2023,"corte_tarjetas":"4T23","fact_credito":2.0269,"fact_debito":2.9022,"tarj_cr_visa":22730631,"tarj_cr_mc":14846248,"tarj_cr_otras":212202,"tarj_db_visa":119723978,"tarj_db_mc":75385689,"tarj_db_otras":710689,"completo":true,"cr_visa_saldo":46.19,"cr_mc_saldo":52.99,"tot_visa_saldo":54.99,"tot_mc_saldo":44.46,"cr_visa_cartera":51.6,"cr_mc_cartera":47.77,"tot_visa_cartera":57.22,"tot_mc_cartera":42.31,"cr_visa_plast":60.15,"cr_mc_plast":39.29,"tot_visa_plast":60.73,"tot_mc_plast":38.82,"db_visa":61.14,"db_mc":38.5},{"periodo":"2024","anio":2024,"corte_tarjetas":"4T24","fact_credito":2.3791,"fact_debito":3.4221,"tarj_cr_visa":27258959,"tarj_cr_mc":15753207,"tarj_cr_otras":306264,"tarj_db_visa":126390076,"tarj_db_mc":71045229,"tarj_db_otras":477661,"completo":true,"cr_visa_saldo":48.04,"cr_mc_saldo":50.83,"tot_visa_saldo":57.37,"tot_mc_saldo":42.02,"cr_visa_cartera":54.44,"cr_mc_cartera":44.71,"tot_visa_cartera":60.0,"tot_mc_cartera":39.51,"cr_visa_plast":62.93,"cr_mc_plast":36.37,"tot_visa_plast":63.48,"tot_mc_plast":36.09,"db_visa":63.86,"db_mc":35.9},{"periodo":"2025","anio":2025,"corte_tarjetas":"4T25","fact_credito":2.9527,"fact_debito":3.9434,"tarj_cr_visa":31042027,"tarj_cr_mc":18661493,"tarj_cr_otras":343217,"tarj_db_visa":132582965,"tarj_db_mc":76158186,"tarj_db_otras":475852,"completo":true,"cr_visa_saldo":50.4,"cr_mc_saldo":48.55,"tot_visa_saldo":57.82,"tot_mc_saldo":41.6,"cr_visa_cartera":56.44,"cr_mc_cartera":42.74,"tot_visa_cartera":60.41,"tot_mc_cartera":39.11,"cr_visa_plast":62.03,"cr_mc_plast":37.29,"tot_visa_plast":62.8,"tot_mc_plast":36.78,"db_visa":63.37,"db_mc":36.4},{"periodo":"2026*","anio":2026,"corte_tarjetas":"2T26","fact_credito":2.7538,"fact_debito":3.5627,"tarj_cr_visa":29259069,"tarj_cr_mc":19723219,"tarj_cr_otras":308271,"tarj_db_visa":127789399,"tarj_db_mc":81098379,"tarj_db_otras":432710,"completo":false,"cr_visa_saldo":50.29,"cr_mc_saldo":48.72,"tot_visa_saldo":56.36,"tot_mc_saldo":43.09,"cr_visa_cartera":56.07,"cr_mc_cartera":43.16,"tot_visa_cartera":58.88,"tot_mc_cartera":40.67,"cr_visa_plast":59.36,"cr_mc_plast":40.01,"tot_visa_plast":60.31,"tot_mc_plast":39.3,"db_visa":61.05,"db_mc":38.74}],"trimestral":[],"tarjetas_hist":[{"corte":"4T19","fecha":"2019-10-01","cr_visa":15870521,"cr_mc":11695007,"cr_otras":1028714,"db_visa":102230781,"db_mc":47812032,"db_otras":805483},{"corte":"4T20","fecha":"2020-10-01","cr_visa":16168786,"cr_mc":10522397,"cr_otras":988717,"db_visa":105533873,"db_mc":51630057,"db_otras":618680},{"corte":"4T21","fecha":"2021-10-01","cr_visa":16520881,"cr_mc":11448103,"cr_otras":53696,"db_visa":95004350,"db_mc":47716612,"db_otras":735455},{"corte":"4T22","fecha":"2022-10-01","cr_visa":17064109,"cr_mc":12517454,"cr_otras":111735,"db_visa":96301355,"db_mc":58506600,"db_otras":817630},{"corte":"4T23","fecha":"2023-10-01","cr_visa":22730631,"cr_mc":14846248,"cr_otras":212202,"db_visa":119723978,"db_mc":75385689,"db_otras":710689},{"corte":"4T24","fecha":"2024-10-01","cr_visa":27258959,"cr_mc":15753207,"cr_otras":306264,"db_visa":126390076,"db_mc":71045229,"db_otras":477661},{"corte":"4T25","fecha":"2025-10-01","cr_visa":31042027,"cr_mc":18661493,"cr_otras":343217,"db_visa":132582965,"db_mc":76158186,"db_otras":475852},{"corte":"2T26","fecha":"2026-04-01","cr_visa":29259069,"cr_mc":19723219,"cr_otras":308271,"db_visa":127789399,"db_mc":81098379,"db_otras":432710}],"facturacion_mensual":[{"mes":"2022-12","credito":167.8,"debito":281.7}],"contribucion_credito":[{"letra":"D","banco":"BBVA","visa_pp":3.71,"mc_pp":-1.46},{"letra":"C","banco":"Banamex","visa_pp":0.24,"mc_pp":-1.79},{"letra":"E","banco":"Santander","visa_pp":-1.36,"mc_pp":-1.17},{"letra":"O","banco":"Banorte","visa_pp":2.13,"mc_pp":-0.69},{"letra":"F","banco":"HSBC","visa_pp":-0.67,"mc_pp":1.92},{"letra":"I","banco":"Inbursa","visa_pp":-0.04,"mc_pp":-1.3},{"letra":"U","banco":"BanCoppel","visa_pp":-0.43,"mc_pp":0.0},{"letra":"K","banco":"Scotiabank","visa_pp":1.08,"mc_pp":-1.77},{"letra":"M","banco":"Invex","visa_pp":-1.37,"mc_pp":4.6},{"letra":"L","banco":"Banregio","visa_pp":0.44,"mc_pp":0.0},{"letra":"G","banco":"Banco del Bajío","visa_pp":0.32,"mc_pp":-0.0},{"letra":"N","banco":"Afirme","visa_pp":0.1,"mc_pp":-0.06},{"letra":"Y","banco":"Ualá (ABC Capital)","visa_pp":0.0,"mc_pp":0.05},{"letra":"P","banco":"American Express","visa_pp":0.0,"mc_pp":0.0},{"letra":"S","banco":"Banco Famsa","visa_pp":-0.19,"mc_pp":0.0},{"letra":"R","banco":"Resto (no emparejados)","visa_pp":0.75,"mc_pp":0.43}],"emisores":{"credito":{"periodos":["2019","2020","2021","2022","2023","2024","2025","2026*"],"heat":{"total":{"B":{"2019":0.067,"2020":0.07,"2021":0.068,"2022":0.065,"2023":0.052,"2024":0.048,"2025":0.045,"2026*":0.045},"C":{"2019":20.623,"2020":18.359,"2021":17.527,"2022":18.307,"2023":15.891,"2024":17.947,"2025":21.733,"2026*":24.163},"D":{"2019":23.495,"2020":26.192,"2021":28.841,"2022":28.391,"2023":38.96,"2024":40.734,"2025":39.866,"2026*":36.307},"E":{"2019":12.752,"2020":13.333,"2021":14.264,"2022":15.011,"2023":12.241,"2024":11.106,"2025":10.831,"2026*":10.492},"F":{"2019":5.35,"2020":5.429,"2021":5.522,"2022":5.822,"2023":5.52,"2024":5.172,"2025":4.247,"2026*":3.998},"G":{"2019":0.365,"2020":0.434,"2021":0.503,"2022":0.52,"2023":0.497,"2024":0.499,"2025":0.492,"2026*":0.521},"I":{"2019":6.838,"2020":6.193,"2021":5.411,"2022":4.798,"2023":3.534,"2024":3.001,"2025":2.487,"2026*":2.37},"J":{"2019":0.0,"2020":0.0,"2021":0.02,"2022":0.033,"2023":0.021,"2024":0.028,"2025":0.027,"2026*":0.044},"K":{"2019":3.097,"2020":2.794,"2021":2.694,"2022":2.309,"2023":1.714,"2024":1.513,"2025":1.322,"2026*":1.469},"L":{"2019":0.505,"2020":0.661,"2021":0.743,"2022":1.585,"2023":1.386,"2024":1.242,"2025":1.15,"2026*":0.895},"M":{"2019":1.44,"2020":1.568,"2021":1.933,"2022":2.481,"2023":2.587,"2024":3.007,"2025":2.997,"2026*":3.695},"N":{"2019":0.109,"2020":0.122,"2021":0.166,"2022":0.164,"2023":0.133,"2024":0.203,"2025":0.185,"2026*":0.192},"O":{"2019":7.547,"2020":7.168,"2021":7.807,"2022":8.453,"2023":7.835,"2024":7.884,"2025":7.876,"2026*":8.53},"P":{"2019":3.368,"2020":3.368,"2021":0.0,"2022":0.0,"2023":0.0,"2024":0.0,"2025":0.0,"2026*":0.0},"Q":{"2019":0.013,"2020":0.003,"2021":0.002,"2022":0.002,"2023":0.001,"2024":0.001,"2025":0.002,"2026*":0.002},"S":{"2019":0.18,"2020":0.0,"2021":0.0,"2022":0.0,"2023":0.0,"2024":0.0,"2025":0.0,"2026*":0.0},"U":{"2019":14.251,"2020":14.306,"2021":14.498,"2022":12.058,"2023":9.555,"2024":7.504,"2025":6.572,"2026*":6.598},"Y":{"2019":0.0,"2020":0.0,"2021":0.0,"2022":0.0,"2023":0.074,"2024":0.11,"2025":0.168,"2026*":0.678}},"visa":{"B":{"2019":0.1,"2020":0.119,"2021":0.116,"2022":0.114,"2023":0.086,"2024":0.077,"2025":0.072,"2026*":0.076},"C":{"2019":5.496,"2020":4.842,"2021":4.889,"2022":5.448,"2023":4.511,"2024":4.722,"2025":5.797,"2026*":7.148},"D":{"2019":36.014,"2020":39.507,"2021":41.264,"2022":41.526,"2023":53.354,"2024":59.25,"2025":59.353,"2026*":56.167},"E":{"2019":5.836,"2020":5.278,"2021":4.638,"2022":3.889,"2023":2.53,"2024":2.05,"2025":3.483,"2026*":3.439},"F":{"2019":7.807,"2020":7.14,"2021":6.866,"2022":6.995,"2023":5.748,"2024":5.04,"2025":3.814,"2026*":3.682},"G":{"2019":0.65,"2020":0.735,"2021":0.846,"2022":0.906,"2023":0.825,"2024":0.794,"2025":0.794,"2026*":0.878},"I":{"2019":3.362,"2020":3.043,"2021":2.766,"2022":2.736,"2023":2.067,"2024":1.778,"2025":1.564,"2026*":1.523},"J":{"2019":0.0,"2020":0.0,"2021":0.0,"2022":0.0,"2023":0.0,"2024":0.0,"2025":0.0,"2026*":0.0},"K":{"2019":1.255,"2020":1.814,"2021":2.214,"2022":2.948,"2023":2.227,"2024":1.91,"2025":1.723,"2026*":2.045},"L":{"2019":0.909,"2020":1.131,"2021":1.261,"2022":2.757,"2023":2.305,"2024":1.973,"2025":1.854,"2026*":1.508},"M":{"2019":2.478,"2020":2.547,"2021":0.39,"2022":0.181,"2023":0.138,"2024":0.11,"2025":0.083,"2026*":0.038},"N":{"2019":0.039,"2020":0.038,"2021":0.036,"2022":0.034,"2023":0.026,"2024":0.256,"2025":0.248,"2026*":0.273},"O":{"2019":10.022,"2020":9.309,"2021":10.318,"2022":11.706,"2023":10.465,"2024":10.114,"2025":10.616,"2026*":12.103},"P":{"2019":0.0,"2020":0.0,"2021":0.0,"2022":0.0,"2023":0.0,"2024":0.0,"2025":0.0,"2026*":0.0},"Q":{"2019":0.024,"2020":0.004,"2021":0.003,"2022":0.003,"2023":0.002,"2024":0.002,"2025":0.003,"2026*":0.004},"S":{"2019":0.325,"2020":0.0,"2021":0.0,"2022":0.0,"2023":0.0,"2024":0.0,"2025":0.0,"2026*":0.0},"U":{"2019":25.682,"2020":24.491,"2021":24.393,"2022":20.755,"2023":15.715,"2024":11.925,"2025":10.596,"2026*":11.115},"Y":{"2019":0.0,"2020":0.0,"2021":0.0,"2022":0.0,"2023":0.0,"2024":0.0,"2025":0.0,"2026*":0.0}},"mc":{"B":{"2019":0.03,"2020":0.0,"2021":0.0,"2022":0.0,"2023":0.0,"2024":0.0,"2025":0.0,"2026*":0.0},"C":{"2019":42.923,"2020":40.856,"2021":35.848,"2022":36.001,"2023":33.543,"2024":41.18,"2025":48.643,"2026*":49.783},"D":{"2019":8.581,"2020":8.19,"2021":11.047,"2022":10.738,"2023":17.477,"2024":9.487,"2025":8.182,"2026*":7.411},"E":{"2019":22.724,"2020":26.427,"2021":27.755,"2022":29.413,"2023":25.854,"2024":25.049,"2025":21.415,"2026*":19.555},"F":{"2019":2.486,"2020":3.31,"2021":3.608,"2022":4.275,"2023":5.248,"2024":5.502,"2025":5.044,"2026*":4.531},"G":{"2019":0.009,"2020":0.011,"2021":0.01,"2022":0.0,"2023":0.0,"2024":0.0,"2025":0.0,"2026*":0.0},"I":{"2019":12.154,"2020":11.617,"2021":9.254,"2022":7.652,"2023":5.831,"2024":5.176,"2025":4.068,"2026*":3.665},"J":{"2019":0.0,"2020":0.0,"2021":0.048,"2022":0.077,"2023":0.055,"2024":0.078,"2025":0.071,"2026*":0.109},"K":{"2019":5.868,"2020":4.562,"2021":3.399,"2022":1.458,"2023":0.953,"2024":0.854,"2025":0.679,"2026*":0.638},"L":{"2019":0.0,"2020":0.0,"2021":0.0,"2022":0.0,"2023":0.0,"2024":0.0,"2025":0.0,"2026*":0.0},"M":{"2019":0.159,"2020":0.211,"2021":4.169,"2022":5.639,"2023":6.373,"2024":8.078,"2025":7.899,"2026*":9.179},"N":{"2019":0.213,"2020":0.265,"2021":0.356,"2022":0.343,"2023":0.299,"2024":0.116,"2025":0.083,"2026*":0.074},"O":{"2019":4.853,"2020":4.553,"2021":4.219,"2022":4.095,"2023":3.92,"2024":4.178,"2025":3.464,"2026*":3.362},"P":{"2019":0.0,"2020":0.0,"2021":0.0,"2022":0.0,"2023":0.0,"2024":0.0,"2025":0.0,"2026*":0.0},"Q":{"2019":0.0,"2020":0.0,"2021":0.0,"2022":0.0,"2023":0.0,"2024":0.0,"2025":0.0,"2026*":0.0},"S":{"2019":0.0,"2020":0.0,"2021":0.0,"2022":0.0,"2023":0.0,"2024":0.0,"2025":0.0,"2026*":0.0},"U":{"2019":0.0,"2020":0.0,"2021":0.286,"2022":0.308,"2023":0.259,"2024":0.0,"2025":0.0,"2026*":0.0},"Y":{"2019":0.0,"2020":0.0,"2021":0.0,"2022":0.0,"2023":0.188,"2024":0.302,"2025":0.451,"2026*":1.694}}},"concentracion":{"visa":{"corte":"2T26","corte_anterior":"2T25","hhi":3511,"hhi_anterior":null,"top":[{"letra":"D","banco":"BBVA","share":56.17,"delta_pp":null},{"letra":"O","banco":"Banorte","share":12.1,"delta_pp":null},{"letra":"U","banco":"BanCoppel","share":11.11,"delta_pp":null},{"letra":"C","banco":"Banamex","share":7.15,"delta_pp":null},{"letra":"F","banco":"HSBC","share":3.68,"delta_pp":null},{"letra":"E","banco":"Santander","share":3.44,"delta_pp":null},{"letra":"K","banco":"Scotiabank","share":2.05,"delta_pp":null},{"letra":"I","banco":"Inbursa","share":1.52,"delta_pp":null},{"letra":"L","banco":"Banregio","share":1.51,"delta_pp":null},{"letra":"G","banco":"Banco del Bajío","share":0.88,"delta_pp":null}]},"mc":{"corte":"2T26","corte_anterior":"2T25","hhi":3048,"hhi_anterior":null,"top":[{"letra":"C","banco":"Banamex","share":49.78,"delta_pp":null},{"letra":"E","banco":"Santander","share":19.55,"delta_pp":null},{"letra":"M","banco":"Invex","share":9.18,"delta_pp":null},{"letra":"D","banco":"BBVA","share":7.41,"delta_pp":null},{"letra":"F","banco":"HSBC","share":4.53,"delta_pp":null},{"letra":"I","banco":"Inbursa","share":3.66,"delta_pp":null},{"letra":"O","banco":"Banorte","share":3.36,"delta_pp":null},{"letra":"Y","banco":"Ualá (ABC Capital)","share":1.69,"delta_pp":null},{"letra":"K","banco":"Scotiabank","share":0.64,"delta_pp":null},{"letra":"J","banco":"Emisor J","share":0.11,"delta_pp":null}]}},"nombres":{"B":"¿Mifel?","C":"Banamex","D":"BBVA","E":"Santander","F":"HSBC","G":"Banco del Bajío","I":"Inbursa","J":"Emisor J","K":"Scotiabank","L":"Banregio","M":"Invex","N":"Afirme","O":"Banorte","P":"American Express","Q":"Emisor Q","S":"Banco Famsa","U":"BanCoppel","Y":"Ualá (ABC Capital)"}},"debito":{"periodos":["2019","2020","2021","2022","2023","2024","2025","2026*"],"heat":{"total":{"D":{"2026*":27.836},"AD":{"2026*":18.875},"U":{"2026*":11.985},"C":{"2026*":8.252},"O":{"2026*":7.159},"E":{"2026*":6.648},"F":{"2026*":4.677},"Q":{"2026*":4.068},"L":{"2026*":2.754},"I":{"2026*":1.879},"Y":{"2026*":1.367},"AF":{"2026*":1.366},"K":{"2026*":0.745},"N":{"2026*":0.677},"G":{"2026*":0.662},"B":{"2026*":0.444},"S":{"2026*":0.378},"W":{"2026*":0.226}},"visa":{"D":{"2026*":45.577},"AD":{"2026*":0.0},"U":{"2026*":19.624},"C":{"2026*":0.0},"O":{"2026*":11.051},"E":{"2026*":0.0},"F":{"2026*":7.658},"Q":{"2026*":5.296},"L":{"2026*":4.51},"I":{"2026*":0.904},"Y":{"2026*":0.0},"AF":{"2026*":2.237},"K":{"2026*":0.0},"N":{"2026*":0.883},"G":{"2026*":0.912},"B":{"2026*":0.727},"S":{"2026*":0.62},"W":{"2026*":0.0}},"mc":{"D":{"2026*":0.002},"AD":{"2026*":48.747},"U":{"2026*":0.0},"C":{"2026*":21.312},"O":{"2026*":1.059},"E":{"2026*":17.17},"F":{"2026*":0.0},"Q":{"2026*":2.152},"L":{"2026*":0.0},"I":{"2026*":3.142},"Y":{"2026*":3.532},"AF":{"2026*":0.0},"K":{"2026*":1.923},"N":{"2026*":0.355},"G":{"2026*":0.021},"B":{"2026*":0.0},"S":{"2026*":0.0},"W":{"2026*":0.585}}},"concentracion":{"visa":{"corte":"2T26","corte_anterior":"2T25","hhi":2700,"hhi_anterior":null,"top":[{"letra":"D","banco":"BBVA","share":45.58,"delta_pp":null},{"letra":"U","banco":"BanCoppel","share":19.62,"delta_pp":null},{"letra":"O","banco":"Banorte","share":11.05,"delta_pp":null},{"letra":"F","banco":"HSBC","share":7.66,"delta_pp":null},{"letra":"Q","banco":"Emisor Q","share":5.3,"delta_pp":null},{"letra":"L","banco":"Banregio","share":4.51,"delta_pp":null},{"letra":"AF","banco":"Emisor AF","share":2.24,"delta_pp":null},{"letra":"G","banco":"Banco del Bajío","share":0.91,"delta_pp":null},{"letra":"I","banco":"Inbursa","share":0.9,"delta_pp":null},{"letra":"N","banco":"Afirme","share":0.88,"delta_pp":null}]},"mc":{"corte":"2T26","corte_anterior":"2T25","hhi":3158,"hhi_anterior":null,"top":[{"letra":"AD","banco":"Emisor AD","share":48.75,"delta_pp":null},{"letra":"C","banco":"Banamex","share":21.31,"delta_pp":null},{"letra":"E","banco":"Santander","share":17.17,"delta_pp":null},{"letra":"Y","banco":"Ualá (ABC Capital)","share":3.53,"delta_pp":null},{"letra":"I","banco":"Inbursa","share":3.14,"delta_pp":null},{"letra":"Q","banco":"Emisor Q","share":2.15,"delta_pp":null},{"letra":"K","banco":"Scotiabank","share":1.92,"delta_pp":null},{"letra":"O","banco":"Banorte","share":1.06,"delta_pp":null},{"letra":"W","banco":"Emisor W","share":0.58,"delta_pp":null},{"letra":"N","banco":"Afirme","share":0.36,"delta_pp":null}]}},"nombres":{"D":"BBVA","AD":"Emisor AD","U":"BanCoppel","C":"Banamex","O":"Banorte","E":"Santander","F":"HSBC","Q":"Emisor Q","L":"Banregio","I":"Inbursa","Y":"Ualá (ABC Capital)","AF":"Emisor AF","K":"Scotiabank","N":"Afirme","G":"Banco del Bajío","B":"¿Mifel?","S":"Emisor S","W":"Emisor W"}}},"emisores_credito":[{"letra":"D","banco":"BBVA","confianza":"Alta","evidencia":"Mayor emisor; 92% Visa; crecimiento 2019-25 consistente con BBVA","visa":16434033,"mc":1461665,"otras":0,"total":17895698,"total_inicial":6715877,"pct_visa":91.8,"saldo_pct_ult":24.7},{"letra":"C","banco":"Banamex","confianza":"Media","evidencia":"2º emisor; 84% MC; tuvo 'otras' (AmEx) hasta 2019, como Banamex","visa":2091499,"mc":9818766,"otras":0,"total":11910265,"total_inicial":5894939,"pct_visa":17.6,"saldo_pct_ult":26.8},{"letra":"E","banco":"Santander","confianza":"Media-alta","evidencia":"80% MC + porción 'otras' desde 2014 (cobranded AmEx)","visa":1006303,"mc":3856833,"otras":308271,"total":5171407,"total_inicial":3645028,"pct_visa":19.5,"saldo_pct_ult":16.6},{"letra":"O","banco":"Banorte","confianza":"Alta","evidencia":"82% Visa; crece x1.7 vs Banorte x1.6","visa":3541328,"mc":663105,"otras":0,"total":4204433,"total_inicial":2157135,"pct_visa":84.2,"saldo_pct_ult":10.8},{"letra":"U","banco":"BanCoppel","confianza":"Alta","evidencia":"Aparece en 2008 (BanCoppel nace 2007); 100% Visa; cae x0.67 vs x0.69","visa":3252107,"mc":0,"otras":0,"total":3252107,"total_inicial":4073550,"pct_visa":100.0,"saldo_pct_ult":2.0},{"letra":"F","banco":"HSBC","confianza":"Media","evidencia":"Visa/MC mixto; crece x1.6 vs HSBC x1.5","visa":1077186,"mc":893674,"otras":0,"total":1970860,"total_inicial":1529108,"pct_visa":54.7,"saldo_pct_ult":6.6},{"letra":"M","banco":"Invex","confianza":"Media","evidencia":"Ratio estable vs Invex; crece x3.5 vs x3.1; migró de Visa a MC en 2021","visa":11009,"mc":1810351,"otras":0,"total":1821360,"total_inicial":411629,"pct_visa":0.6,"saldo_pct_ult":4.7},{"letra":"I","banco":"Inbursa","confianza":"Alta","evidencia":"Cae x0.67 vs Inbursa x0.66","visa":445525,"mc":722785,"otras":0,"total":1168310,"total_inicial":1954534,"pct_visa":38.1,"saldo_pct_ult":2.8},{"letra":"P","banco":"American Express","confianza":"Alta","evidencia":"Solo 'otras marcas'; sale en 2021","visa":0,"mc":0,"otras":0,"total":0,"total_inicial":962782,"pct_visa":null,"saldo_pct_ult":0.0},{"letra":"K","banco":"Scotiabank","confianza":"Baja-media","evidencia":"Tamaño cercano a Scotiabank/Globalcard; tendencia no coincide del todo","visa":598428,"mc":125830,"otras":0,"total":724258,"total_inicial":885186,"pct_visa":82.6,"saldo_pct_ult":2.1},{"letra":"L","banco":"Banregio","confianza":"Baja","evidencia":"Tamaño y crecimiento cercanos; débito grande no encaja","visa":441360,"mc":0,"otras":0,"total":441360,"total_inicial":144237,"pct_visa":100.0,"saldo_pct_ult":0.9},{"letra":"Y","banco":"Ualá (ABC Capital)","confianza":"Media","evidencia":"MC, aparece en 2023; tamaño ≈ Ualá","visa":0,"mc":334100,"otras":0,"total":334100,"total_inicial":0,"pct_visa":0.0,"saldo_pct_ult":0.1},{"letra":"G","banco":"Banco del Bajío","confianza":"Media","evidencia":"Crece x2.4 igual que Bajío; 100% Visa","visa":256840,"mc":1,"otras":0,"total":256841,"total_inicial":104224,"pct_visa":100.0,"saldo_pct_ult":0.5},{"letra":"N","banco":"Afirme","confianza":"Media","evidencia":"Crece x3.0 vs Afirme x3.2","visa":79995,"mc":14659,"otras":0,"total":94654,"total_inicial":31102,"pct_visa":84.5,"saldo_pct_ult":0.1},{"letra":"S","banco":"Banco Famsa","confianza":"Alta","evidencia":"100% Visa; desaparece en 2020 (cierre de Famsa)","visa":0,"mc":0,"otras":0,"total":0,"total_inicial":51568,"pct_visa":null,"saldo_pct_ult":0.0},{"letra":"B","banco":"¿Mifel?","confianza":"Baja","evidencia":"¿Mifel? Muy pequeño y estable desde 2006","visa":22334,"mc":0,"otras":0,"total":22334,"total_inicial":19271,"pct_visa":100.0,"saldo_pct_ult":null},{"letra":"J","banco":"Emisor J","confianza":"—","evidencia":"MC pequeño desde 2021","visa":0,"mc":21450,"otras":0,"total":21450,"total_inicial":0,"pct_visa":0.0,"saldo_pct_ult":null},{"letra":"Q","banco":"Emisor Q","confianza":"—","evidencia":"Residual (<2k tarjetas)","visa":1122,"mc":0,"otras":0,"total":1122,"total_inicial":3802,"pct_visa":100.0,"saldo_pct_ult":null}],"emisores_debito":[{"letra":"D","banco":"BBVA","visa":58150814,"mc":1218,"otras":0,"total":58152032,"pct_visa":100.0},{"letra":"AD","banco":"Emisor AD","visa":0,"mc":39432536,"otras":0,"total":39432536,"pct_visa":0.0},{"letra":"U","banco":"BanCoppel","visa":25037711,"mc":0,"otras":0,"total":25037711,"pct_visa":100.0},{"letra":"C","banco":"Banamex","visa":0,"mc":17239861,"otras":27,"total":17239888,"pct_visa":0.0},{"letra":"O","banco":"Banorte","visa":14099947,"mc":856772,"otras":0,"total":14956719,"pct_visa":94.3},{"letra":"E","banco":"Santander","visa":0,"mc":13889067,"otras":0,"total":13889067,"pct_visa":0.0},{"letra":"F","banco":"HSBC","visa":9771080,"mc":0,"otras":0,"total":9771080,"pct_visa":100.0},{"letra":"Q","banco":"Emisor Q","visa":6757431,"mc":1741092,"otras":0,"total":8498523,"pct_visa":79.5},{"letra":"L","banco":"Banregio","visa":5754163,"mc":0,"otras":0,"total":5754163,"pct_visa":100.0},{"letra":"I","banco":"Inbursa","visa":1153174,"mc":2541453,"otras":229970,"total":3924597,"pct_visa":29.4},{"letra":"Y","banco":"Ualá (ABC Capital)","visa":0,"mc":2856730,"otras":0,"total":2856730,"pct_visa":0.0},{"letra":"AF","banco":"Emisor AF","visa":2854296,"mc":0,"otras":0,"total":2854296,"pct_visa":100.0},{"letra":"K","banco":"Scotiabank","visa":0,"mc":1555694,"otras":0,"total":1555694,"pct_visa":0.0},{"letra":"N","banco":"Afirme","visa":1126744,"mc":287565,"otras":0,"total":1414309,"pct_visa":79.7},{"letra":"G","banco":"Banco del Bajío","visa":1163872,"mc":16618,"otras":202713,"total":1383203,"pct_visa":84.1},{"letra":"B","banco":"¿Mifel?","visa":928160,"mc":0,"otras":0,"total":928160,"pct_visa":100.0},{"letra":"S","banco":"Emisor S","visa":790446,"mc":0,"otras":0,"total":790446,"pct_visa":100.0},{"letra":"W","banco":"Emisor W","visa":0,"mc":472908,"otras":0,"total":472908,"pct_visa":0.0}]};
+const S = {periodo: 'anual', tipo: 'total', esc: 'saldo', voltab: 'marca', vigtab: 'hist', yoytab: 'fact',
+           bancotab: 'credito', heatprod: 'credito', heatmarca: 'total', conctab: 'credito', rango: '60'};
 const charts = {};
 const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
-const f1 = (v) => (v == null ? '—' : v.toLocaleString('es-MX', {minimumFractionDigits: 1, maximumFractionDigits: 1}));
-const f2 = (v) => v.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-const fM = (v) => (v / 1e6).toLocaleString('es-MX', {minimumFractionDigits: 1, maximumFractionDigits: 1}) + 'M';
+const nf = (v, d) => v.toLocaleString('es-MX', {minimumFractionDigits: d, maximumFractionDigits: d});
+const f1 = (v) => (v == null || isNaN(v) ? '—' : nf(v, 1));
+const f2 = (v) => (v == null || isNaN(v) ? '—' : nf(v, 2));
+const fM = (v) => nf(v / 1e6, 1) + 'M';
 const fN = (v) => v.toLocaleString('es-MX');
-const TIPO_LBL = {credito: 'Crédito', debito: 'Débito', total: 'Total'};
-const ESC_LBL = {saldo: 'ponderado por saldo', cartera: 'ponderado por tarjetas comparables', plast: 'solo plásticos'};
+const TIPO = {credito: 'Crédito', debito: 'Débito', total: 'Total'};
+const ESC = {saldo: 'ponderado por saldo', cartera: 'ponderado por tarjetas comparables', plast: 'solo plásticos'};
 
+const rows = () => (S.periodo === 'trimestral' && D.trimestral.length ? D.trimestral : D.anual);
+const lastFull = (R) => { const f = R.filter(r => r.completo); return f.length ? f[f.length - 1] : R[R.length - 1]; };
+const lag = () => (S.periodo === 'trimestral' ? 4 : 1);
 function shareFields(tipo, esc) {
   if (tipo === 'credito') return {v: 'cr_visa_' + esc, m: 'cr_mc_' + esc};
   if (tipo === 'debito') return {v: 'db_visa', m: 'db_mc'};
   return {v: 'tot_visa_' + esc, m: 'tot_mc_' + esc};
 }
 function billing(r, tipo, esc) {
-  const cv = r['cr_visa_' + esc] / 100, cm = r['cr_mc_' + esc] / 100;
-  const dv = r.db_visa / 100, dm = r.db_mc / 100;
-  const c = {v: r.fact_credito * cv, m: r.fact_credito * cm};
-  const d = {v: r.fact_debito * dv, m: r.fact_debito * dm};
+  const cv = r['cr_visa_' + esc] / 100, cm = r['cr_mc_' + esc] / 100, dv = r.db_visa / 100, dm = r.db_mc / 100;
+  const c = {v: r.fact_credito * cv, m: r.fact_credito * cm}, d = {v: r.fact_debito * dv, m: r.fact_debito * dm};
   if (tipo === 'credito') return c;
   if (tipo === 'debito') return d;
   return {v: c.v + d.v, m: c.m + d.m};
 }
-function cards(r, tipo) {
-  if (tipo === 'credito') return {v: r.tarj_cr_visa, m: r.tarj_cr_mc, o: r.tarj_cr_otras};
-  if (tipo === 'debito') return {v: r.tarj_db_visa, m: r.tarj_db_mc, o: r.tarj_db_otras};
-  return {v: r.tarj_cr_visa + r.tarj_db_visa, m: r.tarj_cr_mc + r.tarj_db_mc, o: r.tarj_cr_otras + r.tarj_db_otras};
+function cards(r, tipo, pre) {
+  const p = pre || 'tarj_';
+  const cr = {v: r[p + 'cr_visa'], m: r[p + 'cr_mc'], o: r[p + 'cr_otras']};
+  const db = {v: r[p + 'db_visa'], m: r[p + 'db_mc'], o: r[p + 'db_otras']};
+  if (tipo === 'credito') return cr;
+  if (tipo === 'debito') return db;
+  return {v: cr.v + db.v, m: cr.m + db.m, o: cr.o + db.o};
 }
-function chip(delta) {
+const histCards = (h, tipo) => cards({tarj_cr_visa: h.cr_visa, tarj_cr_mc: h.cr_mc, tarj_cr_otras: h.cr_otras,
+  tarj_db_visa: h.db_visa, tarj_db_mc: h.db_mc, tarj_db_otras: h.db_otras}, tipo);
+function chip(delta, unit) {
   if (delta == null || isNaN(delta)) return '<span class="chip chip-neu">—</span>';
   const cls = delta > 0.05 ? 'chip-up' : (delta < -0.05 ? 'chip-down' : 'chip-neu');
-  return `<span class="chip ${cls}">${delta > 0 ? '+' : ''}${f1(delta)} pp</span>`;
+  return `<span class="chip ${cls}">${delta > 0 ? '+' : ''}${f1(delta)}${unit || ' pp'}</span>`;
 }
-function baseOpts(extra) {
+function opts(extra) {
   const grid = css('--grid'), muted = css('--muted');
-  return Object.assign({
+  const base = {
     responsive: true, maintainAspectRatio: false, animation: false,
+    interaction: {mode: 'index', intersect: false},
     plugins: {legend: {display: false}, tooltip: {mode: 'index', intersect: false}},
-    scales: {
-      x: {grid: {display: false}, ticks: {color: muted, font: {size: 11}}},
-      y: {grid: {color: grid}, ticks: {color: muted, font: {size: 11}}}
-    }
-  }, extra || {});
+    scales: {x: {grid: {display: false}, ticks: {color: muted, font: {size: 11}, maxRotation: 0, autoSkip: true}},
+             y: {grid: {color: grid}, ticks: {color: muted, font: {size: 11}}}}
+  };
+  return deepMerge(base, extra || {});
 }
-function mk(id, cfg) { if (charts[id]) charts[id].destroy(); charts[id] = new Chart(document.getElementById(id), cfg); }
+function deepMerge(a, b) {
+  for (const k of Object.keys(b)) {
+    if (b[k] && typeof b[k] === 'object' && !Array.isArray(b[k]) && a[k] && typeof a[k] === 'object') deepMerge(a[k], b[k]);
+    else a[k] = b[k];
+  }
+  return a;
+}
+const pctAxis = (min, max) => ({y: Object.assign({ticks: {callback: (x) => x + '%'}}, min != null ? {min} : {}, max != null ? {max} : {})});
+const tipPct = {plugins: {tooltip: {callbacks: {label: (c) => `${c.dataset.label}: ${f1(c.raw)}%`}}}};
+function mk(id, cfg) { if (charts[id]) charts[id].destroy(); const el = document.getElementById(id); if (el) charts[id] = new Chart(el, cfg); }
+const line = (label, data, color, extra) => Object.assign({label, data, borderColor: color, backgroundColor: color, tension: 0, pointRadius: 2.5, borderWidth: 2, spanGaps: true}, extra || {});
+const bar = (label, data, color, extra) => Object.assign({label, data, backgroundColor: color}, extra || {});
+const periodNote = () => S.periodo === 'trimestral' ? 'por trimestre' : 'por año (corte 4T)';
 
+// ───────── Snapshot
 function renderSnapshot() {
-  const A = D.anual, last = A.find(r => r.periodo === D.meta.ultimo_anio_completo);
-  const prev = A[A.indexOf(last) - 1], first = A[0], ytd = A[A.length - 1];
+  const R = rows(), cur = lastFull(R), i = R.indexOf(cur);
+  const prev = R[i - 1], yago = R[i - lag()], first = R[0], tail = R[R.length - 1];
   const sf = shareFields(S.tipo, S.esc);
-  const ytdLbl = 'ene–' + D.meta.corte_facturacion.split('-')[0];
-  document.getElementById('snap-period').textContent = '· ' + last.periodo + ' · ' + TIPO_LBL[S.tipo];
-  const brands = [
-    {k: 'v', name: 'Visa', col: 'var(--visa)', fld: sf.v},
-    {k: 'm', name: 'Mastercard', col: 'var(--mc)', fld: sf.m}
+  document.getElementById('snap-period').textContent = '· ' + cur.periodo + ' · ' + TIPO[S.tipo];
+  const b = billing(cur, S.tipo, S.esc), cd = cards(cur, S.tipo);
+  const totBill = S.tipo === 'credito' ? cur.fact_credito : (S.tipo === 'debito' ? cur.fact_debito : cur.fact_credito + cur.fact_debito);
+  const prevBill = yago ? (S.tipo === 'credito' ? yago.fact_credito : (S.tipo === 'debito' ? yago.fact_debito : yago.fact_credito + yago.fact_debito)) : null;
+  const totCards = cd.v + cd.m + cd.o;
+  const yc = yago ? cards(yago, S.tipo) : null;
+  document.getElementById('mkt-sub').textContent = cur.periodo + ' · ' + TIPO[S.tipo] + ' · variación vs ' + (yago ? yago.periodo : '—');
+  const tiles = [
+    ['Facturación total', f2(totBill) + ' bn MXN', prevBill ? chip((totBill / prevBill - 1) * 100, '%') : ''],
+    ['Tarjetas vigentes', fM(totCards), yc ? chip((totCards / (yc.v + yc.m + yc.o) - 1) * 100, '%') : ''],
+    ['Share Visa (facturación)', f1(cur[sf.v]) + '%', yago ? chip(cur[sf.v] - yago[sf.v]) : ''],
+    ['Share Mastercard (facturación)', f1(cur[sf.m]) + '%', yago ? chip(cur[sf.m] - yago[sf.m]) : '']
   ];
-  const html = brands.map(b => {
-    const share = last[b.fld], bill = billing(last, S.tipo, S.esc)[b.k], cd = cards(last, S.tipo);
-    const cardShare = cd[b.k] / (cd.v + cd.m + cd.o) * 100;
-    return `<div class="snap-card" style="border-top:3px solid ${b.col}">
-      <div style="font-size:11px;font-weight:700;color:${b.col};text-transform:uppercase;letter-spacing:.06em">${b.name}</div>
-      <div class="snap-ms" style="color:${b.col}">${f1(share)}%</div>
-      <div class="snap-sub">Share estimado de facturación · ${TIPO_LBL[S.tipo].toLowerCase()} ${last.periodo}</div>
-      <div class="bar-bg"><div class="bar-fill" style="width:${share}%;background:${b.col}"></div></div>
-      <hr class="snap-div">
-      <table class="snap-tbl">
-        <tr><td class="td-lbl">vs ${prev.periodo}</td><td>${chip(share - prev[b.fld])}</td></tr>
-        <tr><td class="td-lbl">vs ${first.periodo}</td><td>${chip(share - first[b.fld])}</td></tr>
-        ${ytd.completo ? '' : `<tr><td class="td-lbl">${ytd.periodo} (${ytdLbl})</td><td><b>${f1(ytd[b.fld])}%</b> ${chip(ytd[b.fld] - share)}</td></tr>`}
-        <tr><td class="td-lbl">Facturación ${last.periodo}</td><td><b>${f2(bill)}</b> bn MXN</td></tr>
-        <tr><td class="td-lbl">Tarjetas vigentes (${last.corte_tarjetas})</td><td>${fM(cd[b.k])} · ${f1(cardShare)}%</td></tr>
-      </table>
-    </div>`;
+  document.getElementById('mkt-grid').innerHTML = tiles.map(t => `<div><div class="kpi-lbl">${t[0]}</div><div class="kpi-val">${t[1]}</div><div class="kpi-delta">${t[2]}</div></div>`).join('');
+  const brands = [{k: 'v', name: 'Visa', col: 'var(--visa)', fld: sf.v}, {k: 'm', name: 'Mastercard', col: 'var(--mc)', fld: sf.m}];
+  document.getElementById('snap-grid').innerHTML = brands.map(br => {
+    const share = cur[br.fld], cardShare = cd[br.k] / totCards * 100;
+    const rowsHtml = [
+      prev ? `<tr><td class="td-lbl">vs ${prev.periodo}</td><td>${chip(share - prev[br.fld])}</td></tr>` : '',
+      (yago && yago !== prev) ? `<tr><td class="td-lbl">vs ${yago.periodo} (año anterior)</td><td>${chip(share - yago[br.fld])}</td></tr>` : '',
+      `<tr><td class="td-lbl">vs ${first.periodo}</td><td>${chip(share - first[br.fld])}</td></tr>`,
+      !tail.completo ? `<tr><td class="td-lbl">${tail.periodo} (parcial)</td><td><b>${f1(tail[br.fld])}%</b> ${chip(tail[br.fld] - share)}</td></tr>` : '',
+      `<tr><td class="td-lbl">Facturación ${cur.periodo}</td><td><b>${f2(b[br.k])}</b> bn MXN</td></tr>`,
+      `<tr><td class="td-lbl">Tarjetas vigentes (${cur.corte_tarjetas})</td><td>${fM(cd[br.k])} · ${f1(cardShare)}%</td></tr>`
+    ].join('');
+    return `<div class="snap-card" style="border-top:3px solid ${br.col}">
+      <div style="font-size:11px;font-weight:700;color:${br.col};text-transform:uppercase;letter-spacing:.06em">${br.name}</div>
+      <div class="snap-ms" style="color:${br.col}">${f1(share)}%</div>
+      <div class="snap-sub">Share estimado de facturación · ${TIPO[S.tipo].toLowerCase()} ${cur.periodo}</div>
+      <div class="bar-bg"><div class="bar-fill" style="width:${share}%;background:${br.col}"></div></div>
+      <hr class="snap-div"><table class="snap-tbl">${rowsHtml}</table></div>`;
   }).join('');
-  document.getElementById('snap-grid').innerHTML = html;
 }
 
+// ───────── Market share
 function renderMS() {
-  const A = D.anual, sf = shareFields(S.tipo, S.esc);
-  document.getElementById('ms-title').textContent = 'Share de facturación por año · ' + TIPO_LBL[S.tipo];
-  document.getElementById('ms-sub').textContent = 'Participación porcentual estimada sobre la facturación' + (S.tipo !== 'debito' ? ' · crédito ' + ESC_LBL[S.esc] : '') + '. Cada barra suma 100%.';
-  const v = A.map(r => r[sf.v]), m = A.map(r => r[sf.m]), o = A.map((r, i) => Math.max(0, +(100 - v[i] - m[i]).toFixed(2)));
-  mk('msChart', {type: 'bar', data: {labels: A.map(r => r.periodo), datasets: [
-    {label: 'Visa', data: v, backgroundColor: css('--visa'), stack: 's'},
-    {label: 'Mastercard', data: m, backgroundColor: css('--mc'), stack: 's'},
-    {label: 'Otras', data: o, backgroundColor: css('--amex'), stack: 's'}
-  ]}, options: baseOpts({
-    plugins: {legend: {display: false}, tooltip: {mode: 'index', intersect: false, callbacks: {label: (c) => `${c.dataset.label}: ${f1(c.raw)}%`}}},
-    scales: {x: {stacked: true, grid: {display: false}, ticks: {color: css('--muted')}}, y: {stacked: true, max: 100, grid: {color: css('--grid')}, ticks: {color: css('--muted'), callback: (x) => x + '%'}}}
-  })});
+  const R = rows(), sf = shareFields(S.tipo, S.esc);
+  document.getElementById('ms-title').textContent = 'Share de facturación ' + periodNote() + ' · ' + TIPO[S.tipo];
+  document.getElementById('ms-sub').textContent = 'Participación estimada sobre la facturación' + (S.tipo !== 'debito' ? ' · crédito ' + ESC[S.esc] : '') + '. Cada barra suma 100%.';
+  const v = R.map(r => r[sf.v]), m = R.map(r => r[sf.m]), o = R.map((r, i) => Math.max(0, +(100 - v[i] - m[i]).toFixed(2)));
+  mk('msChart', {type: 'bar', data: {labels: R.map(r => r.periodo), datasets: [
+    bar('Visa', v, css('--visa'), {stack: 's'}), bar('Mastercard', m, css('--mc'), {stack: 's'}), bar('Otras', o, css('--amex'), {stack: 's'})]},
+    options: opts(deepMerge({scales: {x: {stacked: true}, y: {stacked: true, max: 100, ticks: {callback: (x) => x + '%'}}}}, tipPct))});
+}
+
+function renderProducto() {
+  const R = rows(), labels = R.map(r => r.periodo);
+  document.getElementById('prod-sub').textContent = 'Visa vs Mastercard, % de la facturación de cada producto ' + periodNote() + ' · crédito y total ' + ESC[S.esc];
+  const panels = [['prodCr', 'cr_visa_' + S.esc, 'cr_mc_' + S.esc], ['prodDb', 'db_visa', 'db_mc'], ['prodTot', 'tot_visa_' + S.esc, 'tot_mc_' + S.esc]];
+  panels.forEach(([id, fv, fm]) => mk(id, {type: 'line', data: {labels, datasets: [
+    line('Visa', R.map(r => r[fv]), css('--visa')), line('Mastercard', R.map(r => r[fm]), css('--mc'))]},
+    options: opts(deepMerge({scales: pctAxis(20, 80)}, tipPct))}));
 }
 
 function renderVol() {
-  const A = D.anual;
-  const b = A.map(r => billing(r, S.tipo, S.esc));
-  document.getElementById('vol-sub').textContent = 'Billones de pesos por año y franquicia · ' + TIPO_LBL[S.tipo] + (S.tipo !== 'debito' ? ' · crédito ' + ESC_LBL[S.esc] : '');
-  mk('volChart', {type: 'bar', data: {labels: A.map(r => r.periodo), datasets: [
-    {label: 'Visa', data: b.map(x => +x.v.toFixed(3)), backgroundColor: css('--visa')},
-    {label: 'Mastercard', data: b.map(x => +x.m.toFixed(3)), backgroundColor: css('--mc')}
-  ]}, options: baseOpts({plugins: {legend: {display: false}, tooltip: {mode: 'index', intersect: false, callbacks: {label: (c) => `${c.dataset.label}: ${f2(c.raw)} bn MXN`}}}})});
-}
-
-function renderVig() {
-  const A = D.anual, leg = document.getElementById('vig-leg');
-  if (S.vigtab === 'vig') {
-    document.getElementById('vig-title').textContent = 'Tarjetas vigentes · ' + TIPO_LBL[S.tipo];
-    document.getElementById('vig-sub').textContent = 'Millones de tarjetas al cierre del periodo (4T; último trimestre publicado en el año en curso) · Banxico CF256';
+  const R = rows(), labels = R.map(r => r.periodo), leg = document.getElementById('vol-leg');
+  const partial = R.filter(r => !r.completo).map(r => r.periodo).join(', ');
+  document.getElementById('vol-note').textContent = 'Billones de pesos. 2009–2022 de CF888 ajustado al nivel de CF914 con el traslape de dic-2022.' + (partial ? ' ' + partial + ' = período incompleto (facturación hasta ' + D.meta.corte_facturacion + ').' : '');
+  if (S.voltab === 'marca') {
+    document.getElementById('vol-sub').textContent = 'Facturación estimada ' + periodNote() + ' y franquicia · ' + TIPO[S.tipo] + (S.tipo !== 'debito' ? ' · crédito ' + ESC[S.esc] : '');
     leg.innerHTML = '<span class="leg"><span class="leg-sq" style="background:var(--visa)"></span>Visa</span><span class="leg"><span class="leg-sq" style="background:var(--mc)"></span>Mastercard</span>';
-    const c = A.map(r => cards(r, S.tipo));
-    mk('vigChart', {type: 'bar', data: {labels: A.map(r => r.periodo + ' (' + r.corte_tarjetas + ')'), datasets: [
-      {label: 'Visa', data: c.map(x => +(x.v / 1e6).toFixed(2)), backgroundColor: css('--visa')},
-      {label: 'Mastercard', data: c.map(x => +(x.m / 1e6).toFixed(2)), backgroundColor: css('--mc')}
-    ]}, options: baseOpts({plugins: {legend: {display: false}, tooltip: {mode: 'index', intersect: false, callbacks: {label: (cx) => `${cx.dataset.label}: ${f1(cx.raw)}M tarjetas`}}}})});
+    const b = R.map(r => billing(r, S.tipo, S.esc));
+    mk('volChart', {type: 'bar', data: {labels, datasets: [bar('Visa', b.map(x => +x.v.toFixed(3)), css('--visa')), bar('Mastercard', b.map(x => +x.m.toFixed(3)), css('--mc'))]},
+      options: opts({plugins: {tooltip: {callbacks: {label: (c) => `${c.dataset.label}: ${f2(c.raw)} bn MXN`}}}})});
   } else {
-    const tipo = S.tipo === 'debito' ? 'credito' : S.tipo;
-    document.getElementById('vig-title').textContent = 'Share Visa: plásticos vs facturación · ' + TIPO_LBL[tipo];
-    document.getElementById('vig-sub').textContent = 'La brecha muestra cuánto se aleja el share de facturación del conteo de tarjetas' + (S.tipo === 'debito' ? ' (en débito ambos son iguales por construcción; se muestra crédito)' : '');
-    leg.innerHTML = '<span class="leg"><span class="leg-sq" style="background:var(--faint)"></span>Share Visa en plásticos</span><span class="leg"><span class="leg-sq" style="background:var(--visa)"></span>Share Visa en facturación (' + ESC_LBL[S.esc] + ')</span>';
-    const plast = A.map(r => { const c = cards(r, tipo); return +(c.v / (c.v + c.m + c.o) * 100).toFixed(2); });
-    const fact = A.map(r => r[shareFields(tipo, S.esc).v]);
-    mk('vigChart', {type: 'line', data: {labels: A.map(r => r.periodo), datasets: [
-      {label: 'Plásticos', data: plast, borderColor: css('--faint'), backgroundColor: css('--faint'), borderDash: [5, 4], tension: 0, pointRadius: 3},
-      {label: 'Facturación', data: fact, borderColor: css('--visa'), backgroundColor: css('--visa'), tension: 0, pointRadius: 3}
-    ]}, options: baseOpts({plugins: {legend: {display: false}, tooltip: {mode: 'index', intersect: false, callbacks: {label: (c) => `${c.dataset.label}: ${f1(c.raw)}%`}}}, scales: {x: {grid: {display: false}, ticks: {color: css('--muted')}}, y: {grid: {color: css('--grid')}, ticks: {color: css('--muted'), callback: (x) => x + '%'}}}})});
+    document.getElementById('vol-sub').textContent = 'Facturación estimada por marca, dividida en crédito y débito · ' + periodNote() + ' · crédito ' + ESC[S.esc];
+    leg.innerHTML = '<span class="leg"><span class="leg-sq" style="background:var(--visa)"></span>Visa crédito</span><span class="leg"><span class="leg-sq" style="background:var(--visa-2)"></span>Visa débito</span><span class="leg"><span class="leg-sq" style="background:var(--mc)"></span>MC crédito</span><span class="leg"><span class="leg-sq" style="background:var(--mc-2)"></span>MC débito</span>';
+    const c = R.map(r => billing(r, 'credito', S.esc)), d = R.map(r => billing(r, 'debito', S.esc));
+    mk('volChart', {type: 'bar', data: {labels, datasets: [
+      bar('Visa crédito', c.map(x => +x.v.toFixed(3)), css('--visa'), {stack: 'v'}), bar('Visa débito', d.map(x => +x.v.toFixed(3)), css('--visa-2'), {stack: 'v'}),
+      bar('MC crédito', c.map(x => +x.m.toFixed(3)), css('--mc'), {stack: 'm'}), bar('MC débito', d.map(x => +x.m.toFixed(3)), css('--mc-2'), {stack: 'm'})]},
+      options: opts({scales: {x: {stacked: true}, y: {stacked: true}}, plugins: {tooltip: {callbacks: {label: (cx) => `${cx.dataset.label}: ${f2(cx.raw)} bn MXN`}}}})});
   }
 }
 
+function renderVig() {
+  const H = D.tarjetas_hist, leg = document.getElementById('vig-leg'), t = document.getElementById('vig-title'), s = document.getElementById('vig-sub');
+  const L2 = '<span class="leg"><span class="leg-sq" style="background:var(--visa)"></span>Visa</span><span class="leg"><span class="leg-sq" style="background:var(--mc)"></span>Mastercard</span>';
+  if (S.vigtab === 'hist') {
+    t.textContent = 'Tarjetas vigentes · ' + TIPO[S.tipo];
+    s.textContent = 'Millones de tarjetas al cierre de cada trimestre · ' + H[0].corte + ' a ' + H[H.length - 1].corte + ' · Banxico CF256 (dato oficial)';
+    leg.innerHTML = L2;
+    const c = H.map(h => histCards(h, S.tipo));
+    mk('vigChart', {type: 'line', data: {labels: H.map(h => h.corte), datasets: [
+      line('Visa', c.map(x => +(x.v / 1e6).toFixed(2)), css('--visa'), {pointRadius: 0}), line('Mastercard', c.map(x => +(x.m / 1e6).toFixed(2)), css('--mc'), {pointRadius: 0})]},
+      options: opts({plugins: {tooltip: {callbacks: {label: (cx) => `${cx.dataset.label}: ${f1(cx.raw)}M`}}}})});
+  } else if (S.vigtab === 'share') {
+    t.textContent = 'Share en tarjetas vigentes · ' + TIPO[S.tipo];
+    s.textContent = '% de las tarjetas vigentes por marca · trimestral desde ' + H[0].corte + ' · dato oficial (plásticos, no facturación)';
+    leg.innerHTML = L2;
+    const c = H.map(h => histCards(h, S.tipo));
+    mk('vigChart', {type: 'line', data: {labels: H.map(h => h.corte), datasets: [
+      line('Visa', c.map(x => +(x.v / (x.v + x.m + x.o) * 100).toFixed(2)), css('--visa'), {pointRadius: 0}),
+      line('Mastercard', c.map(x => +(x.m / (x.v + x.m + x.o) * 100).toFixed(2)), css('--mc'), {pointRadius: 0})]},
+      options: opts(deepMerge({scales: pctAxis(0, 100)}, tipPct))});
+  } else {
+    const tipo = S.tipo === 'debito' ? 'credito' : S.tipo, R = rows();
+    t.textContent = 'Share Visa: plásticos vs facturación · ' + TIPO[tipo];
+    s.textContent = 'Cuánto se aleja el share de facturación del conteo de tarjetas' + (S.tipo === 'debito' ? ' (en débito son iguales por construcción; se muestra crédito)' : '') + ' · ' + periodNote();
+    leg.innerHTML = '<span class="leg"><span class="leg-sq" style="background:var(--faint)"></span>Share Visa en plásticos</span><span class="leg"><span class="leg-sq" style="background:var(--visa)"></span>Share Visa en facturación (' + ESC[S.esc] + ')</span>';
+    const plast = R.map(r => { const c = cards(r, tipo); return +(c.v / (c.v + c.m + c.o) * 100).toFixed(2); });
+    mk('vigChart', {type: 'line', data: {labels: R.map(r => r.periodo), datasets: [
+      line('Plásticos', plast, css('--faint'), {borderDash: [5, 4]}), line('Facturación', R.map(r => r[shareFields(tipo, S.esc).v]), css('--visa'))]},
+      options: opts(deepMerge({scales: pctAxis()}, tipPct))});
+  }
+}
+
+function renderYoY() {
+  const R = rows(), k = lag(), labels = [], v = [], m = [];
+  for (let i = k; i < R.length; i++) {
+    const a = R[i - k], b = R[i];
+    if (S.periodo === 'anual' && !b.completo) continue;  // año parcial vs año completo no es comparable
+    let x, y;
+    if (S.yoytab === 'fact') { x = billing(a, S.tipo, S.esc); y = billing(b, S.tipo, S.esc); }
+    else { x = cards(a, S.tipo); y = cards(b, S.tipo); }
+    labels.push(b.periodo); v.push(+((y.v / x.v - 1) * 100).toFixed(1)); m.push(+((y.m / x.m - 1) * 100).toFixed(1));
+  }
+  document.getElementById('yoy-sub').textContent = (S.yoytab === 'fact' ? 'Facturación estimada' : 'Tarjetas vigentes') + ' vs ' + (S.periodo === 'trimestral' ? 'mismo trimestre del año anterior' : 'año anterior') + ' · ' + TIPO[S.tipo];
+  mk('yoyChart', {type: 'bar', data: {labels, datasets: [bar('Visa', v, css('--visa')), bar('Mastercard', m, css('--mc'))]},
+    options: opts(deepMerge({scales: {y: {ticks: {callback: (x) => x + '%'}}}}, tipPct))});
+}
+
+function renderEsc() {
+  const R = rows();
+  mk('escChart', {type: 'line', data: {labels: R.map(r => r.periodo), datasets: [
+    line('Saldo (central)', R.map(r => r.cr_visa_saldo), css('--visa')),
+    line('Tarjetas comparables', R.map(r => r.cr_visa_cartera), css('--credito')),
+    line('Solo plásticos', R.map(r => r.cr_visa_plast), css('--faint'), {borderDash: [5, 4]})]},
+    options: opts(deepMerge({scales: pctAxis()}, tipPct))});
+}
+
 function renderContrib() {
-  const rows = D.contribucion_credito.filter(r => Math.abs(r.visa_pp) >= 0.05 || Math.abs(r.mc_pp) >= 0.05);
-  const maxAbs = Math.max(...rows.map(r => Math.max(Math.abs(r.visa_pp), Math.abs(r.mc_pp))), 0.5);
+  const rws = D.contribucion_credito.filter(r => Math.abs(r.visa_pp) >= 0.05 || Math.abs(r.mc_pp) >= 0.05);
+  const maxAbs = Math.max(...rws.map(r => Math.max(Math.abs(r.visa_pp), Math.abs(r.mc_pp))), 0.5);
   const a0 = D.anual.find(r => r.periodo === D.meta.primer_anio), a1 = D.anual.find(r => r.periodo === D.meta.ultimo_anio_completo);
+  document.getElementById('contrib-range').innerHTML = D.meta.primer_anio + ' &rarr; ' + D.meta.ultimo_anio_completo;
   const draw = (key, el, total) => {
-    const sorted = rows.slice().sort((x, y) => y[key] - x[key]);
-    const body = sorted.map(r => {
-      const v = r[key], w = Math.abs(v) / maxAbs * 50;
-      const col = v >= 0 ? 'var(--green)' : 'var(--red)';
-      const left = v >= 0 ? 50 : 50 - w;
+    el.innerHTML = rws.slice().sort((x, y) => y[key] - x[key]).map(r => {
+      const v = r[key], w = Math.abs(v) / maxAbs * 50, col = v >= 0 ? 'var(--green)' : 'var(--red)';
       return `<div class="contrib-row"><span>${r.banco}${r.letra !== 'R' ? ' <span style="color:var(--faint)">(' + r.letra + ')</span>' : ''}</span>
-        <div class="contrib-track"><div class="mid"></div><div class="fill" style="left:${left}%;width:${w}%;background:${col}"></div></div>
+        <div class="contrib-track"><div class="mid"></div><div class="fill" style="left:${v >= 0 ? 50 : 50 - w}%;width:${w}%;background:${col}"></div></div>
         <span class="contrib-val" style="color:${col}">${v > 0 ? '+' : ''}${f2(v)}</span></div>`;
-    }).join('');
-    el.innerHTML = body + `<div class="contrib-row" style="border-top:1px solid var(--border);margin-top:6px;padding-top:8px;font-weight:700"><span>Total</span><span></span><span class="contrib-val">${total > 0 ? '+' : ''}${f2(total)}</span></div>`;
+    }).join('') + `<div class="contrib-row contrib-total"><span>Total</span><span></span><span class="contrib-val">${total > 0 ? '+' : ''}${f2(total)}</span></div>`;
   };
   draw('visa_pp', document.getElementById('contrib-visa'), a1.cr_visa_saldo - a0.cr_visa_saldo);
   draw('mc_pp', document.getElementById('contrib-mc'), a1.cr_mc_saldo - a0.cr_mc_saldo);
 }
 
+const issuerLabel = (r) => (/^Emisor /.test(r.banco) || r.banco === 'Sin identificar' ? 'Emisor ' + r.letra : r.banco + ' (' + r.letra + ')');
 function renderBancos() {
   const isCr = S.bancotab === 'credito';
   const src = (isCr ? D.emisores_credito : D.emisores_debito).filter(r => r.total > 0).slice(0, 15);
   document.getElementById('banco-sub').textContent = (isCr ? 'Crédito' : 'Débito') + ' · ' + D.meta.corte_tarjetas + ' · millones de tarjetas · top ' + src.length + ' emisores';
-  const labels = src.map(r => (r.banco === 'Sin identificar' ? 'Emisor ' + r.letra : r.banco + ' (' + r.letra + ')'));
   document.getElementById('banco-wrap').style.height = (src.length * 26 + 40) + 'px';
-  mk('bancoChart', {type: 'bar', data: {labels, datasets: [
-    {label: 'Visa', data: src.map(r => +(r.visa / 1e6).toFixed(3)), backgroundColor: css('--visa'), stack: 's'},
-    {label: 'Mastercard', data: src.map(r => +(r.mc / 1e6).toFixed(3)), backgroundColor: css('--mc'), stack: 's'},
-    {label: 'Otras', data: src.map(r => +(r.otras / 1e6).toFixed(3)), backgroundColor: css('--amex'), stack: 's'}
-  ]}, options: baseOpts({indexAxis: 'y', plugins: {legend: {display: false}, tooltip: {mode: 'index', intersect: false, callbacks: {label: (c) => `${c.dataset.label}: ${f2(c.raw)}M`}}},
-    scales: {x: {stacked: true, grid: {color: css('--grid')}, ticks: {color: css('--muted')}}, y: {stacked: true, grid: {display: false}, ticks: {color: css('--text'), font: {size: 11}}}}})});
+  mk('bancoChart', {type: 'bar', data: {labels: src.map(issuerLabel), datasets: [
+    bar('Visa', src.map(r => +(r.visa / 1e6).toFixed(3)), css('--visa'), {stack: 's'}),
+    bar('Mastercard', src.map(r => +(r.mc / 1e6).toFixed(3)), css('--mc'), {stack: 's'}),
+    bar('Otras', src.map(r => +(r.otras / 1e6).toFixed(3)), css('--amex'), {stack: 's'})]},
+    options: opts({indexAxis: 'y', interaction: {mode: 'index', axis: 'y'}, plugins: {tooltip: {axis: 'y', callbacks: {label: (c) => `${c.dataset.label}: ${f2(c.raw)}M`}}},
+      scales: {x: {stacked: true, grid: {color: css('--grid')}}, y: {stacked: true, grid: {display: false}, ticks: {color: css('--text'), autoSkip: false}}}})});
 }
 
-function renderTable() {
-  const confCls = (c) => /alta/i.test(c) && !/media/i.test(c) ? 'conf-alta' : (/media/i.test(c) ? 'conf-media' : (/baja/i.test(c) ? 'conf-baja' : 'conf-na'));
-  const head = '<tr><th>Letra</th><th>Banco probable</th><th>Confianza</th><th class="n">Tarjetas ' + D.meta.corte_tarjetas + '</th><th class="n">% Visa</th><th class="n">Tarjetas ' + D.meta.corte_tarjetas_inicial + '</th><th class="n">% saldo (último RIB)</th><th>Evidencia</th></tr>';
-  const body = D.emisores_credito.map(r => `<tr><td><b>${r.letra}</b></td><td>${r.banco}</td><td><span class="conf ${confCls(r.confianza)}">${r.confianza}</span></td>
-    <td class="n">${fN(r.total)}</td><td class="n">${r.pct_visa == null ? '—' : f1(r.pct_visa) + '%'}</td><td class="n">${fN(r.total_inicial)}</td>
-    <td class="n">${r.saldo_pct_ult == null ? '—' : f1(r.saldo_pct_ult) + '%'}</td><td class="ev">${r.evidencia}</td></tr>`).join('');
-  document.getElementById('emis-table').innerHTML = '<thead>' + head + '</thead><tbody>' + body + '</tbody>';
+function renderHeat() {
+  const E = D.emisores[S.heatprod], H = E.heat[S.heatmarca], P = E.periodos;
+  const lastP = P[P.length - 1];
+  const keys = Object.keys(H).filter(k => (H[k][lastP] || 0) > 0 || P.some(p => (H[k][p] || 0) > 1))
+    .sort((a, b) => (H[b][lastP] || 0) - (H[a][lastP] || 0)).slice(0, 15);
+  const maxD = Math.max(0.5, ...keys.flatMap(k => P.slice(1).map((p, i) => Math.abs((H[k][p] || 0) - (H[k][P[i]] || 0)))));
+  const cell = (d) => {
+    if (d == null) return '<td class="hm-c">—</td>';
+    const a = Math.min(1, Math.abs(d) / maxD) * 0.85 + 0.08;
+    const bg = d >= 0 ? `rgba(2,122,72,${a})` : `rgba(204,34,0,${a})`;
+    return `<td class="hm-c" style="background:${Math.abs(d) < 0.05 ? 'var(--grid)' : bg};color:${a > 0.5 && Math.abs(d) >= 0.05 ? '#fff' : 'var(--text)'}">${d > 0 ? '+' : ''}${f1(d)}</td>`;
+  };
+  const head = '<tr><th>Emisor</th>' + P.slice(1).map(p => `<th class="n">${p}</th>`).join('') + `<th class="n">Share ${lastP}</th></tr>`;
+  const body = keys.map(k => '<tr><td style="white-space:nowrap">' + (E.nombres[k] || 'Emisor ' + k) + ` <span style="color:var(--faint)">(${k})</span></td>` +
+    P.slice(1).map((p, i) => cell(H[k][p] != null && H[k][P[i]] != null ? H[k][p] - H[k][P[i]] : null)).join('') +
+    `<td class="n"><b>${f1(H[k][lastP])}%</b></td></tr>`).join('');
+  document.getElementById('heatmap').innerHTML = `<table class="tbl hm">${head}${body}</table>`;
 }
 
+function renderConc() {
+  const C = D.emisores[S.conctab].concentracion;
+  const risk = (h) => (h == null ? '—' : h >= 2500 ? 'alta' : h >= 1500 ? 'moderada' : 'baja');
+  const hd = (b) => (C[b].hhi != null && C[b].hhi_anterior != null ? ` (${C[b].hhi - C[b].hhi_anterior > 0 ? '+' : ''}${fN(C[b].hhi - C[b].hhi_anterior)} vs ${C[b].corte_anterior})` : '');
+  document.getElementById('hhi-summary').innerHTML = `${TIPO[S.conctab]} · ${C.visa.corte}. <b style="color:var(--visa)">Visa</b>: HHI ${C.visa.hhi != null ? fN(C.visa.hhi) : '—'}${hd('visa')}, concentración ${risk(C.visa.hhi)}; top emisor ${C.visa.top[0] ? C.visa.top[0].banco + ' con ' + f1(C.visa.top[0].share) + '%' : '—'}. <b style="color:var(--mc)">Mastercard</b>: HHI ${C.mc.hhi != null ? fN(C.mc.hhi) : '—'}${hd('mc')}, concentración ${risk(C.mc.hhi)}; top emisor ${C.mc.top[0] ? C.mc.top[0].banco + ' con ' + f1(C.mc.top[0].share) + '%' : '—'}.`;
+  const draw = (b, el, col) => {
+    el.innerHTML = C[b].top.map(r => `<div style="margin-bottom:7px"><div style="display:flex;justify-content:space-between;font-size:12px"><span>${r.banco} <span style="color:var(--faint)">(${r.letra})</span></span><span><b>${f1(r.share)}%</b> ${r.delta_pp == null ? '' : chip(r.delta_pp)}</span></div><div class="bar-bg"><div class="bar-fill" style="width:${r.share}%;background:${col}"></div></div></div>`).join('');
+  };
+  draw('visa', document.getElementById('hhi-visa'), 'var(--visa)');
+  draw('mc', document.getElementById('hhi-mc'), 'var(--mc)');
+}
+
+function renderTables() {
+  const confCls = (c) => (/^alta$/i.test(c) ? 'conf-alta' : /media/i.test(c) ? 'conf-media' : /baja/i.test(c) ? 'conf-baja' : 'conf-na');
+  document.getElementById('emis-cr').innerHTML = '<thead><tr><th>Letra</th><th>Banco probable</th><th>Confianza</th><th class="n">Tarjetas ' + D.meta.corte_tarjetas + '</th><th class="n">% Visa</th><th class="n">Tarjetas ' + D.meta.corte_tarjetas_inicial + '</th><th class="n">% saldo (último RIB)</th><th>Evidencia</th></tr></thead><tbody>' +
+    D.emisores_credito.map(r => `<tr><td><b>${r.letra}</b></td><td>${r.banco}</td><td><span class="conf ${confCls(r.confianza)}">${r.confianza}</span></td><td class="n">${fN(r.total)}</td><td class="n">${r.pct_visa == null ? '—' : f1(r.pct_visa) + '%'}</td><td class="n">${fN(r.total_inicial)}</td><td class="n">${r.saldo_pct_ult == null ? '—' : f1(r.saldo_pct_ult) + '%'}</td><td class="ev">${r.evidencia}</td></tr>`).join('') + '</tbody>';
+  document.getElementById('emis-db').innerHTML = '<thead><tr><th>Letra</th><th>Banco (si es la misma letra)</th><th class="n">Tarjetas ' + D.meta.corte_tarjetas + '</th><th class="n">Visa</th><th class="n">Mastercard</th><th class="n">Otras</th><th class="n">% Visa</th></tr></thead><tbody>' +
+    D.emisores_debito.map(r => `<tr><td><b>${r.letra}</b></td><td>${r.banco}</td><td class="n">${fN(r.total)}</td><td class="n">${fN(r.visa)}</td><td class="n">${fN(r.mc)}</td><td class="n">${fN(r.otras)}</td><td class="n">${f1(r.pct_visa)}%</td></tr>`).join('') + '</tbody>';
+}
+
+// ───────── Deep dive
+function renderDeep() {
+  let M = D.facturacion_mensual;
+  if (S.rango !== 'all') M = M.slice(-parseInt(S.rango, 10));
+  const labels = M.map(r => r.mes);
+  mk('mesChart', {type: 'bar', data: {labels, datasets: [bar('Crédito', M.map(r => r.credito), css('--credito'), {stack: 's'}), bar('Débito', M.map(r => r.debito), css('--debito'), {stack: 's'})]},
+    options: opts({scales: {x: {stacked: true}, y: {stacked: true}}, plugins: {tooltip: {callbacks: {label: (c) => `${c.dataset.label}: ${f1(c.raw)} mil mdp`}}}})});
+  mk('mixChart', {type: 'line', data: {labels, datasets: [line('% crédito', M.map(r => +(r.credito / (r.credito + r.debito) * 100).toFixed(1)), css('--credito'), {pointRadius: 0})]},
+    options: opts(deepMerge({scales: pctAxis()}, tipPct))});
+  const all = D.facturacion_mensual, idx = Object.fromEntries(all.map((r, i) => [r.mes, i]));
+  const yl = [], yc = [], yd = [];
+  M.forEach(r => { const j = idx[r.mes] - 12; if (j >= 0) { const p = all[j]; yl.push(r.mes); yc.push(+((r.credito / p.credito - 1) * 100).toFixed(1)); yd.push(+((r.debito / p.debito - 1) * 100).toFixed(1)); } });
+  mk('mesYoyChart', {type: 'line', data: {labels: yl, datasets: [line('Crédito', yc, css('--credito'), {pointRadius: 0}), line('Débito', yd, css('--debito'), {pointRadius: 0})]},
+    options: opts(deepMerge({scales: {y: {ticks: {callback: (x) => x + '%'}}}}, tipPct))});
+  const H = D.tarjetas_hist;
+  mk('ratioChart', {type: 'line', data: {labels: H.map(h => h.corte), datasets: [
+    line('Crédito', H.map(h => +(h.cr_visa / h.cr_mc).toFixed(2)), css('--credito'), {pointRadius: 0}),
+    line('Débito', H.map(h => +(h.db_visa / h.db_mc).toFixed(2)), css('--debito'), {pointRadius: 0})]},
+    options: opts({plugins: {tooltip: {callbacks: {label: (c) => `${c.dataset.label}: ${f2(c.raw)}x`}}}, scales: {y: {ticks: {callback: (x) => x + 'x'}}}})});
+  document.getElementById('adq-tipo').textContent = TIPO[S.tipo];
+  const al = [], av = [], am = [];
+  H.slice(-24).forEach((h, i, arr) => { if (i === 0) return; const a = histCards(arr[i - 1], S.tipo), b = histCards(h, S.tipo); al.push(h.corte); av.push(+((b.v - a.v) / 1e6).toFixed(2)); am.push(+((b.m - a.m) / 1e6).toFixed(2)); });
+  mk('adqChart', {type: 'bar', data: {labels: al, datasets: [bar('Visa', av, css('--visa')), bar('Mastercard', am, css('--mc'))]},
+    options: opts({plugins: {tooltip: {callbacks: {label: (c) => `${c.dataset.label}: ${c.raw > 0 ? '+' : ''}${f2(c.raw)}M`}}}})});
+}
+
+// ───────── Controles
+const VIEW_RENDER = {dashboard: () => { renderSnapshot(); renderMS(); renderProducto(); renderVol(); renderVig(); renderYoY(); renderEsc(); renderContrib(); renderBancos(); renderHeat(); renderConc(); renderTables(); }, deepdive: renderDeep, metodologia: () => {}};
+let vista = 'dashboard';
 function renderAll() {
   document.getElementById('sel-esc').disabled = S.tipo === 'debito';
-  document.getElementById('filter-note').textContent = S.tipo === 'debito' ? 'Débito: mezcla de plásticos (sin escenario)' : 'Crédito ' + ESC_LBL[S.esc];
-  renderSnapshot(); renderMS(); renderVol(); renderVig(); renderContrib(); renderBancos(); renderTable();
+  const trimOk = D.trimestral.length > 0;
+  document.querySelectorAll('[data-periodo="trimestral"]').forEach(b => { b.disabled = !trimOk; b.title = trimOk ? '' : 'Disponible después de la próxima actualización de datos'; });
+  document.getElementById('filter-note').textContent = (S.periodo === 'trimestral' ? 'Trimestral' : 'Anual') + ' · ' + (S.tipo === 'debito' ? 'débito: mezcla de plásticos' : 'crédito ' + ESC[S.esc]);
+  VIEW_RENDER[vista]();
 }
-
-function setGroup(attr, val) {
-  document.querySelectorAll('[' + attr + ']').forEach(b => b.classList.toggle('active', b.getAttribute(attr) === val));
+function setGroup(attr, val) { document.querySelectorAll('[' + attr + ']').forEach(b => b.classList.toggle('active', b.getAttribute(attr) === val)); }
+function bind(attr, key, fn) {
+  document.querySelectorAll('[' + attr + ']').forEach(b => b.addEventListener('click', () => {
+    if (b.disabled) return; S[key] = b.getAttribute(attr); setGroup(attr, S[key]); (fn || renderAll)();
+  }));
 }
-document.querySelectorAll('[data-tipo]').forEach(b => b.addEventListener('click', () => { S.tipo = b.dataset.tipo; setGroup('data-tipo', S.tipo); renderAll(); }));
-document.querySelectorAll('[data-vigtab]').forEach(b => b.addEventListener('click', () => { S.vigtab = b.dataset.vigtab; setGroup('data-vigtab', S.vigtab); renderVig(); }));
-document.querySelectorAll('[data-bancotab]').forEach(b => b.addEventListener('click', () => { S.bancotab = b.dataset.bancotab; setGroup('data-bancotab', S.bancotab); renderBancos(); }));
+bind('data-periodo', 'periodo'); bind('data-tipo', 'tipo');
+bind('data-voltab', 'voltab', renderVol); bind('data-vigtab', 'vigtab', renderVig); bind('data-yoytab', 'yoytab', renderYoY);
+bind('data-bancotab', 'bancotab', renderBancos); bind('data-heatprod', 'heatprod', renderHeat); bind('data-heatmarca', 'heatmarca', renderHeat);
+bind('data-conctab', 'conctab', renderConc); bind('data-rango', 'rango', renderDeep);
 document.getElementById('sel-esc').addEventListener('change', (e) => { S.esc = e.target.value; renderAll(); });
 function setVista(v) {
-  setGroup('data-vista', v);
-  document.getElementById('view-dashboard').style.display = v === 'dashboard' ? '' : 'none';
-  document.getElementById('view-metodologia').style.display = v === 'metodologia' ? '' : 'none';
-  window.scrollTo(0, 0);
+  vista = v; setGroup('data-vista', v);
+  ['dashboard', 'deepdive', 'metodologia'].forEach(x => { document.getElementById('view-' + x).style.display = x === v ? '' : 'none'; });
+  window.scrollTo(0, 0); renderAll();
 }
 document.querySelectorAll('[data-vista]').forEach(b => b.addEventListener('click', () => setVista(b.dataset.vista)));
 document.querySelectorAll('[data-goto]').forEach(a => a.addEventListener('click', (e) => { e.preventDefault(); setVista(a.dataset.goto); }));
 document.getElementById('theme-btn').addEventListener('click', () => {
-  const dark = document.documentElement.getAttribute('data-theme') === 'dark';
-  document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
+  document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
   renderAll();
 });
-const partial = D.anual.filter(r => !r.completo).map(r => r.periodo + ' = facturación ene–' + D.meta.corte_facturacion.split('-')[0] + ' y tarjetas al ' + r.corte_tarjetas).join('; ');
-document.getElementById('vol-note').textContent += partial ? ' ' + partial + '.' : '';
-document.getElementById('contrib-range').innerHTML = D.meta.primer_anio + ' &rarr; ' + D.meta.ultimo_anio_completo;
 document.getElementById('eyebrow-corte').textContent = 'Tarjetas ' + D.meta.corte_tarjetas + ' · Facturación ' + D.meta.corte_facturacion;
+document.getElementById('m-empalme').textContent = 'factor ' + f2(D.meta.empalme.credito) + ' en crédito y ' + f2(D.meta.empalme.debito) + ' en débito';
 document.getElementById('footer').textContent = 'Banxico · SIE CF256, CF888, CF914 · Indicadores Básicos de Tarjetas de Crédito · Datos descargados ' + (D.meta.descargado || '').slice(0, 10) + ' · Generado ' + D.meta.generado;
 renderAll();
 </script>

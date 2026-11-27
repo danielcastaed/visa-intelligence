@@ -1,23 +1,5 @@
 {
- "_doc": "Insumos manuales del modelo México. Lo que cambia cada mes/trimestre (CF256 y CF914) lo descarga mexico/fetch_banxico.py en mexico/data/. Aquí quedan: (1) facturación 2019-2022 de CF888 (cuadro discontinuado), empalmada al nivel de CF914 con el traslape de dic-2022, y (2) saldo y tarjetas por banco de los Indicadores Básicos de Tarjetas de Crédito de Banxico (reporte semestral en PDF; actualizar a mano cuando salga uno nuevo) con la identificación letra -> banco.",
- "facturacion_cf888_mmdp": {
-  "credito": {
-   "2019": 1050.5,
-   "2020": 963.3,
-   "2021": 1234.4,
-   "2022": 1548.1
-  },
-  "debito": {
-   "2019": 1502.6,
-   "2020": 1593.4,
-   "2021": 1964.4,
-   "2022": 2309.2
-  },
-  "empalme_a_cf914": {
-   "credito": 1.094,
-   "debito": 1.086
-  }
- },
+ "_doc": "Insumos manuales del modelo México. Lo que cambia cada mes/trimestre (CF256 y CF914) lo descarga mexico/fetch_banxico.py en mexico/data/. Aquí quedan:  saldo y tarjetas por banco de los Indicadores Básicos de Tarjetas de Crédito de Banxico (reporte semestral en PDF; actualizar a mano cuando salga uno nuevo) con la identificación letra -> banco.",
  "anio_inicial": 2019,
  "rib": {
   "totales_saldo_mdp": {

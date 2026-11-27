@@ -2,7 +2,8 @@
 
 - CF256: tarjetas vigentes por marca (Visa / Mastercard / otras) y emisor
   anonimizado (letras), crédito y débito, trimestral.
-- CF914: monto operado con tarjetas de crédito y débito (diario), sumado por año.
+- CF888 / CF914: monto operado con tarjetas de crédito y débito (diario),
+  sumado por mes, trimestre y año.
 
 Escribe:
   mexico/data/banxico_cf256.json
@@ -31,8 +32,11 @@ BASE = "https://www.banxico.org.mx"
 UA = {"User-Agent": "Mozilla/5.0 (visa-intelligence; +https://github.com/danielcastaed/visa-intelligence)"}
 TOKEN = os.environ.get("BANXICO_TOKEN", "").strip()
 
-# Montos operados (CF914): series totales de débito y crédito
-MONTOS = {"debito": "SF351085,CF914,2", "credito": "SF351086,CF914,3"}
+# Montos operados (diarios, pesos): CF888 (2009 - dic 2022, discontinuado) y CF914 (dic 2022 en adelante)
+MONTOS = {
+    "cf888": {"debito": "SF335896,CF888,2", "credito": "SF335897,CF888,3"},
+    "cf914": {"debito": "SF351085,CF914,2", "credito": "SF351086,CF914,3"},
+}
 
 # Estructura de nodos del cuadro CF256
 # nodo_<producto>_0_<marca>[_<emisor>]; producto 0=crédito, 1=débito; marca 0=total,1=MC,2=Visa,3=otras
@@ -140,19 +144,24 @@ def main():
         json.dump(cf256, f, ensure_ascii=False, separators=(",", ":"))
     print(f"CF256: {len(smap)} series, último corte {cf256['fechas'][-1]}")
 
-    montos = {"unidad": "miles de millones de pesos", "credito": {}, "debito": {}}
-    ultima = None
-    for prod, param in MONTOS.items():
-        vals = fetch(param)
-        for d, v in vals:
-            y = d[:4]
-            montos[prod][y] = montos[prod].get(y, 0) + v / 1e9
-        ultima = max(ultima or "", max(d for d, _ in vals))
-        montos[prod] = {y: round(v, 3) for y, v in montos[prod].items()}
+    montos = {"unidad": "miles de millones de pesos"}
+    ultima = ""
+    for fuente, prods in MONTOS.items():
+        montos[fuente] = {}
+        for prod, param in prods.items():
+            agg = {"anual": {}, "trimestral": {}, "mensual": {}}
+            for d, v in fetch(param):
+                y, m = d[:4], int(d[5:7])
+                keys = {"anual": y, "trimestral": f"{y}-T{(m - 1) // 3 + 1}", "mensual": d[:7]}
+                for g, k in keys.items():
+                    agg[g][k] = agg[g].get(k, 0) + v / 1e9
+                if fuente == "cf914":
+                    ultima = max(ultima, d)
+            montos[fuente][prod] = {g: {k: round(v, 3) for k, v in sorted(s.items())} for g, s in agg.items()}
     montos["ultima_fecha"] = ultima
     with open(os.path.join(DATA, "banxico_montos.json"), "w", encoding="utf-8") as f:
         json.dump(montos, f, ensure_ascii=False, indent=1)
-    print(f"CF914: montos hasta {ultima}")
+    print(f"Montos: CF888 + CF914 hasta {ultima}")
 
 
 if __name__ == "__main__":
