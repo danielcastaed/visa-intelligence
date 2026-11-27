@@ -674,6 +674,7 @@ function renderHeat() {
   const maxD = Math.max(0.5, ...keys.flatMap(k => P.slice(1).map((p, i) => Math.abs((H[k][p] || 0) - (H[k][P[i]] || 0)))));
   const cell = (d) => {
     if (d == null) return '<td class="hm-c">—</td>';
+    if (Math.abs(d) < 0.05) d = 0;
     const a = Math.min(1, Math.abs(d) / maxD) * 0.85 + 0.08;
     const bg = d >= 0 ? `rgba(2,122,72,${a})` : `rgba(204,34,0,${a})`;
     return `<td class="hm-c" style="background:${Math.abs(d) < 0.05 ? 'var(--grid)' : bg};color:${a > 0.5 && Math.abs(d) >= 0.05 ? '#fff' : 'var(--text)'}">${d > 0 ? '+' : ''}${f1(d)}</td>`;

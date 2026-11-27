@@ -258,8 +258,8 @@ def main():
     for k, ser in cf["credito"]["letras"].items():
         a, b = triple(ser, last_cut), triple(ser, first_cut)
         tot = sum(a)
-        if tot == 0 and sum(b) == 0:
-            continue
+        if tot == 0 and (sum(b) == 0 or (k not in banks and sum(b) < 20000)):
+            continue  # emisores que ya no existen y eran marginales
         info = banks.get(k)
         emis_cr.append({
             "letra": k, "banco": nombre(k, "credito"),
