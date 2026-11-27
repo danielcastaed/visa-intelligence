@@ -1,25 +1,25 @@
 intermediarios agregados: 2
+202012 hojas: ['Menú', 'Definición', 'Ficha técnica', 'Infografía', 'Bases de Datos', 'BD Infraestructura Mun', 'BD Infraestructura Edo', 'BD Tenencia Uso Banca Mun', 'BD Tenencia Uso Banca Edo', 'BD Tenencia Uso EACP Mun', 'BD Tenencia Uso EACP Edo', 'BD Género Mun', 'BD Género Edo', 'BD Datos históricos', 'Menú Mapas', 'Mapas Infraestructura Estado', 'Mapas Infraestructura Región', 'Mapas Tenencia Estado', 'Mapas Tenencia Región', 'Mapas Género', 'Lista', 'ListaAcceso', 'ListaUso', 'ListaGenero', 'ListaAccesoRegión', 'ListaUsoRegión']
 202012: banca=0 eacp=0 TC banca=0
+202103 hojas: ['Menú', 'Definición', 'Ficha técnica', 'Infografía', 'Bases de Datos', 'BD Infraestructura Mun', 'BD Infraestructura Edo', 'BD Tenencia Uso Banca Mun', 'BD Tenencia Uso Banca Edo', 'BD Tenencia Uso EACP Mun', 'BD Tenencia Uso EACP Edo', 'BD Género Mun', 'BD Género Edo', 'BD Datos históricos', 'Menú Mapas', 'Mapas Infraestructura Estado', 'Mapas Infraestructura Región', 'Mapas Tenencia Estado', 'Mapas Tenencia Región', 'Mapas Género', 'Lista', 'ListaAcceso', 'ListaUso', 'ListaGenero', 'ListaAccesoRegión', 'ListaUsoRegión']
 202103: banca=0 eacp=0 TC banca=0
+202106 hojas: ['Menú', 'Definición', 'Ficha técnica', 'Infografía', 'Bases de Datos', 'BD Infraestructura Mun', 'BD Infraestructura Edo', 'BD Tenencia Uso Banca Mun', 'BD Tenencia Uso Banca Edo', 'BD Tenencia Uso EACP Mun', 'BD Tenencia Uso EACP Edo', 'BD Género Mun', 'BD Género Edo', 'BD Datos históricos', 'Menú Mapas', 'Mapas Infraestructura Estado', 'Mapas Infraestructura Región', 'Mapas Tenencia Estado', 'Mapas Tenencia Región', 'Mapas Género', 'Lista', 'ListaAcceso', 'ListaUso', 'ListaGenero', 'ListaAccesoRegión', 'ListaUsoRegión']
 202106: banca=0 eacp=0 TC banca=0
+202109 hojas: ['Menú', 'Definición', 'Ficha técnica', 'Infografía', 'Bases de Datos', 'BD Infraestructura Mun', 'BD Infraestructura Edo', 'BD Tenencia Uso Banca Mun', 'BD Tenencia Uso Banca Edo', 'BD Tenencia Uso EACP Mun', 'BD Tenencia Uso EACP Edo', 'BD Género Mun', 'BD Género Edo', 'BD Datos históricos', 'Menú Mapas', 'Mapas Infraestructura Estado', 'Mapas Infraestructura Región', 'Mapas Tenencia Estado', 'Mapas Tenencia Región', 'Mapas Género', 'Lista', 'ListaAcceso', 'ListaUso', 'ListaGenero', 'ListaAccesoRegión', 'ListaUsoRegión']
 202109: banca=0 eacp=0 TC banca=0
+202112 hojas: ['Menú', 'Definición', 'Ficha técnica', 'Infografía', 'Bases de Datos', 'BD Infraestructura Mun', 'BD Infraestructura Edo', 'BD Tenencia Uso Banca Mun', 'BD Tenencia Uso Banca Edo', 'BD Tenencia Uso EACP Mun', 'BD Tenencia Uso EACP Edo', 'BD Género Mun', 'BD Género Edo', 'BD Datos históricos', 'Menú Mapas', 'Mapas Infraestructura Estado', 'Mapas Infraestructura Región', 'Mapas Tenencia Estado', 'Mapas Tenencia Región', 'Mapas Género', 'Lista', 'ListaAcceso', 'ListaUso', 'ListaGenero', 'ListaAccesoRegión', 'ListaUsoRegión']
 202112: banca=0 eacp=0 TC banca=0
+202203 hojas: ['Menú', 'Definición', 'Ficha técnica', 'Infografía', 'Bases de Datos', 'BD Infraestructura Mun', 'BD Infraestructura Edo', 'BD Tenencia Uso Banca Mun', 'BD Tenencia Uso Banca Edo', 'BD Tenencia Uso EACP Mun', 'BD Tenencia Uso EACP Edo', 'BD Género Mun', 'BD Género Edo', 'BD Datos históricos', 'Menú Mapas', 'Mapas Infraestructura Estado', 'Mapas Infraestructura Región', 'Mapas Tenencia Estado', 'Mapas Tenencia Región', 'Mapas Género', 'Lista', 'ListaAcceso', 'ListaUso', 'ListaGenero', 'ListaAccesoRegión', 'ListaUsoRegión']
 202203: banca=0 eacp=0 TC banca=0
+202206 hojas: ['Menú', 'Definición', 'Ficha técnica', 'Infografía', 'Bases de Datos', 'BD Infraestructura Mun', 'BD Infraestructura Edo', 'BD Tenencia Uso Banca Mun', 'BD Tenencia Uso Banca Edo', 'BD Tenencia Uso EACP Mun', 'BD Tenencia Uso EACP Edo', 'BD Género Mun', 'BD Género Edo', 'BD Datos históricos', 'Menú Mapas', 'Mapas Infraestructura Estado', 'Mapas Infraestructura Región', 'Mapas Tenencia Estado', 'Mapas Tenencia Región', 'Mapas Género', 'Lista', 'ListaAcceso', 'ListaUso', 'ListaGenero', 'ListaAccesoRegión', 'ListaUsoRegión']
 202206: banca=0 eacp=0 TC banca=0
+202209 hojas: ['Menú', 'Definición', 'Ficha técnica', 'Infografía', 'Bases de Datos', 'BD Infraestructura Mun', 'BD Infraestructura Edo', 'BD Tenencia Uso Banca Mun', 'BD Tenencia Uso Banca Edo', 'BD Tenencia Uso EACP Mun', 'BD Tenencia Uso EACP Edo', 'BD Género Mun', 'BD Género Edo', 'BD Datos históricos', 'Menú Mapas', 'Mapas Infraestructura Estado', 'Mapas Infraestructura Región', 'Mapas Tenencia Estado', 'Mapas Tenencia Región', 'Mapas Género', 'Lista', 'ListaAcceso', 'ListaUso', 'ListaGenero', 'ListaAccesoRegión', 'ListaUsoRegión']
 202209: banca=0 eacp=0 TC banca=0
+202212 hojas: ['MENU', 'Definición IF', 'Indicadores IF', 'Ficha técnica', 'BD Infraestructura Mun', 'BD Infraestructura Edo', 'BD Captación Mun', 'BD Captación Edo', 'BD Crédito Mun', 'BD Crédito Edo', 'BD por sexo Banca Mun', 'BD por sexo EACP Mun', 'BD Datos históricos']
 202212: banca=0 eacp=0 TC banca=0
+202303 hojas: ['MENU', 'Definición IF', 'Indicadores IF', 'Ficha técnica', 'BD Infraestructura Mun', 'BD Infraestructura Edo', 'BD Captación Mun', 'BD Captación Edo', 'BD Crédito Mun', 'BD Crédito Edo', 'BD por sexo Banca Mun', 'BD por sexo EACP Mun', 'BD Datos históricos']
 202303: banca=0 eacp=0 TC banca=0
+202306 hojas: ['MENU', 'Definición IF', 'Indicadores IF', 'Ficha técnica', 'BD Infraestructura Mun', 'BD Infraestructura Edo', 'BD Captación Mun', 'BD Captación Edo', 'BD Crédito Mun', 'BD Crédito Edo', 'BD por sexo Banca Mun', 'BD por sexo EACP Mun', 'BD Datos históricos']
 202306: banca=0 eacp=0 TC banca=0
-202309: banca=50 eacp=190 TC banca=34,027,096
-202312: banca=50 eacp=190 TC banca=34,624,189
-202403: banca=51 eacp=190 TC banca=35,130,859
-202406: banca=51 eacp=190 TC banca=35,864,282
-202409: banca=52 eacp=190 TC banca=36,740,143
-202412: banca=53 eacp=191 TC banca=37,388,342
-202503: banca=54 eacp=189 TC banca=37,865,067
-202506: banca=54 eacp=189 TC banca=37,581,604
-202509: banca=54 eacp=187 TC banca=38,587,411
-202512: banca=54 eacp=187 TC banca=39,037,512
-202603: banca=55 eacp=188 TC banca=45,823,255
 202606: no disponible
 202609: no disponible
