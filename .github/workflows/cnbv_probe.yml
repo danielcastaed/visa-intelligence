@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.11"}
-      - run: pip install requests openpyxl
+      - run: pip install requests openpyxl cryptography certifi
       - run: python probe/probe_cnbv.py
       - if: always()
         run: |
