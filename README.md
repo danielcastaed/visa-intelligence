@@ -43,6 +43,23 @@ Los filtros de la parte inferior permiten elegir el **producto** (total, crédit
 
 Se genera con `python report/generate_resumen.py` a partir de los datos embebidos en el dashboard (`docs/index.html`) y se regenera solo en el workflow mensual. Los textos salen de plantillas con las cifras del período (sin IA ni llamadas externas); la plantilla visual está en `report/resumen_template.html`.
 
+## México (estimado con datos de Banxico)
+
+[`docs/mexico/`](https://danielcastaed.github.io/visa-intelligence/mexico/) replica la estructura del dashboard de Colombia para México: snapshot, market share, facturación, tarjetas vigentes, contribución por banco y participación por emisor, con filtros de producto (crédito / débito / total) y escenario.
+
+A diferencia de la SFC, **ninguna fuente pública mexicana reporta facturación por marca**, así que el share es un estimado:
+
+- **Facturación por producto**: Banxico SIE, cuadros CF888 y CF914 (monto operado con tarjetas de crédito y débito).
+- **Tarjetas por marca y emisor**: Banxico SIE CF256, con emisores anonimizados por letra.
+- **Peso de cada banco en crédito**: saldo de los Indicadores Básicos de Tarjetas de Crédito de Banxico.
+- Las letras de CF256 se emparejan con bancos por tamaño, mezcla de marcas, fechas de entrada/salida y crecimiento. La tabla de identificación en el dashboard muestra la evidencia y la confianza de cada una.
+
+```
+mexico/inputs.json → mexico/model.py → mexico/output.json → report/generate_mexico.py → docs/mexico/index.html
+```
+
+Para regenerar: `python mexico/model.py && python report/generate_mexico.py`. Los insumos se actualizan a mano por ahora (no hay workflow automático para México).
+
 ## Stack
 
 Python (pandas) · Jupyter + Plotly · GitHub Actions · GitHub Pages · Gmail SMTP
