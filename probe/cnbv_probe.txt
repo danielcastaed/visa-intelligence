@@ -1,518 +1,540 @@
 intermediarios agregados: 2
-== 202603 200 7,563,869 bytes application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
--- sheet 'MENU' dims=45x9
-    |  |  |  |  |  |  |  | Marzo 2026
-    |  |  |  |  |  |  |  | Cierre a marzo 2026
-    |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  | 
--- sheet 'Definición IF' dims=33x21
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
--- sheet 'Indicadores IF' dims=57x32
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
--- sheet 'Ficha técnica' dims=250x35
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
--- sheet 'BD Infraestructura Mun' dims=2491x48
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  | 65316 | 17612 | 69810 | 1415931 | 803206 | 128557974 | 194313002 | 340520410 | 11377 | 64721 | 1414804 | 802528 | 116459944 | 180396272 | 340200370 | 3245 | 3967 | 898 | 557 | 0 | 12510987 | 204833 | 2334 | 1003 | 226 | 118 | 481657 | 1350358
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  | Infraestructura y transacciones |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    | Información general |  |  |  |  |  |  |  |  |  |  | Todos los sectores |  |  |  |  |  |  |  | Banca múltiple |  |  |  |  |  |  | Banca de desarrollo |  |  |  |  |  |  | Sociedades Cooperativas de Ahorro y Prés |  |  |  |  | 
--- sheet 'BD Infraestructura Edo' dims=2476x47
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | 65316 | 17612 | 69810 | 1415931 | 803206 | 128557974 | 194313002 | 340520410 | 11377 | 64721 | 1414804 | 802528 | 116459944 | 180396272 | 340200370 | 3245 | 3967 | 898 | 557 | 0 | 12510987 | 204833 | 2334 | 1003 | 226 | 118 | 481657 | 1350358 | 115167
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | Infraestructura y transacciones |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  | Información general |  |  |  |  |  |  |  |  | Todos los sectores |  |  |  |  |  |  |  | Banca múltiple |  |  |  |  |  |  | Banca de desarrollo |  |  |  |  |  |  | Sociedades Cooperativas de Ahorro y Prés |  |  |  |  |  | 
+== 202603 200 7,563,869 bytes
+sheets: MENU || Definición IF || Indicadores IF || Ficha técnica || BD Infraestructura Mun || BD Infraestructura Edo || BD Infraestructura Banca || BD Captación Mun || BD Captación Edo || BD Captación Banca || BD Crédito Mun || BD Crédito Edo || BD Crédito Banca || BD por sexo Banca Mun || BD por sexo EACP Mun || BD por sexo Banca || BD Datos históricos || BD Banca || BD EACP
 -- sheet 'BD Infraestructura Banca' dims=2482x12
-    |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
-    |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  | Infraestructura y transacciones |  |  |  |  |  |  | 
-    | Información general |  |  | Banca |  |  |  |  |  |  | 
--- sheet 'BD Captación Mun' dims=2491x50
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  | 2149810 | 3231029 | 1457 | 58888249 | 390313 | 101850297 | 205132578 | 12488729 | 3684678 | 36011325 | 16948522 | 218695887 | 2149809 | 2345038 | 1457 | 22563083 | 390313 | 98067579 | 146347749 | 125517279 | 1 | 885991 | 0 | 36325166 | 0 | 3782718 | 58784829 | 40993876
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  | Captación |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    | Información general |  |  |  |  |  |  |  |  |  |  | Todos los sectores |  |  |  |  |  |  |  |  |  |  |  | Banca múltiple |  |  |  |  |  |  |  | Banca de desarrollo |  |  |  |  |  |  | 
--- sheet 'BD Captación Edo' dims=2476x49
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | 2149810 | 3231029 | 1457 | 58888249 | 390313 | 101850297 | 205132578 | 12488729 | 3684678 | 36011325 | 16948522 | 218695887 | 2149809 | 2345038 | 1457 | 22563083 | 390313 | 98067579 | 146347749 | 125517279 | 1 | 885991 | 0 | 36325166 | 0 | 3782718 | 58784829 | 40993876 | 11090266
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | Captación |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  | Información general |  |  |  |  |  |  |  |  | Todos los sectores |  |  |  |  |  |  |  |  |  |  |  | Banca múltiple |  |  |  |  |  |  |  | Banca de desarrollo |  |  |  |  |  |  |  | Sociedades Cooperativas de Ahorro y Prés
+  r1:  |  |  |  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+  r8:  |  |  |  | Infraestructura y transacciones |  |  |  |  |  |  | 
+  r9:  | Información general |  |  | Banca |  |  |  |  |  |  | 
+  r10:  |  |  |  | Infraestructura |  |  |  |  |  | Transacciones | 
+  r11:  | Nombre
+Sector | Clave 
+Institución | Nombre
+Institución | Corresponsales
+Número | Sucursales
+Número | Cajeros automáticos
+Número | TPV
+Número | Establecimientos con TPV
+Número | Cuentas que efectúan transacciones por celula | Transacciones en cajeros automáticos
+Número | Transacciones en TPV
+Número
+  r12:  | Banca de desarrollo | 037019 | Banjercito |  |  |  |  |  |  |  | 
+  r13:  | Banca de desarrollo | 037166 | Banco del Bienestar |  |  |  |  |  |  |  | 
+  r14:  | Banca múltiple | 040002 | Citibanamex |  |  |  |  |  |  |  | 
+  r15:  | Banca múltiple | 040012 | BBVA |  |  |  |  |  |  |  | 
+  r16:  | Banca múltiple | 040014 | Santander |  |  |  |  |  |  |  | 
+  r17:  | Banca múltiple | 040021 | HSBC |  |  |  |  |  |  |  | 
+  r18:  | Banca múltiple | 040030 | Banco del Bajío |  |  |  |  |  |  |  | 
+  r19:  | Banca múltiple | 040036 | Inbursa |  |  |  |  |  |  |  | 
+  r20:  | Banca múltiple | 040042 | Banca Mifel |  |  |  |  |  |  |  | 
+  r21:  | Banca múltiple | 040044 | Scotiabank |  |  |  |  |  |  |  | 
+  r22:  | Banca múltiple | 040058 | Banregio |  |  |  |  |  |  |  | 
+  r23:  | Banca múltiple | 040059 | Invex |  |  |  |  |  |  |  | 
+  r24:  | Banca múltiple | 040060 | Bansí |  |  |  |  |  |  |  | 
+  r25:  | Banca múltiple | 040062 | Afirme |  |  |  |  |  |  |  | 
+  r26:  | Banca múltiple | 040072 | Banorte |  |  |  |  |  |  |  | 
+  r27:  | Banca múltiple | 040106 | Bank of America |  |  |  |  |  |  |  | 
+  r28:  | Banca múltiple | 040108 | MUFG Bank |  |  |  |  |  |  |  | 
+  r29:  | Banca múltiple | 040110 | JP Morgan |  |  |  |  |  |  |  | 
+  r30:  | Banca múltiple | 040112 | Monex |  |  |  |  |  |  |  | 
+  r31:  | Banca múltiple | 040113 | Ve por Más |  |  |  |  |  |  |  | 
+  r32:  | Banca múltiple | 040124 | CBM Banco |  |  |  |  |  |  |  | 
+  r33:  | Banca múltiple | 040126 | Banco Credit Suisse |  |  |  |  |  |  |  | 
+  r34:  | Banca múltiple | 040127 | Banco Azteca |  |  |  |  |  |  |  | 
+  r35:  | Banca múltiple | 040128 | Autofin |  |  |  |  |  |  |  | 
+  r36:  | Banca múltiple | 040129 | Barclays |  |  |  |  |  |  |  | 
+  r37:  | Banca múltiple | 040130 | Compartamos |  |  |  |  |  |  |  | 
+  r38:  | Banca múltiple | 040132 | Multiva |  |  |  |  |  |  |  | 
+  r39:  | Banca múltiple | 040133 | Actinver |  |  |  |  |  |  |  | 
+  r40:  | Banca múltiple | 040136 | Intercam Banco |  |  |  |  |  |  |  | 
+  r41:  | Banca múltiple | 040137 | Bancoppel |  |  |  |  |  |  |  | 
+  r42:  | Banca múltiple | 040138 | ABC Capital |  |  |  |  |  |  |  | 
+  r43:  | Banca múltiple | 040139 | BIAfirme |  |  |  |  |  |  |  | 
+  r44:  | Banca múltiple | 040140 | Consubanco |  |  |  |  |  |  |  | 
+  r45:  | Banca múltiple | 040141 | Volkswagen Bank |  |  |  |  |  |  |  | 
+  r46:  | Banca múltiple | 040143 | CIBanco |  |  |  |  |  |  |  | 
+  r47:  | Banca múltiple | 040145 | Banco Base |  |  |  |  |  |  |  | 
+  r48:  | Banca múltiple | 040147 | Bankaool |  |  |  |  |  |  |  | 
+  r49:  | Banca múltiple | 040148 | Pagatodo |  |  |  |  |  |  |  | 
+  r50:  | Banca múltiple | 040149 | Forjadores |  |  |  |  |  |  |  | 
+  r51:  | Banca múltiple | 040150 | Inmobiliario Mexicano |  |  |  |  |  |  |  | 
+  r52:  | Banca múltiple | 040151 | Dondé Banco |  |  |  |  |  |  |  | 
+  r53:  | Banca múltiple | 040152 | Banco Bancrea |  |  |  |  |  |  |  | 
+  r54:  | Banca múltiple | 040154 | Banco Covalto |  |  |  |  |  |  |  | 
+  r55:  | Banca múltiple | 040155 | Industrial and Commercial Bank of China |  |  |  |  |  |  |  | 
+  r56:  | Banca múltiple | 040156 | Sabadell |  |  |  |  |  |  |  | 
+  r57:  | Banca múltiple | 040157 | Shinhan Bank |  |  |  |  |  |  |  | 
+  r58:  | Banca múltiple | 040158 | Mizuho Bank |  |  |  |  |  |  |  | 
+  r59:  | Banca múltiple | 040159 | Bank of China |  |  |  |  |  |  |  | 
+  r60:  | Banca múltiple | 040160 | Banco S3 |  |  |  |  |  |  |  | 
+  r61:  | Banca múltiple | 040162 | KEB Hana Bank |  |  |  |  |  |  |  | 
+  r62:  | Banca múltiple | 040164 | BNP Paribas |  |  |  |  |  |  |  | 
 -- sheet 'BD Captación Banca' dims=2482x12
-    |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
-    |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  | Captación |  |  |  |  |  |  | 
-    | Información general |  |  | Todos los sectores |  |  |  |  |  |  | 
--- sheet 'BD Crédito Mun' dims=2491x50
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  | 45823255 | 14744413 | 6737467 | 4874390 | 3632941 | 1288648 | 1741791 | 12978940 | 4843081 | 32735 | 877461 | 96697661 | 45800690 | 14495799 | 6734236 | 4874372 | 3632941 | 1257221 | 1738069 | 78533328 | 22565 | 248614 | 3231 | 18 | 0 | 31427 | 3722 | 309577
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  | Crédito |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    | Información general |  |  |  |  |  |  |  |  |  |  | Todos los sectores |  |  |  |  |  |  |  |  |  |  |  | Banca múltiple |  |  |  |  |  |  |  | Banca de desarrollo |  |  |  |  |  |  | 
+  r1:  |  |  |  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+  r8:  |  |  |  | Captación |  |  |  |  |  |  | 
+  r9:  | Información general |  |  | Todos los sectores |  |  |  |  |  |  | 
+  r10:  |  |  |  | Banca |  |  |  |  |  |  | Total
+  r11:  | Nombre
+Sector | Clave 
+Institución | Nombre
+Institución | Ahorro
+Número de cuentas | Depósitos a plazo
+Número de cuentas | Transaccionales Nivel 1
+Número de cuentas | Transaccionales Nivel 2
+Número de cuentas | Transaccionales Nivel 3
+Número de cuentas | Transaccionales Nivel 4
+Número de cuentas | Tarjetas de débito
+Número | Total
+Número de cuentas
+  r12:  | Banca de desarrollo | 037019 | Banjercito |  |  |  |  |  |  |  | 0
+  r13:  | Banca de desarrollo | 037166 | Banco del Bienestar |  |  |  |  |  |  |  | 0
+  r14:  | Banca múltiple | 040002 | Citibanamex |  |  |  |  |  |  |  | 0
+  r15:  | Banca múltiple | 040012 | BBVA |  |  |  |  |  |  |  | 0
+  r16:  | Banca múltiple | 040014 | Santander |  |  |  |  |  |  |  | 0
+  r17:  | Banca múltiple | 040021 | HSBC |  |  |  |  |  |  |  | 0
+  r18:  | Banca múltiple | 040030 | Banco del Bajío |  |  |  |  |  |  |  | 0
+  r19:  | Banca múltiple | 040036 | Inbursa |  |  |  |  |  |  |  | 0
+  r20:  | Banca múltiple | 040042 | Banca Mifel |  |  |  |  |  |  |  | 0
+  r21:  | Banca múltiple | 040044 | Scotiabank |  |  |  |  |  |  |  | 0
+  r22:  | Banca múltiple | 040058 | Banregio |  |  |  |  |  |  |  | 0
+  r23:  | Banca múltiple | 040059 | Invex |  |  |  |  |  |  |  | 0
+  r24:  | Banca múltiple | 040060 | Bansí |  |  |  |  |  |  |  | 0
+  r25:  | Banca múltiple | 040062 | Afirme |  |  |  |  |  |  |  | 0
+  r26:  | Banca múltiple | 040072 | Banorte |  |  |  |  |  |  |  | 0
+  r27:  | Banca múltiple | 040106 | Bank of America |  |  |  |  |  |  |  | 0
+  r28:  | Banca múltiple | 040108 | MUFG Bank |  |  |  |  |  |  |  | 0
+  r29:  | Banca múltiple | 040110 | JP Morgan |  |  |  |  |  |  |  | 0
+  r30:  | Banca múltiple | 040112 | Monex |  |  |  |  |  |  |  | 0
+  r31:  | Banca múltiple | 040113 | Ve por Más |  |  |  |  |  |  |  | 0
+  r32:  | Banca múltiple | 040124 | CBM Banco |  |  |  |  |  |  |  | 0
+  r33:  | Banca múltiple | 040126 | Banco Credit Suisse |  |  |  |  |  |  |  | 0
+  r34:  | Banca múltiple | 040127 | Banco Azteca |  |  |  |  |  |  |  | 0
+  r35:  | Banca múltiple | 040128 | Autofin |  |  |  |  |  |  |  | 0
+  r36:  | Banca múltiple | 040129 | Barclays |  |  |  |  |  |  |  | 0
+  r37:  | Banca múltiple | 040130 | Compartamos |  |  |  |  |  |  |  | 0
+  r38:  | Banca múltiple | 040132 | Multiva |  |  |  |  |  |  |  | 0
+  r39:  | Banca múltiple | 040133 | Actinver |  |  |  |  |  |  |  | 0
+  r40:  | Banca múltiple | 040136 | Intercam Banco |  |  |  |  |  |  |  | 0
+  r41:  | Banca múltiple | 040137 | Bancoppel |  |  |  |  |  |  |  | 0
+  r42:  | Banca múltiple | 040138 | ABC Capital |  |  |  |  |  |  |  | 0
+  r43:  | Banca múltiple | 040139 | BIAfirme |  |  |  |  |  |  |  | 0
+  r44:  | Banca múltiple | 040140 | Consubanco |  |  |  |  |  |  |  | 0
+  r45:  | Banca múltiple | 040141 | Volkswagen Bank |  |  |  |  |  |  |  | 0
+  r46:  | Banca múltiple | 040143 | CIBanco |  |  |  |  |  |  |  | 0
+  r47:  | Banca múltiple | 040145 | Banco Base |  |  |  |  |  |  |  | 0
+  r48:  | Banca múltiple | 040147 | Bankaool |  |  |  |  |  |  |  | 0
+  r49:  | Banca múltiple | 040148 | Pagatodo |  |  |  |  |  |  |  | 0
+  r50:  | Banca múltiple | 040149 | Forjadores |  |  |  |  |  |  |  | 0
+  r51:  | Banca múltiple | 040150 | Inmobiliario Mexicano |  |  |  |  |  |  |  | 0
+  r52:  | Banca múltiple | 040151 | Dondé Banco |  |  |  |  |  |  |  | 0
+  r53:  | Banca múltiple | 040152 | Banco Bancrea |  |  |  |  |  |  |  | 0
+  r54:  | Banca múltiple | 040154 | Banco Covalto |  |  |  |  |  |  |  | 0
+  r55:  | Banca múltiple | 040155 | Industrial and Commercial Bank of China |  |  |  |  |  |  |  | 0
+  r56:  | Banca múltiple | 040156 | Sabadell |  |  |  |  |  |  |  | 0
+  r57:  | Banca múltiple | 040157 | Shinhan Bank |  |  |  |  |  |  |  | 0
+  r58:  | Banca múltiple | 040158 | Mizuho Bank |  |  |  |  |  |  |  | 0
+  r59:  | Banca múltiple | 040159 | Bank of China |  |  |  |  |  |  |  | 0
+  r60:  | Banca múltiple | 040160 | Banco S3 |  |  |  |  |  |  |  | 0
+  r61:  | Banca múltiple | 040162 | KEB Hana Bank |  |  |  |  |  |  |  | 0
+  r62:  | Banca múltiple | 040164 | BNP Paribas |  |  |  |  |  |  |  | 0
+  r63:  |  |  |  |  |  |  |  |  |  |  | 0
+  r64:  |  |  |  |  |  |  |  |  |  |  | 0
+  r65:  |  |  |  |  |  |  |  |  |  |  | 0
+  r66:  |  |  |  |  |  |  |  |  |  |  | 0
+  r67:  |  |  |  |  |  |  |  |  |  |  | 0
+  r68:  |  |  |  |  |  |  |  |  |  |  | 0
+  r69:  |  |  |  |  |  |  |  |  |  |  | 0
+  r70:  |  |  |  |  |  |  |  |  |  |  | 0
+  r71:  |  |  |  |  |  |  |  |  |  |  | 0
+  r72:  |  |  |  |  |  |  |  |  |  |  | 0
+  r73:  |  |  |  |  |  |  |  |  |  |  | 0
+  r74:  |  |  |  |  |  |  |  |  |  |  | 0
 -- sheet 'BD Crédito Edo' dims=2476x49
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | 45823255 | 14744413 | 6737467 | 4874390 | 3632941 | 1288648 | 1741791 | 12978940 | 4843081 | 32735 | 877461 | 96697661 | 45800690 | 14495799 | 6734236 | 4874372 | 3632941 | 1257221 | 1738069 | 78533328 | 22565 | 248614 | 3231 | 18 | 0 | 31427 | 3722 | 309577 | 37113
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | Crédito |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  | Información general |  |  |  |  |  |  |  |  | Todos los sectores |  |  |  |  |  |  |  |  |  |  |  | Banca múltiple |  |  |  |  |  |  |  | Banca de desarrollo |  |  |  |  |  |  |  | Sociedades Cooperativas de Ahorro y Prés
+  r8:  |  |  |  |  |  |  |  |  |  |  | Crédito |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+  r9:  |  | Información general |  |  |  |  |  |  |  |  | Todos los sectores |  |  |  |  |  |  |  |  |  |  |  | Banca múltiple |  |  |  |  |  |  |  | Banca de desarrollo |  |  |  |  |  |  |  | Sociedades Cooperativas de Ahorro y Préstamo |  |  |  |  | Sociedades Financieras Populares |  |  |  | 
+  r10:  |  |  |  |  |  |  |  |  |  |  | Banca |  |  |  |  |  |  | Entidades de Ahorro y Crédito Popular (EACP) |  |  |  | Total | Crédito |  |  |  |  |  |  |  | Crédito |  |  |  |  |  |  |  | Crédito |  |  |  |  | Crédito |  |  |  | 
+  r11:  |  | Clave Estado | Región | Estado | Número de municipios | Población total | Población adulta | Población adulta Mujeres | Población adulta Hombres | % Población adulta | Tarjetas de crédito
+Número | Personal
+Número de créditos | Nómina
+Número de créditos | ABCD
+Número de créditos | Grupal
+Número de créditos | Hipotecario
+Número de créditos | Automotriz
+Número de créditos | Tarjetas de crédito
+Número | Consumo
+Número de créditos | Vivienda
+Número de créditos | Comercial
+Número de créditos | Total
+Número de créditos | Tarjetas de crédito
+Número | Personal
+Número de créditos | Nómina
+Número de créditos | ABCD
+Número de créditos | Grupal
+Número de créditos | Hipotecario
+Número de créditos | Automotriz
+Número de créditos | Total
+Número de créditos | Tarjetas de crédito
+Número | Personal
+Número de créditos | Nómina
+Número de créditos | ABCD
+Número de créditos | Grupal
+Número de créditos | Hipotecario
+Número de créditos | Automotriz
+Número de créditos | Total
+Número de créditos | Tarjetas de crédito
+Número | Consumo
+Número de créditos | Vivienda
+Número de créditos | Comercial
+Número de créditos | Total
+Número de créditos | Tarjetas de crédito
+Número | Consumo
+Número de créditos | Vivienda
+Número de créditos | Comercial
+Número de créditos | Total
+Número de créditos
+  r12:  |  | 1 | Occidente y Bajío | Aguascalientes | 11 | 1567559 | 1176993 | 607608 | 569385 | 0.7508444658223391 | 376098 | 293955 | 129953 | 60401 | 10891 | 24771 | 23528 | 133620 | 50095 | 446 | 4027 | 1103758 | 375998 | 293164 | 129953 | 60401 | 10891 | 24479 | 23528 | 918414 | 100 | 791 | 0 | 0 | 0 | 292 | 0 | 1183 | 61 | 28211 | 446 | 3257 | 28718 | 133559 | 21884 | 0 | 770 | 155443
+  r13:  |  | 2 | Noroeste | Baja California | 7 | 4189285 | 3310264 | 1631231 | 1679033 | 0.790173979569306 | 1097571 | 323850 | 263373 | 78521 | 86728 | 48764 | 55290 | 468436 | 49354 | 4 | 23792 | 2471891 | 1096947 | 321072 | 263373 | 78521 | 86728 | 47766 | 55290 | 1949697 | 624 | 2778 | 0 | 0 | 0 | 998 | 0 | 4400 | 0 | 597 | 4 | 74 | 601 | 468436 | 48757 | 0 | 23718 | 517193
 -- sheet 'BD Crédito Banca' dims=63x12
-    |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
-    |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  | Crédito |  |  |  |  |  |  | 
-    | Información general |  |  | Todos los sectores |  |  |  |  |  |  | 
--- sheet 'BD por sexo Banca Mun' dims=2491x108
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  | 910540 | 1233876 | 1595839 | 1567766 | 887 | 570 | 37746193 | 21142043 | 161581 | 228673 | 50247522 | 49326174 | 110864297 | 92345876 | 90662562 | 73499102 | 910540 | 1233875 | 1370175 | 907552 | 887 | 570 | 11179170 | 11383900 | 161581 | 228673 | 47885283 | 47906524
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  | Captación por sexo |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    | Información general |  |  |  |  |  |  |  |  |  |  | Banca |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | Banca múltiple |  |  |  |  |  |  |  |  |  |  | 
--- sheet 'BD por sexo EACP Mun' dims=2491x58
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  | 6690301 | 5796738 | 1901594 | 1772367 | 17686332 | 18123254 | 26278227 | 25692359 | 6017913 | 5071352 | 854507 | 403687 | 3036875 | 2502653 | 9909295 | 7977692 | 672388 | 725386 | 1047087 | 1368680 | 14649457 | 15620601 | 16368932 | 17714667 | 2487741 | 2353490 | 15826 | 16908
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  | Captación por sexo |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | Crédito por sexo |  |  | 
-    | Información general |  |  |  |  |  |  |  |  |  |  | Entidades de Ahorro y Crédito Popular (E |  |  |  |  |  |  |  | Sociedades Cooperativas de Ahorro y Prés |  |  |  |  |  |  |  | Sociedades Financieras Populares |  |  |  |  |  |  |  | Entidades de Ahorro y Crédito Popular (E |  |  | 
+  r1:  |  |  |  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+  r8:  |  |  |  | Crédito |  |  |  |  |  |  | 
+  r9:  | Información general |  |  | Todos los sectores |  |  |  |  |  |  | 
+  r10:  |  |  |  | Banca |  |  |  |  |  |  | Total
+  r11:  | Nombre
+Sector | Clave 
+Institución | Nombre
+Institución | Tarjetas de crédito
+Número | Personal
+Número de créditos | Nómina
+Número de créditos | ABCD
+Número de créditos | Grupal
+Número de créditos | Hipotecario
+Número de créditos | Automotriz
+Número de créditos | Total
+Número de créditos
+  r12:  | Banca de desarrollo | 037019 | Banjercito |  |  |  |  |  |  |  | 0
+  r13:  | Banca de desarrollo | 037166 | Banco del Bienestar |  |  |  |  |  |  |  | 0
+  r14:  | Banca múltiple | 040002 | Citibanamex |  |  |  |  |  |  |  | 0
+  r15:  | Banca múltiple | 040012 | BBVA |  |  |  |  |  |  |  | 0
+  r16:  | Banca múltiple | 040014 | Santander |  |  |  |  |  |  |  | 0
+  r17:  | Banca múltiple | 040021 | HSBC |  |  |  |  |  |  |  | 0
+  r18:  | Banca múltiple | 040030 | Banco del Bajío |  |  |  |  |  |  |  | 0
+  r19:  | Banca múltiple | 040036 | Inbursa |  |  |  |  |  |  |  | 0
+  r20:  | Banca múltiple | 040042 | Banca Mifel |  |  |  |  |  |  |  | 0
+  r21:  | Banca múltiple | 040044 | Scotiabank |  |  |  |  |  |  |  | 0
+  r22:  | Banca múltiple | 040058 | Banregio |  |  |  |  |  |  |  | 0
+  r23:  | Banca múltiple | 040059 | Invex |  |  |  |  |  |  |  | 0
+  r24:  | Banca múltiple | 040060 | Bansí |  |  |  |  |  |  |  | 0
+  r25:  | Banca múltiple | 040062 | Afirme |  |  |  |  |  |  |  | 0
+  r26:  | Banca múltiple | 040072 | Banorte |  |  |  |  |  |  |  | 0
+  r27:  | Banca múltiple | 040106 | Bank of America |  |  |  |  |  |  |  | 0
+  r28:  | Banca múltiple | 040108 | MUFG Bank |  |  |  |  |  |  |  | 0
+  r29:  | Banca múltiple | 040110 | JP Morgan |  |  |  |  |  |  |  | 0
+  r30:  | Banca múltiple | 040112 | Monex |  |  |  |  |  |  |  | 0
+  r31:  | Banca múltiple | 040113 | Ve por Más |  |  |  |  |  |  |  | 0
+  r32:  | Banca múltiple | 040124 | CBM Banco |  |  |  |  |  |  |  | 0
+  r33:  | Banca múltiple | 040126 | Banco Credit Suisse |  |  |  |  |  |  |  | 0
+  r34:  | Banca múltiple | 040127 | Banco Azteca |  |  |  |  |  |  |  | 0
+  r35:  | Banca múltiple | 040128 | Autofin |  |  |  |  |  |  |  | 0
+  r36:  | Banca múltiple | 040129 | Barclays |  |  |  |  |  |  |  | 0
+  r37:  | Banca múltiple | 040130 | Compartamos |  |  |  |  |  |  |  | 0
+  r38:  | Banca múltiple | 040132 | Multiva |  |  |  |  |  |  |  | 0
+  r39:  | Banca múltiple | 040133 | Actinver |  |  |  |  |  |  |  | 0
+  r40:  | Banca múltiple | 040136 | Intercam Banco |  |  |  |  |  |  |  | 0
+  r41:  | Banca múltiple | 040137 | Bancoppel |  |  |  |  |  |  |  | 0
+  r42:  | Banca múltiple | 040138 | ABC Capital |  |  |  |  |  |  |  | 0
+  r43:  | Banca múltiple | 040139 | BIAfirme |  |  |  |  |  |  |  | 0
+  r44:  | Banca múltiple | 040140 | Consubanco |  |  |  |  |  |  |  | 0
+  r45:  | Banca múltiple | 040141 | Volkswagen Bank |  |  |  |  |  |  |  | 0
+  r46:  | Banca múltiple | 040143 | CIBanco |  |  |  |  |  |  |  | 0
+  r47:  | Banca múltiple | 040145 | Banco Base |  |  |  |  |  |  |  | 0
+  r48:  | Banca múltiple | 040147 | Bankaool |  |  |  |  |  |  |  | 0
+  r49:  | Banca múltiple | 040148 | Pagatodo |  |  |  |  |  |  |  | 0
+  r50:  | Banca múltiple | 040149 | Forjadores |  |  |  |  |  |  |  | 0
+  r51:  | Banca múltiple | 040150 | Inmobiliario Mexicano |  |  |  |  |  |  |  | 0
+  r52:  | Banca múltiple | 040151 | Dondé Banco |  |  |  |  |  |  |  | 0
+  r53:  | Banca múltiple | 040152 | Banco Bancrea |  |  |  |  |  |  |  | 0
+  r54:  | Banca múltiple | 040154 | Banco Covalto |  |  |  |  |  |  |  | 0
+  r55:  | Banca múltiple | 040155 | Industrial and Commercial Bank of China |  |  |  |  |  |  |  | 0
+  r56:  | Banca múltiple | 040156 | Sabadell |  |  |  |  |  |  |  | 0
+  r57:  | Banca múltiple | 040157 | Shinhan Bank |  |  |  |  |  |  |  | 0
+  r58:  | Banca múltiple | 040158 | Mizuho Bank |  |  |  |  |  |  |  | 0
+  r59:  | Banca múltiple | 040159 | Bank of China |  |  |  |  |  |  |  | 0
+  r60:  | Banca múltiple | 040160 | Banco S3 |  |  |  |  |  |  |  | 0
+  r61:  | Banca múltiple | 040162 | KEB Hana Bank |  |  |  |  |  |  |  | 0
+  r62:  | Banca múltiple | 040164 | BNP Paribas |  |  |  |  |  |  |  | 0
 -- sheet 'BD por sexo Banca' dims=63x36
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  | Captación por sexo |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | Crédito por sexo |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    | Información general |  |  | Banca |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | Banca |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
--- sheet 'BD Datos históricos' dims=2475x65
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  | * Para la contabilización de módulos úni |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  | * En el periodo de diciembre de 2020, se |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  | * Debido al proceso de revisión y mejora |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    | Periodo |  |  | Infraestructura
-Banca, Socap y Sofipo |  |  |  |  |  |  |  | Captación
-Banca |  |  |  |  |  |  |  | Captación
-EACP |  |  |  | Crédito
-Banca |  |  |  |  |  |  |  | Crédito
-EACP |  |  |  |  |  | Cuentas de captación
-Banca | 
+  r1:  |  |  |  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+  r8:  |  |  |  | Captación por sexo |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | Crédito por sexo |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+  r9:  | Información general |  |  | Banca |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | Banca |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+  r10:  |  |  |  | Captación |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | Crédito |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+  r11:  | Nombre
+Sector | Clave 
+Institución | Nombre
+Institución | Ahorro
+Número de cuentas
+Mujeres | Ahorro
+Número de cuentas
+Hombres | Depósitos a plazo
+Número de cuentas
+Mujeres | Depósitos a plazo
+Número de cuentas
+Hombres | Transaccionales Nivel 1
+Número de cuentas
+Muj | Transaccionales Nivel 1
+Número de cuentas
+Hom | Transaccionales Nivel 2
+Número de cuentas
+Muj | Transaccionales Nivel 2
+Número de cuentas
+Hom | Transaccionales Nivel 3
+Número de cuentas
+Muj | Transaccionales Nivel 3
+Número de cuentas
+Hom | Transaccionales Nivel 4
+Número de cuentas
+Muj | Transaccionales Nivel 4
+Número de cuentas
+Hom | Tarjetas de débito
+Número
+Mujeres | Tarjetas de débito
+Número
+Hombres | Total captación
+Número de cuentas
+Mujeres | Total captación
+Número de cuentas
+Hombres | Tarjetas de crédito
+Número
+Mujeres | Tarjetas de crédito
+Número
+Hombres | Personal
+Número
+Mujeres | Personal
+Número
+Hombres | Nómina
+Número
+Mujeres | Nómina
+Número
+Hombres | ABCD
+Número
+Mujeres | ABCD
+Número
+Hombres | Grupal
+Número
+Mujeres | Grupal
+Número
+Hombres | Hipotecario
+Número
+Mujeres | Hipotecario
+Número
+Hombres | Automotriz
+Número
+Mujeres | Automotriz
+Número
+Hombres | Total
+Número de créditos
+Mujeres | Total
+Número de créditos
+Hombres
+  r12:  | Banca de desarrollo | 037019 | Banjercito |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r13:  | Banca de desarrollo | 037166 | Banco del Bienestar |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r14:  | Banca múltiple | 040002 | Citibanamex |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r15:  | Banca múltiple | 040012 | BBVA |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r16:  | Banca múltiple | 040014 | Santander |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r17:  | Banca múltiple | 040021 | HSBC |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r18:  | Banca múltiple | 040030 | Banco del Bajío |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r19:  | Banca múltiple | 040036 | Inbursa |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r20:  | Banca múltiple | 040042 | Banca Mifel |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r21:  | Banca múltiple | 040044 | Scotiabank |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r22:  | Banca múltiple | 040058 | Banregio |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r23:  | Banca múltiple | 040059 | Invex |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r24:  | Banca múltiple | 040060 | Bansí |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r25:  | Banca múltiple | 040062 | Afirme |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r26:  | Banca múltiple | 040072 | Banorte |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r27:  | Banca múltiple | 040106 | Bank of America |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r28:  | Banca múltiple | 040108 | MUFG Bank |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r29:  | Banca múltiple | 040110 | JP Morgan |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r30:  | Banca múltiple | 040112 | Monex |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r31:  | Banca múltiple | 040113 | Ve por Más |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r32:  | Banca múltiple | 040124 | CBM Banco |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r33:  | Banca múltiple | 040126 | Banco Credit Suisse |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r34:  | Banca múltiple | 040127 | Banco Azteca |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r35:  | Banca múltiple | 040128 | Autofin |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r36:  | Banca múltiple | 040129 | Barclays |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r37:  | Banca múltiple | 040130 | Compartamos |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r38:  | Banca múltiple | 040132 | Multiva |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r39:  | Banca múltiple | 040133 | Actinver |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r40:  | Banca múltiple | 040136 | Intercam Banco |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r41:  | Banca múltiple | 040137 | Bancoppel |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r42:  | Banca múltiple | 040138 | ABC Capital |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r43:  | Banca múltiple | 040139 | BIAfirme |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r44:  | Banca múltiple | 040140 | Consubanco |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r45:  | Banca múltiple | 040141 | Volkswagen Bank |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r46:  | Banca múltiple | 040143 | CIBanco |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r47:  | Banca múltiple | 040145 | Banco Base |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r48:  | Banca múltiple | 040147 | Bankaool |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r49:  | Banca múltiple | 040148 | Pagatodo |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r50:  | Banca múltiple | 040149 | Forjadores |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r51:  | Banca múltiple | 040150 | Inmobiliario Mexicano |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r52:  | Banca múltiple | 040151 | Dondé Banco |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r53:  | Banca múltiple | 040152 | Banco Bancrea |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r54:  | Banca múltiple | 040154 | Banco Covalto |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r55:  | Banca múltiple | 040155 | Industrial and Commercial Bank of China |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r56:  | Banca múltiple | 040156 | Sabadell |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r57:  | Banca múltiple | 040157 | Shinhan Bank |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r58:  | Banca múltiple | 040158 | Mizuho Bank |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r59:  | Banca múltiple | 040159 | Bank of China |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r60:  | Banca múltiple | 040160 | Banco S3 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r61:  | Banca múltiple | 040162 | KEB Hana Bank |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
+  r62:  | Banca múltiple | 040164 | BNP Paribas |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 0 | 0
 -- sheet 'BD Banca' dims=67x66
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  | No sumar | 14622 | 68688 | 1415702 | 803085 | 116459944 | 192907259 | 340405203 | 2149810 | 3231029 | 1457 | 58888249 | 390313 | 101850297 | 205132578 | 166511155 | 45823255 | 14744413 | 6737467 | 4874390 | 3632941 | 1288648 | 1741791 | 78842905 | 910540 | 1233876 | 1595839 | 1567766 | 887 | 570 | 37746193 | 21142043 | 161581 | 228673 | 50247522 | 49326174
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  | Infraestructura y transacciones |  |  |  |  |  |  |  | Captación |  |  |  |  |  |  |  | Crédito |  |  |  |  |  |  |  | Captación por sexo |  |  |  |  |  |  |  |  |  |  | 
-    | Información general |  |  | Banca |  |  |  |  |  |  |  | Banca |  |  |  |  |  |  |  | Banca |  |  |  |  |  |  |  | Banca |  |  |  |  |  |  |  |  |  |  | 
--- sheet 'BD EACP' dims=200x44
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  | No sumar | 2990 | 1122 | 229 | 121 | 12098030 | 1405743 | 115207 | 12488729 | 3684678 | 36011325 | 16948522 | 52184732 | 12978940 | 4843081 | 32735 | 877461 | 17854756 | 6690301 | 5796738 | 1901594 | 1772367 | 17686332 | 18123254 | 26278227 | 25692359 | 2487741 | 2353490 | 15826 | 16908 | 544136 | 327617 | 15308 | 13367 | 1824 | 1339
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  | Infraestructura y transacciones |  |  |  |  |  |  |  | Captación |  |  |  |  | Crédito |  |  |  |  | Captación por sexo |  |  |  |  |  |  |  | Crédito por sexo |  |  |  |  |  | Personal contratado por sexo |  |  | 
-    | Información general |  |  | Entidades de Ahorro y Crédito Popular (E |  |  |  |  |  |  |  | Entidades de Ahorro y Crédito Popular (E |  |  |  |  | Entidades de Ahorro y Crédito Popular (E |  |  |  |  | Entidades de Ahorro y Crédito Popular (E |  |  |  |  |  |  |  | Entidades de Ahorro y Crédito Popular (E |  |  |  |  |  | Entidades de Ahorro y Crédito Popular (E |  |  | 
-== 202012 200 8,862,474 bytes application/vnd.ms-excel.sheet.macroEnabled.12
--- sheet 'Menú' dims=1x1
--- sheet 'Definición' dims=33x21
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
--- sheet 'Ficha técnica' dims=62x22
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
--- sheet 'Infografía' dims=54x27
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
--- sheet 'Bases de Datos' dims=60x23
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
--- sheet 'BD Infraestructura Mun' dims=2478x31
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    | Información general |  |  |  |  |  |  |  |  |  | Número de puntos de acceso |  |  |  |  |  |  |  |  |  | Indicadores demográficos
-(Puntos de acce |  |  |  |  |  |  |  |  | 
--- sheet 'BD Infraestructura Edo' dims=2476x31
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  | Información general |  |  |  |  |  |  |  |  | Número de puntos de acceso |  |  |  |  |  |  |  |  |  | Indicadores demográficos
-(Puntos de acce |  |  |  |  |  |  |  |  | 
--- sheet 'BD Tenencia Uso Banca Mun' dims=2478x43
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | Tenencia
-Número de contratos - Banca |  |  |  |  |  |  |  |  |  |  |  |  |  | Uso
-Transacciones - Banca |  | Indicadores Demográficos 
-(Contratos por |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    | Información general |  |  |  |  |  |  |  |  |  | Captación |  |  |  |  |  |  | Crédito |  |  |  |  |  |  | Transacciones |  | Captación |  |  |  |  |  |  | Crédito |  |  |  |  | 
--- sheet 'BD Tenencia Uso Banca Edo' dims=2476x43
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | Tenencia
-Número de contratos - Banca |  |  |  |  |  |  |  |  |  |  |  |  |  | Uso
-Transacciones - Banca |  | Indicadores Demográficos 
-(Contratos por |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  | Información general |  |  |  |  |  |  |  |  | Captación |  |  |  |  |  |  | Crédito |  |  |  |  |  |  | Transacciones |  | Captación |  |  |  |  |  |  | Crédito |  |  |  |  | 
--- sheet 'BD Tenencia Uso EACP Mun' dims=2478x47
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | Tenencia
-Número de contratos - EACP |  |  |  |  |  | Uso
-Transacciones - EACP |  | Indicadores Demográficos 
-(Contratos por |  |  |  |  |  | Indicadores
-(Transacciones por cada 10,0 |  | Número de usuarios - EACP |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    | Información general |  |  |  |  |  |  |  |  |  | Captación |  |  |  | Crédito |  | Transacciones |  | Captación |  |  |  | Crédito |  | Transacciones |  | Clientes - Sofipo |  | Socios - Socap |  | Total de usuarios - EACP |  |  |  |  |  |  |  | 
--- sheet 'BD Tenencia Uso EACP Edo' dims=2476x47
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | Tenencia
-Número de contratos - EACP |  |  |  |  |  | Uso
-Transacciones - EACP |  | Indicadores Demográficos 
-(Contratos por |  |  |  |  |  | Indicadores
-(Transacciones por cada 10,0 |  | Número de usuarios - EACP |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  | Información general |  |  |  |  |  |  |  |  | Captación |  |  |  | Crédito |  | Transacciones |  | Captación |  |  |  | Crédito |  | Transacciones |  | Clientes - Sofipo |  | Socios - Socap |  | Total de usuarios - EACP |  |  |  |  |  |  |  | 
--- sheet 'BD Género Mun' dims=2478x106
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | Número de contratos de captación
-Banca |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | Saldo de contratos de captación
-Banca
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    | Información general |  |  |  |  |  |  |  |  |  | Ahorro |  |  |  | Plazo |  |  |  | N1 |  |  |  | N2 |  |  |  | N3 |  |  |  | Transaccionales tradicionales |  |  |  | Total |  |  |  | Ahorro
--- sheet 'BD Género Edo' dims=46x106
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  | Número de contratos
-Banca |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | Saldo de contratos
-Banca
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  | Información general |  |  |  |  |  |  |  |  | Ahorro |  |  |  | Plazo |  |  |  | N1 |  |  |  | N2 |  |  |  | N3 |  |  |  | Transaccionales tradicionales |  |  |  | Total |  |  |  | Ahorro
--- sheet 'BD Datos históricos' dims=2475x49
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  | * En el periodo de diciembre de 2020, se |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-    | Periodo |  |  | Infraestructura
-Banca, Socap y Sofipo |  |  |  |  |  |  |  | Captación
-Banca |  |  |  |  |  |  |  | Captación
-EACP |  |  |  | Crédito
-Banca |  |  |  |  |  |  |  | Crédito
-EACP |  |  |  |  | Cuentas de captación
-Banca |  | 
--- sheet 'Menú Mapas' dims=1x1
--- sheet 'Mapas Infraestructura Estado' dims=50x13
-    |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  | Sucursales |  | 
-    |  |  |  |  |  |  |  |  |  | Estado | Índice | Densidad
-    |  |  |  |  |  |  |  |  |  | Colima | 2.8043834670808523 | Alta
-    |  |  |  |  |  |  |  |  |  | Jalisco | 2.454339991645556 | Alta
-    |  |  |  |  |  |  |  |  |  | Ciudad de México | 2.4219795973392673 | Alta
-    |  |  |  |  |  |  |  |  |  | Baja California Sur | 2.2759525530832465 | Alta
-    |  |  |  |  |  |  |  |  |  | Querétaro | 2.2719859631758315 | Alta
-    |  |  |  |  |  |  |  |  |  | Nayarit | 2.2470417639831304 | Alta
--- sheet 'Mapas Infraestructura Región' dims=50x13
-    |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  | Sucursales |  | 
-    |  |  |  |  |  |  |  |  |  | Región | Índice | 
-    |  |  |  |  |  |  |  |  |  | Ciudad de México | 2.4219795973392673 | 
-    |  |  |  |  |  |  |  |  |  | Occidente y Bajío | 2.1691500228242955 | 
-    |  |  |  |  |  |  |  |  |  | Noreste | 1.837385206017362 | 
-    |  |  |  |  |  |  |  |  |  | Noroeste | 1.5963772415693656 | 
-    |  |  |  |  |  |  |  |  |  | Sur | 1.4807861906342503 | 
-    |  |  |  |  |  |  |  |  |  | Centro Sur y Oriente | 1.3442440322524605 | 
--- sheet 'Mapas Tenencia Estado' dims=50x13
-    |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  | Tarjeta de crédito - Banca |  | 
-    |  |  |  |  |  |  |  |  |  | Estado | Índice | Densidad
-    |  |  |  |  |  |  |  |  |  | Ciudad de México | 7053.729391477626 | Alta
-    |  |  |  |  |  |  |  |  |  | Baja California Sur | 3693.971403325568 | Alta
-    |  |  |  |  |  |  |  |  |  | Nuevo León | 3672.1520540441184 | Alta
-    |  |  |  |  |  |  |  |  |  | Jalisco | 3630.9376660615317 | Alta
-    |  |  |  |  |  |  |  |  |  | Sinaloa | 3417.4607759896107 | Alta
-    |  |  |  |  |  |  |  |  |  | Colima | 3321.90007765985 | Alta
--- sheet 'Mapas Tenencia Región' dims=50x13
-    |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  | Tarjeta de crédito - Banca |  | 
-    |  |  |  |  |  |  |  |  |  | Región | Índice | 
-    |  |  |  |  |  |  |  |  |  | Ciudad de México | 7053.729391477626 | 
-    |  |  |  |  |  |  |  |  |  | Occidente y Bajío | 2989.646454569957 | 
-    |  |  |  |  |  |  |  |  |  | Noreste | 2984.5295310963247 | 
-    |  |  |  |  |  |  |  |  |  | Noroeste | 2973.862943276057 | 
-    |  |  |  |  |  |  |  |  |  | Centro Sur y Oriente | 2387.917342806105 | 
-    |  |  |  |  |  |  |  |  |  | Sur | 1785.3615968311444 | 
--- sheet 'Mapas Género' dims=50x13
-    |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  |  |  | 
-    |  |  |  |  |  |  |  |  |  | Captación total - Banca |  | 
-    |  |  |  |  |  |  |  |  |  | Estado | Porcentaje - Mujeres | 
-    |  |  |  |  |  |  |  |  |  | Guerrero | 0.5753107361984932 | 
-    |  |  |  |  |  |  |  |  |  | Oaxaca | 0.5642790808273528 | 
-    |  |  |  |  |  |  |  |  |  | Tlaxcala | 0.5548097718285707 | 
-    |  |  |  |  |  |  |  |  |  | Hidalgo | 0.5476647364370606 | 
-    |  |  |  |  |  |  |  |  |  | Michoacán | 0.5406642795217533 | 
-    |  |  |  |  |  |  |  |  |  | Puebla | 0.539490868884453 | 
--- sheet 'Lista' dims=76x176
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | Rural |  |  | Urbana |  |  | Total |  |  |  |  | 
-    | Estados | Forma | Municipios | 50 mil y menos | Más de 50 mil | Población adulta | Población adulta
-Rural | Población adulta
-Urbana | Población adulta 
-Mujeres | Población adulta 
-Hombres | % Población adulta Mujeres | % Población adulta 
-Hombres | - | - | - | - | - | Sucursales | Cajeros | Corresponsales | TPV | Celular | - | - | - | - | - | Mun Prc | Pob Prc |  | Mun Prc | Pob Prc |  | Mun Prc | Pob Prc |  | Municipios rurales con acceso | Población rural con acceso | Municipios urbanos con acceso
-   0 | Nacional | Nacional | 2465 | 2020 | 445 | 93985354 | 19502492 | 74482862 | 48732991 | 45252363 | 0.5185168638083759 | 0.4814831361916241 |  |  |  |  |  | 1.7167568470295913 | 6.321729660134067 | 4.911616335455841 | 156.69132873617733 | 5298.505233060036 |  |  |  |  |  | 0.7272277227722772 | 0.9217916869290345 |  | 1 | 1 |  | 0.7764705882352941 | 0.9837713331377143 |  | 1469 | 17977235 | 445
-   1 | Aguascalientes | Aguas | 11 | 5 | 6 | 1038904 | 81980 | 956924 | 538387 | 500517 | 0.5182259381040019 | 0.4817740618959981 |  |  |  |  |  | 1.6267143066154333 | 7.151767632042999 | 5.775317064906863 | 186.97588997635972 | 4589.3172035144735 |  |  |  |  |  | 1 | 1 |  | 1 | 1 |  | 1 | 1 |  | 5 | 81980 | 6
-   2 | Baja California | BC | 5 | 0 | 5 | 2882498 | 0 | 2882498 | 1432330 | 1450168 | 0.4969058087811336 | 0.5030941912188664 |  |  |  |  |  | 1.342585493554549 | 7.781445121557761 | 7.233309442018694 | 187.31322623641023 | 5238.171891186047 |  |  |  |  |  | 0 | 0 |  | 1 | 1 |  | 1 | 1 |  | 0 | 0 | 5
-   3 | Baja California Sur | BCS | 5 | 1 | 4 | 597552 | 13498 | 584054 | 293482 | 304070 | 0.4911405199882186 | 0.5088594800117814 |  |  |  |  |  | 2.2759525530832465 | 11.965485848930303 | 8.099713497737435 | 408.5669531689292 | 5872.0077917905055 |  |  |  |  |  | 1 | 1 |  | 1 | 1 |  | 1 | 1 |  | 1 | 13498 | 4
-   4 | Campeche | Campeche | 11 | 6 | 5 | 682951 | 119169 | 563782 | 350650 | 332301 | 0.513433613831739 | 0.486566386168261 |  |  |  |  |  | 1.8742193803069327 | 6.252278713992658 | 4.934468212214346 | 115.82090076740498 | 5157.807807587953 |  |  |  |  |  | 1 | 1 |  | 1 | 1 |  | 1 | 1 |  | 6 | 119169 | 5
-   5 | Coahuila | Coahuila | 38 | 26 | 12 | 2316332 | 254478 | 2061854 | 1174267 | 1142065 | 0.5069510760978996 | 0.49304892390210037 |  |  |  |  |  | 1.6362075902763509 | 8.556631778173422 | 7.658660330211732 | 176.47729254700965 | 5202.660931161854 |  |  |  |  |  | 0.9230769230769231 | 0.9875391978874402 |  | 1 | 1 |  | 0.9473684210526315 | 0.9986310252589007 |  | 24 | 251307 | 12
-   6 | Colima | Colima | 10 | 6 | 4 | 556272 | 88594 | 467678 | 284755 | 271517 | 0.5118988552362873 | 0.4881011447637127 |  |  |  |  |  | 2.8043834670808523 | 7.33454137544223 | 9.401875341559526 | 199.56064659015735 | 5212.432047631374 |  |  |  |  |  | 1 | 1 |  | 1 | 1 |  | 1 | 1 |  | 6 | 88594 | 4
-   7 | Chiapas | Chiapas | 123 | 96 | 27 | 3745908 | 1385216 | 2360692 | 1946645 | 1799263 | 0.5196723998560563 | 0.4803276001439437 |  |  |  |  |  | 1.0838493630916723 | 2.8057282773629253 | 3.5024885822075715 | 60.54606786925894 | 3489.2741626329316 |  |  |  |  |  | 0.6979166666666666 | 0.8130017268065053 |  | 1 | 1 |  | 0.7642276422764228 | 0.9308490758448953 |  | 67 | 1126183 | 27
--- sheet 'ListaAcceso' dims=72x41
-   1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-   Clave 
-Estado | Estado | Imagen | Población Adulta | Sucursales | Corresponsales | Cajeros | TPV | Establecimientos con TPV | Cuentas ligadas a un celular |  |  |  | Seleccionado | Índice | Densidad |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-   1 | Aguascalientes | Freeform 23 | 1038904 | 169 | 600 | 743 | 19425 | 12918 | 476786 |  |  |  | 169 | 1.6267143066154333 | Media |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-   2 | Baja California | Freeform 52 | 2882498 | 387 | 2085 | 2243 | 53993 | 28261 | 1509902 |  |  |  | 387 | 1.342585493554549 | Baja |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-   3 | Baja California Sur | Freeform 44 | 597552 | 136 | 484 | 715 | 24414 | 12691 | 350883 |  |  |  | 136 | 2.2759525530832465 | Alta |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-   4 | Campeche | Freeform 38 | 682951 | 128 | 337 | 427 | 7910 | 4952 | 352253 |  |  |  | 128 | 1.8742193803069327 | Media |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-   5 | Coahuila | Freeform 32 | 2316332 | 379 | 1774 | 1982 | 40878 | 22834 | 1205109 |  |  |  | 379 | 1.6362075902763509 | Media |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-   6 | Colima | Freeform 46 | 556272 | 156 | 523 | 408 | 11101 | 5995 | 289953 |  |  |  | 156 | 2.8043834670808523 | Alta |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-   7 | Chiapas | Freeform 39 | 3745908 | 406 | 1312 | 1051 | 22680 | 15628 | 1307050 |  |  |  | 406 | 1.0838493630916723 | Baja |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
--- sheet 'ListaUso' dims=72x41
-   1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-   Clave 
-Estado | Estado | Imagen | Población Adulta | Ahorro - Banca | Plazo - Banca | N1 - Banca | N2 - Banca | N3 - Banca | Transaccionales tradicionales - Banca | Tarjeta de débito - Banca | Ahorro - EACP | Plazo - EACP | Vista - EACP | Tarjeta de débito - EACP | Tarjeta de crédito - Banca | Personal - Banca | Nómina - Banca | ABCD - Banca | Grupal - Banca | Hipotecario - Banca | Automotriz - Banca | Consumo - EACP | Vivienda - EACP | Captación total - Banca | Captación total - EACP | Crédito total - Banca | Crédito total - EACP |  |  |  | Seleccionado | Índice | Densidad |  |  |  |  |  | 
-   1 | Aguascalientes | Freeform 23 | 1038904 | 1 | 39067 | 1 | 293555 | 6473 | 857899 | 1284434 | 82319 | 13579 | 111736 | 1290 | 317609 | 120783 | 62200 | 48347 | 9293 | 27575 | 13049 | 28720 | 286 | 1196996 | 207634 | 598856 | 29006 |  |  |  | 317609 | 3057.1544627800067 | Alta |  |  |  |  |  | 
-   2 | Baja California | Freeform 52 | 2882498 | 31 | 48536 | 9 | 602303 | 6217 | 2822194 | 4340787 | 7065 | 9218 | 43742 | 6 | 881505 | 202654 | 149677 | 60317 | 64817 | 62713 | 32346 | 1808 | 94 | 3479290 | 60025 | 1454029 | 1902 |  |  |  | 881505 | 3058.128748051169 | Alta |  |  |  |  |  | 
-   3 | Baja California Sur | Freeform 44 | 597552 | 3 | 10352 | 12 | 90946 | 2608 | 641522 | 944233 | 536 | 1078 | 11363 | 272 | 220734 | 60806 | 41500 | 8892 | 22844 | 16624 | 7451 | 2383 | 84 | 745443 | 12977 | 378851 | 2467 |  |  |  | 220734 | 3693.971403325568 | Alta |  |  |  |  |  | 
-   4 | Campeche | Freeform 38 | 682951 | 2 | 12060 | 3 | 123862 | 725 | 571666 | 918335 | 24934 | 5934 | 51504 | 489 | 150574 | 99454 | 39497 | 31868 | 25312 | 11319 | 6745 | 6344 | 28 | 708318 | 82372 | 364769 | 6372 |  |  |  | 150574 | 2204.7555388307505 | Baja |  |  |  |  |  | 
-   5 | Coahuila | Freeform 32 | 2316332 | 2 | 58069 | 15 | 456426 | 9225 | 2051401 | 3776779 | 110611 | 15003 | 89226 | 21042 | 612635 | 262994 | 180005 | 96198 | 74975 | 50335 | 28190 | 33065 | 188 | 2575138 | 214840 | 1305332 | 33253 |  |  |  | 612635 | 2644.8497020288974 | Media |  |  |  |  |  | 
-   6 | Colima | Freeform 46 | 556272 | 2 | 13477 | 8 | 109747 | 1126 | 466560 | 1244451 | 208055 | 12205 | 93815 | 5662 | 184788 | 58017 | 32549 | 14896 | 9147 | 12047 | 5598 | 65361 | 777 | 590920 | 314075 | 317042 | 66138 |  |  |  | 184788 | 3321.90007765985 | Alta |  |  |  |  |  | 
-   7 | Chiapas | Freeform 39 | 3745908 | 3 | 54322 | 31 | 686197 | 3889 | 1843174 | 3655795 | 123255 | 38902 | 243585 | 463 | 430153 | 422395 | 95952 | 126249 | 124154 | 16919 | 16469 | 43914 | 256 | 2587616 | 405742 | 1232291 | 44170 |  |  |  | 430153 | 1148.3277218767787 | Baja |  |  |  |  |  | 
--- sheet 'ListaGenero' dims=73x41
-   1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-   Clave 
-Estado | Estado | Imagen |  |  | Plazo - Banca | N1 - Banca | N2 - Banca | N3 - Banca | Transaccionales tradicionales - Banca | Captación total - Banca | Plazo - Banca múltiple | N1 - Banca múltiple | N2 - Banca múltiple | N3 - Banca múltiple | Transaccionales tradicionales - Banca mú | Captación total - Banca múltiple | Crédito hipotecario - Banca múltiple | Plazo - Banca de desarrollo | N2 - Banca de desarrollo | Transaccionales tradicionales - Banca de | Captación total - Banca de desarrollo | Tarjeta de débito - Banca | Tarjeta de débito - Banca múltiple | Tarjeta de débito - Banca de desarrollo | Tarjeta de crédito - Banca | Tarjeta de crédito - Banca múltiple | Tarjeta de crédito - Banca de desarrollo |  |  |  |  |  |  |  |  |  |  |  | 
-   1 | Aguascalientes | Freeform 23 |  |  | 0.5974727348993288 | 0 | 0.576138404342685 | 0.499613780318245 | 0.4756033196557234 | 0.5049292602220282 | 0.5993905425259836 | 0 | 0.5610033232768293 | 0.499613780318245 | 0.4713664908007002 | 0.4977087982497813 | 0.3712880372939838 | 0.5467625899280576 | 0.9103996224040277 | 0.7084706990513355 | 0.789331952356292 | 0.5065483624757147 | 0.47489671537167344 | 0.8364845023735104 | 0.46836642843284126 | 0.46850759470311615 | 0.020202020202020204 |  |  |  |  |  |  |  |  |  |  |  | 
-   2 | Baja California | Freeform 52 |  |  | 0.5622395668083846 | 0 | 0.5110682533987163 | 0.46614122567154576 | 0.48848088224613945 | 0.4934743933587445 | 0.5644902885987051 | 0 | 0.48228746199121575 | 0.46614122567154576 | 0.4876019333177698 | 0.4877197376406821 | 0.3828850060950833 | 0.5023364485981309 | 0.9195648881934279 | 0.5865056876514312 | 0.7852053710075206 | 0.48580571592605243 | 0.4718489194334967 | 0.777341439033844 | 0.5061391899600685 | 0.5063249525714169 | 0.1412556053811659 |  |  |  |  |  |  |  |  |  |  |  | 
-   3 | Baja California Sur | Freeform 44 |  |  | 0.5562325725498296 | 0 | 0.4783608613840686 | 0.43328220858895705 | 0.46975948133203366 | 0.4718653097750307 | 0.5607165844239433 | 0 | 0.4412399641011958 | 0.43328220858895705 | 0.4705169820934036 | 0.4681332096432718 | 0.378509618377638 | 0.4404432132963989 | 0.8417428469666389 | 0.4193724718486936 | 0.6181341660625662 | 0.4501432760121922 | 0.4440972903930476 | 0.5687811358352707 | 0.48160814989994544 | 0.4819616608473581 | 0.11004784688995216 |  |  |  |  |  |  |  |  |  |  |  | 
-   4 | Campeche | Freeform 38 |  |  | 0.5982521635839131 | 0 | 0.42119782860194 | 0.38068965517241377 | 0.44950869560558493 | 0.44692491031676823 | 0.6017200191113234 | 0 | 0.4010816249528361 | 0.38068965517241377 | 0.4492704258779062 | 0.44459067933854163 | 0.3378090563941106 | 0.570779712339137 | 0.48927114736655436 | 0.4588922544353094 | 0.482043243741644 | 0.4738628327454821 | 0.454180905630524 | 0.5848304706751194 | 0.47312201244425456 | 0.4736884336092649 | 0.1111111111111111 |  |  |  |  |  |  |  |  |  |  |  | 
-   5 | Coahuila | Freeform 32 |  |  | 0.5542823642274689 | 0.3333333333333333 | 0.4650106533156801 | 0.4351219512195122 | 0.4504952030953196 | 0.4553840940375755 | 0.555471097115141 | 0.3333333333333333 | 0.45504948784513055 | 0.4351219512195122 | 0.4498065858598486 | 0.4530248031932765 | 0.32905193866902144 | 0.49082125603864735 | 0.7340085942295888 | 0.5444108345937028 | 0.6395783000219636 | 0.4883196237827635 | 0.4797089626392205 | 0.7042879919442813 | 0.46589095165370975 | 0.4661272068064722 | 0.11302211302211303 |  |  |  |  |  |  |  |  |  |  |  | 
-   6 | Colima | Freeform 46 |  |  | 0.5701601274948774 | 0.625 | 0.5391636575847102 | 0.4266666666666667 | 0.483137821809316 | 0.4956799483675757 | 0.5748285599031868 | 0.625 | 0.49171264547546184 | 0.4266666666666667 | 0.4837105639772841 | 0.48700161476355247 | 0.38903805203221925 | 0.4961636828644501 | 0.7501738353034668 | 0.46464572143330146 | 0.6319587330106935 | 0.4747428443012115 | 0.45525737632768554 | 0.681651766709238 | 0.4939770824726577 | 0.49441968536929115 | 0.07253886010362694 |  |  |  |  |  |  |  |  |  |  |  | 
-   7 | Chiapas | Freeform 39 |  |  | 0.627887481371088 | 0.06451612903225806 | 0.5152256474927651 | 0.41100823045267487 | 0.5205566017187712 | 0.5212078738469986 | 0.6285403926617316 | 0.06451612903225806 | 0.4179189950164414 | 0.41100823045267487 | 0.5141230587588915 | 0.49731217547540996 | 0.3969341161121983 | 0.6197076612903226 | 0.6893821074723022 | 0.6278224431126054 | 0.6706747888358949 | 0.5162079034391626 | 0.47709293668759833 | 0.6204025213540785 | 0.5030176302336478 | 0.5033702202717174 | 0.0967741935483871 |  |  |  |  |  |  |  |  |  |  |  | 
--- sheet 'ListaAccesoRegión' dims=53x57
-   1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-   Clave Región | Región | Imagen | Población Adulta | Sucursales | Corresponsales | Cajeros | TPV | Establecimientos con TPV | Cuentas ligadas a un celular |  |  | Seleccionado | Índice | Concentración |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-   1 | Centro Sur y Oriente | Freeform 34 | 28521607 | 3834 | 10576 | 12997 | 290025 | 175656 | 12879140 |  |  | 3834 | 1.3442440322524605 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-   2 | Ciudad de México | Freeform 39 | 7547545 | 1828 | 3381 | 8522 | 277967 | 130602 | 10247549 |  |  | 1828 | 2.4219795973392673 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-   3 | Noreste | Freeform 5 | 11445613 | 2103 | 8665 | 9729 | 225343 | 110455 | 5623514 |  |  | 2103 | 1.837385206017362 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-   4 | Noroeste | Freeform 9 | 12083610 | 1929 | 8091 | 9021 | 228686 | 130071 | 6337979 |  |  | 1929 | 1.5963772415693656 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-   5 | Occidente y Bajío | Freeform 4 | 19597538 | 4251 | 9150 | 11947 | 270557 | 173874 | 8375117 |  |  | 4251 | 2.1691500228242955 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-   6 | Sur | Freeform 35 | 14789441 | 2190 | 6299 | 7199 | 180091 | 96312 | 6334890 |  |  | 2190 | 1.4807861906342503 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-   7 | Nacional | - | 93985354 | 16135 | 46162 | 59415 | 1472669 | 816970 | 49798189 |  |  | 16135 | 1.7167568470295913 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
--- sheet 'ListaUsoRegión' dims=67x57
-   1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40
-    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-   Clave Región | Región | Imagen | Población Adulta | Ahorro - Banca | Plazo - Banca | N1 - Banca | N2 - Banca | N3 - Banca | Transaccionales tradicionales - Banca | Tarjeta de débito - Banca | Ahorro - EACP | Plazo - EACP | Vista - EACP | Tarjeta de débito - EACP | Tarjeta de crédito - Banca | Personal - Banca | Nómina - Banca | ABCD - Banca | Grupal - Banca | Hipotecario - Banca | Automotriz - Banca | Consumo - EACP | Vivienda - EACP | Captación total - Banca | Captación total - EACP | Crédito total - Banca | Crédito total - EACP |  |  |  | Seleccionado | Índice |  |  |  |  |  |  | 
-   1 | Centro Sur y Oriente | Freeform 34 | 28521607 | 3402 | 671344 | 154 | 4609971 | 29941 | 19513328 | 30834397 | 1542933 | 258361 | 1684282 | 60629 | 6810724 | 3953689 | 1256886 | 1537398 | 992492 | 279753 | 200439 | 406375 | 3549 | 24828140 | 3485576 | 15031381 | 409924 |  |  |  | 6810724 | 2387.917342806105 |  |  |  |  |  |  | 
-   2 | Ciudad de México | Freeform 39 | 7547545 | 5835 | 1160842 | 10873 | 7354068 | 49566 | 17060414 | 31829785 | 243954 | 142139 | 80104 | 58651 | 5323834 | 1070922 | 513675 | 304423 | 120473 | 211481 | 126649 | 75753 | 349 | 25641598 | 466197 | 7671457 | 76102 |  |  |  | 5323834 | 7053.729391477626 |  |  |  |  |  |  | 
-   3 | Noreste | Freeform 5 | 11445613 | 20 | 398540 | 226 | 3238782 | 73672 | 10846699 | 20397209 | 1007112 | 130871 | 687265 | 92330 | 3415977 | 1117829 | 692633 | 396230 | 261221 | 264521 | 149530 | 332486 | 2567 | 14557939 | 1825248 | 6297941 | 335053 |  |  |  | 3415977 | 2984.5295310963247 |  |  |  |  |  |  | 
-   4 | Noroeste | Freeform 9 | 12083610 | 53 | 238294 | 628 | 2677365 | 60335 | 11330448 | 17741511 | 504814 | 69139 | 363662 | 11574 | 3593500 | 1104730 | 682957 | 320741 | 272587 | 256150 | 130921 | 165499 | 1968 | 14307123 | 937615 | 6361586 | 167467 |  |  |  | 3593500 | 2973.862943276057 |  |  |  |  |  |  | 
-   5 | Occidente y Bajío | Freeform 4 | 19597538 | 26 | 579142 | 135 | 3568154 | 65116 | 15142762 | 23920429 | 5406680 | 721736 | 4380366 | 160311 | 5858971 | 2088564 | 834898 | 660928 | 289243 | 330159 | 168187 | 1533621 | 24629 | 19355335 | 10508782 | 10230950 | 1558250 |  |  |  | 5858971 | 2989.646454569957 |  |  |  |  |  |  | 
-   6 | Sur | Freeform 35 | 14789441 | 15 | 291478 | 89 | 2761036 | 24315 | 9440353 | 16180525 | 1108306 | 191683 | 1131995 | 8781 | 2640450 | 1953737 | 570546 | 567094 | 501862 | 146425 | 93866 | 297345 | 4113 | 12517286 | 2431984 | 6473980 | 301458 |  |  |  | 2640450 | 1785.3615968311444 |  |  |  |  |  |  | 
-   7 | Nacional | - | 93985354 | 9351 | 3339640 | 12105 | 24209376 | 302945 | 83334004 | 140904858 | 9843100 | 1515118 | 8374809 | 392276 | 27643910 | 11406894 | 4581115 | 3786814 | 2437922 | 1488497 | 870740 | 2816666 | 37212 | 111207421 | 19733027 | 52215892 | 2853878 |  |  |  | 27643910 | 2941.2997688980345 |  |  |  |  |  |  | 
+  r1:  |  |  |  | No sumar | 14622 | 68688 | 1415702 | 803085 | 116459944 | 192907259 | 340405203 | 2149810 | 3231029 | 1457 | 58888249 | 390313 | 101850297 | 205132578 | 166511155 | 45823255 | 14744413 | 6737467 | 4874390 | 3632941 | 1288648 | 1741791 | 78842905 | 910540 | 1233876 | 1595839 | 1567766 | 887 | 570 | 37746193 | 21142043 | 161581 | 228673 | 50247522 | 49326174 | 110864297 | 92345876 | 90662562 | 73499102 | 21663096 | 24038406 | 7621594 | 7122819 | 3019236 | 3718231 | 2484836 | 2389554 | 2676492 | 956449 | 488949 | 799699 | 779994 | 961797 | 38734197 | 39986955
+  r8:  |  |  |  | Infraestructura y transacciones |  |  |  |  |  |  |  | Captación |  |  |  |  |  |  |  | Crédito |  |  |  |  |  |  |  | Captación por sexo |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | Crédito por sexo |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+  r9:  | Información general |  |  | Banca |  |  |  |  |  |  |  | Banca |  |  |  |  |  |  |  | Banca |  |  |  |  |  |  |  | Banca |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | Banca |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+  r10:  |  |  |  | Infraestructura |  |  |  |  |  | Transacciones |  | Captación |  |  |  |  |  |  | Total | Crédito |  |  |  |  |  |  | Total | Captación por sexo |  |  |  |  |  |  |  |  |  |  |  |  |  | Total |  | Crédito por sexo |  |  |  |  |  |  |  |  |  |  |  |  |  | Total | 
+  r11:  | Nombre
+Sector | Clave 
+Institución | Nombre
+Institución | Corresponsales totales
+Número | Sucursales
+Número | Cajeros automáticos
+Número | TPV
+Número | Establecimientos con TPV
+Número | Cuentas que efectúan transacciones por celula | Transacciones en cajeros automáticos
+Número | Transacciones en TPV
+Número | Ahorro
+Número de cuentas | Depósitos a plazo
+Número de cuentas | Transaccionales Nivel 1
+Número de cuentas | Transaccionales Nivel 2
+Número de cuentas | Transaccionales Nivel 3
+Número de cuentas | Transaccionales Nivel 4
+Número de cuentas | Tarjetas de débito
+Número | Total
+Número de cuentas | Tarjetas de crédito
+Número | Personal
+Número de créditos | Nómina
+Número de créditos | ABCD
+Número de créditos | Grupal
+Número de créditos | Hipotecario
+Número de créditos | Automotriz
+Número de créditos | Total
+Número de créditos | Ahorro
+Número de cuentas
+Mujeres | Ahorro
+Número de cuentas
+Hombres | Depósitos a plazo
+Número de cuentas
+Mujeres | Depósitos a plazo
+Número de cuentas
+Hombres | Transaccionales Nivel 1
+Número de cuentas
+Muj | Transaccionales Nivel 1
+Número de cuentas
+Hom | Transaccionales Nivel 2
+Número de cuentas
+Muj | Transaccionales Nivel 2
+Número de cuentas
+Hom | Transaccionales Nivel 3
+Número de cuentas
+Muj | Transaccionales Nivel 3
+Número de cuentas
+Hom | Transaccionales Nivel 4
+Número de cuentas
+Muj | Transaccionales Nivel 4
+Número de cuentas
+Hom | Tarjetas de débito
+Número
+Mujeres | Tarjetas de débito
+Número
+Hombres | Total
+Número de cuentas
+Mujeres | Total
+Número de cuentas
+Hombres | Tarjetas de crédito
+Número
+Mujeres | Tarjetas de crédito
+Número
+Hombres | Personal
+Número
+Mujeres | Personal
+Número
+Hombres | Nómina
+Número
+Mujeres | Nómina
+Número
+Hombres | ABCD
+Número
+Mujeres | ABCD
+Número
+Hombres | Grupal
+Número
+Mujeres | Grupal
+Número
+Hombres | Hipotecario
+Número
+Mujeres | Hipotecario
+Número
+Hombres | Automotriz
+Número
+Mujeres | Automotriz
+Número
+Hombres | Total
+Número de créditos
+Mujeres | Total
+Número de créditos
+Hombres
+  r12:  | Banca de desarrollo | 037019 | Banjercito | 25727 | 96 | 1017 | 898 | 557 | 0 | 1487960 | 204833 | 1 | 730663 | 0 | 0 | 0 | 592450 | 852611 | 1323114 | 22565 | 248614 | 3231 | 18 | 0 | 31427 | 3722 | 309577 | 0 | 1 | 127776 | 602775 | 0 | 0 | 0 | 0 | 0 | 0 | 165501 | 426137 | 241169 | 611442 | 293277 | 1028913 | 4920 | 17645 | 196838 | 51776 | 2724 | 507 | 17 | 1 | 0 | 0 | 2308 | 29119 | 2505 | 1217 | 209312 | 100265
+  r13:  | Banca de desarrollo | 037166 | Banco del Bienestar | 0 | 3149 | 2950 | 0 | 0 | 0 | 11023027 | 0 | 0 | 155328 | 0 | 36325166 | 0 | 3190268 | 57932218 | 39670762 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 97888 | 57439 | 0 | 0 | 26567023 | 9758143 | 0 | 0 | 2196738 | 993513 | 39609514 | 18322667 | 28861649 | 10809095 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+  r14:  | Banca múltiple | 040002 | Banamex | 13997 | 1263 | 9094 | 0 | 0 | 15028074 | 20559140 | 0 | 17 | 394917 | 0 | 274423 | 0 | 12595931 | 22295 | 13265288 | 10053504 | 207082 | 875695 | 0 | 0 | 99420 | 0 | 11235701 | 1 | 16 | 234459 | 158401 | 0 | 0 | 123908 | 150509 | 0 | 0 | 6133392 | 6261864 | 10839 | 11456 | 6491760 | 6570790 | 4844296 | 5209208 | 95827 | 111255 | 399436 | 476259 | 0 | 0 | 0 | 0 | 30935 | 68485 | 0 | 0 | 5370494 | 5865207
+  r15:  | Banca múltiple | 040012 | BBVA | 42794 | 1601 | 14222 | 844552 | 359495 | 32784595 | 58432338 | 92550403 | 0 | 266907 | 1342 | 11766466 | 241 | 22543531 | 47578857 | 34578487 | 11982695 | 731850 | 2970858 | 0 | 0 | 367371 | 414988 | 16467762 | 0 | 0 | 159070 | 102094 | 825 | 517 | 6383735 | 5382724 | 73 | 168 | 10362551 | 11408020 | 22581699 | 23732130 | 16906254 | 16893523 | 5700545 | 6208700 | 343773 | 388077 | 1316562 | 1654296 | 0 | 0 | 0 | 0 | 156791 | 210580 | 196871 | 218117 | 7714542 | 8679770
+  r16:  | Banca múltiple | 040014 | Santander | 46173 | 962 | 10967 | 0 | 0 | 10889798 | 27147170 | 0 | 2 | 185860 | 0 | 209504 | 469 | 13818935 | 12324290 | 14214770 | 3941886 | 69173 | 719918 | 11395 | 103449 | 199811 | 268537 | 5314169 | 0 | 2 | 106538 | 75355 | 0 | 0 | 128730 | 80774 | 185 | 284 | 6365229 | 7193333 | 5829611 | 6257681 | 6600682 | 7349748 | 1791682 | 2138381 | 28756 | 40417 | 315075 | 404843 | 2731 | 8664 | 90304 | 13145 | 74195 | 125616 | 120468 | 148069 | 2423211 | 2879135
+  r17:  | Banca múltiple | 040021 | HSBC | 39830 | 675 | 5153 | 0 | 0 | 4339473 | 11643765 | 0 | 1564147 | 99458 | 0 | 116322 | 0 | 7038440 | 6041984 | 8818367 | 2111229 | 91741 | 350886 | 0 | 0 | 117574 | 76866 | 2748296 | 723059 | 837225 | 55392 | 43636 | 0 | 0 | 54240 | 62082 | 0 | 0 | 3067764 | 3851848 | 2661188 | 3346432 | 3900455 | 4794791 | 1130856 | 974170 | 38889 | 52852 | 155629 | 195257 | 0 | 0 | 0 | 0 | 48902 | 68672 | 31106 | 45760 | 1405382 | 1336711
+  r18:  | Banca múltiple | 040030 | Banco del Bajío | 4969 | 334 | 828 | 53144 | 36835 | 404469 | 2418577 | 11751836 | 0 | 48695 | 0 | 18897 | 0 | 1074316 | 1667259 | 1141908 | 111142 | 9095 | 100799 | 0 | 0 | 4291 | 1245 | 226572 | 0 | 0 | 20993 | 16621 | 0 | 0 | 9239 | 9658 | 0 | 0 | 412748 | 557565 | 658867 | 1008392 | 442980 | 583844 | 44120 | 62111 | 3421 | 5674 | 39250 | 61549 | 0 | 0 | 0 | 0 | 1482 | 2809 | 391 | 854 | 88664 | 132997
+  r19:  | Banca múltiple | 040036 | Inbursa | 32436 | 611 | 920 | 82456 | 75145 | 1973917 | 1312561 | 15910613 | 0 | 36292 | 0 | 475038 | 0 | 1307568 | 3961881 | 1818898 | 1202704 | 146092 | 94277 | 34 | 0 | 5005 | 374255 | 1822367 | 0 | 0 | 20531 | 15488 | 0 | 0 | 219063 | 255975 | 0 | 0 | 606402 | 654602 | 1764411 | 2128736 | 845996 | 926065 | 600255 | 597773 | 62516 | 83576 | 44336 | 49941 | 6 | 28 | 0 | 0 | 1921 | 3084 | 168993 | 205262 | 878027 | 939664
+  r20:  | Banca múltiple | 040042 | Banca Mifel | 25312 | 98 | 111 | 28801 | 17036 | 99753 | 118245 | 6957597 | 0 | 22154 | 0 | 460491 | 0 | 201450 | 283536 | 684095 | 22503 | 21 | 7 | 0 | 0 | 32449 | 0 | 54980 | 0 | 0 | 11399 | 9356 | 0 | 0 | 163475 | 297016 | 0 | 0 | 63752 | 108672 | 102017 | 181519 | 238626 | 415044 | 9460 | 12442 | 5 | 16 | 2 | 5 | 0 | 0 | 0 | 0 | 8140 | 24309 | 0 | 0 | 17607 | 36772
+  r21:  | Banca múltiple | 040044 | Scotiabank | 27959 | 407 | 2126 | 0 | 0 | 0 | 2447650 | 0 | 0 | 84619 | 0 | 85330 | 2504 | 1662354 | 2018008 | 1834807 | 477258 | 53028 | 20148 | 0 | 0 | 174266 | 139088 | 863788 | 0 | 0 | 42625 | 29872 | 0 | 0 | 49187 | 36143 | 803 | 1701 | 729032 | 849371 | 903830 | 1090875 | 821647 | 917087 | 91912 | 385346 | 20627 | 32401 | 8185 | 11963 | 0 | 0 | 0 | 0 | 69197 | 105069 | 61846 | 77242 | 251767 | 612021
+  r22:  | Banca múltiple | 040058 | Banregio | 29957 | 223 | 561 | 0 | 0 | 53518 | 811165 | 0 | 0 | 66515 | 0 | 337107 | 48272 | 590751 | 892438 | 1042645 | 241491 | 6232 | 1139 | 0 | 0 | 11639 | 23089 | 283590 | 0 | 0 | 35015 | 27735 | 0 | 0 | 110354 | 226753 | 17170 | 31102 | 204888 | 297119 | 315712 | 538075 | 367427 | 582709 | 88591 | 139144 | 2163 | 4069 | 375 | 764 | 0 | 0 | 0 | 0 | 3454 | 8185 | 8291 | 14798 | 102874 | 166960
+  r23:  | Banca múltiple | 040059 | Invex | 32986 | 1 | 67 | 0 | 0 | 0 | 11911 | 0 | 0 | 1886 | 0 | 75668 | 0 | 31336 | 167477 | 108890 | 1495292 | 38 | 0 | 0 | 0 | 18 | 0 | 1495348 | 0 | 0 | 584 | 649 | 0 | 0 | 24690 | 50978 | 0 | 0 | 6942 | 15853 | 51412 | 116065 | 32216 | 67480 | 753451 | 741559 | 4 | 34 | 0 | 0 | 0 | 0 | 0 | 0 | 6 | 12 | 0 | 0 | 753461 | 741605
+  r24:  | Banca múltiple | 040060 | Bansí | 2105 | 13 | 237 | 512 | 263 | 0 | 66249 | 247583 | 0 | 5516 | 0 | 9 | 0 | 17562 | 216 | 23087 | 0 | 42 | 0 | 0 | 0 | 8 | 8 | 58 | 0 | 0 | 2353 | 2429 | 0 | 0 | 3 | 6 | 0 | 0 | 6193 | 6171 | 103 | 113 | 8549 | 8606 | 0 | 0 | 13 | 29 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 6 | 8 | 0 | 23 | 35
+  r25:  | Banca múltiple | 040062 | Afirme | 24880 | 152 | 1772 | 26364 | 20188 | 0 | 2579470 | 30601596 | 8887 | 19250 | 0 | 190153 | 0 | 537147 | 1104372 | 755437 | 95284 | 6888 | 114910 | 252 | 6358 | 9284 | 23246 | 256222 | 3711 | 4036 | 9472 | 7951 | 0 | 0 | 127331 | 62822 | 0 | 0 | 212047 | 293535 | 567486 | 500314 | 352561 | 368344 | 41004 | 52543 | 3558 | 3330 | 56717 | 58193 | 54 | 198 | 3607 | 2751 | 3159 | 6125 | 9623 | 13623 | 117722 | 136763
+  r26:  | Banca múltiple | 040072 | Banorte | 45524 | 1223 | 12265 | 262734 | 182323 | 5912428 | 29849340 | 132170494 | 0 | 479190 | 4 | 1679985 | 16625 | 10082108 | 14246616 | 12257912 | 3513451 | 6925 | 1167788 | 0 | 0 | 193418 | 296702 | 5178284 | 0 | 0 | 298957 | 174724 | 3 | 1 | 776831 | 903154 | 7691 | 8934 | 4740574 | 5038017 | 6991827 | 7173775 | 5824056 | 6124830 | 1598823 | 1913157 | 2742 | 4183 | 499124 | 668664 | 0 | 0 | 0 | 0 | 75476 | 117942 | 130785 | 165917 | 2306950 | 2869863
+  r27:  | Banca múltiple | 040106 | Bank of America | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 11 | 0 | 0 | 0 | 1801 | 0 | 1812 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+  r28:  | Banca múltiple | 040108 | MUFG Bank | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 220 | 0 | 0 | 0 | 1233 | 0 | 1453 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+  r29:  | Banca múltiple | 040110 | JP Morgan | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 2363 | 0 | 2364 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+  r30:  | Banca múltiple | 040112 | Monex | 0 | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2077 | 0 | 0 | 0 | 82108 | 0 | 84185 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 165 | 166 | 0 | 0 | 0 | 0 | 0 | 0 | 6911 | 17660 | 0 | 0 | 7076 | 17826 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+  r31:  | Banca múltiple | 040113 | Ve por Más | 0 | 22 | 23 | 0 | 0 | 0 | 5410 | 0 | 0 | 2672 | 0 | 4 | 0 | 25028 | 91848 | 27704 | 0 | 130 | 0 | 0 | 0 | 15259 | 38 | 15427 | 0 | 0 | 945 | 712 | 0 | 0 | 2 | 2 | 0 | 0 | 8876 | 9022 | 6420 | 7050 | 9823 | 9736 | 0 | 0 | 56 | 74 | 0 | 0 | 0 | 0 | 0 | 0 | 3888 | 11371 | 5 | 33 | 3949 | 11478
+  r32:  | Banca múltiple | 040124 | Citi México | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 678 | 0 | 0 | 0 | 16730 | 0 | 17408 | 2018 | 0 | 0 | 0 | 0 | 0 | 0 | 2018 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+  r33:  | Banca múltiple | 040126 | Banco Credit Suisse | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+  r34:  | Banca múltiple | 040127 | Banco Azteca | 12425 | 2007 | 2859 | 5742 | 5742 | 28207641 | 12030771 | 6286334 | 0 | 212058 | 1 | 1436484 | 0 | 9805534 | 11093357 | 11454077 | 920063 | 11532850 | 163870 | 4862691 | 0 | 364 | 235 | 17480073 | 0 | 0 | 131469 | 74708 | 0 | 1 | 703346 | 733138 | 0 | 0 | 5341192 | 4453974 | 5838739 | 5254618 | 6176007 | 5261821 | 433608 | 486444 | 5840885 | 5691965 | 99670 | 64200 | 2482028 | 2380663 | 0 | 0 | 120 | 244 | 115 | 120 | 8856426 | 8623636
+  r35:  | Banca múltiple | 040128 | Kapital | 20737 | 80 | 175 | 0 | 0 | 176214 | 2291 | 0 | 342 | 27646 | 0 | 6112 | 0 | 189420 | 198177 | 223520 | 0 | 46 | 22 | 0 | 0 | 41 | 7970 | 8079 | 136 | 206 | 11770 | 14668 | 0 | 0 | 1329 | 4783 | 0 | 0 | 57576 | 79233 | 64437 | 93327 | 70811 | 98890 | 0 | 0 | 15 | 31 | 5 | 17 | 0 | 0 | 0 | 0 | 17 | 24 | 3232 | 4738 | 3269 | 4810
+  r36:  | Banca múltiple | 040129 | Barclays | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+  r37:  | Banca múltiple | 040130 | Compartamos | 37670 | 155 | 0 | 0 | 0 | 2389350 | 0 | 0 | 0 | 14912 | 0 | 257156 | 0 | 2275286 | 0 | 2547354 | 0 | 470082 | 0 | 0 | 3502885 | 0 | 0 | 3972967 | 0 | 0 | 10057 | 4855 | 0 | 0 | 172526 | 84630 | 0 | 0 | 1714273 | 561008 | 0 | 0 | 1896856 | 650493 | 0 | 0 | 385672 | 84410 | 0 | 0 | 0 | 0 | 2563969 | 938916 | 0 | 0 | 0 | 0 | 2949641 | 1023326
+  r38:  | Banca múltiple | 040132 | Multiva | 0 | 41 | 112 | 11748 | 9383 | 0 | 97825 | 1580429 | 0 | 9028 | 0 | 2 | 0 | 61027 | 101415 | 70057 | 0 | 69502 | 412 | 0 | 0 | 15642 | 23 | 85579 | 0 | 0 | 4038 | 3126 | 0 | 0 | 1 | 1 | 0 | 0 | 27825 | 24391 | 48241 | 43085 | 31864 | 27518 | 0 | 0 | 40984 | 28518 | 220 | 192 | 0 | 0 | 0 | 0 | 6082 | 9560 | 9 | 14 | 47295 | 38284
+  r39:  | Banca múltiple | 040133 | Actinver | 0 | 47 | 22 | 0 | 0 | 0 | 5216 | 0 | 7 | 5344 | 0 | 14354 | 0 | 170447 | 128793 | 190152 | 0 | 3819 | 0 | 0 | 0 | 0 | 32 | 3851 | 0 | 6 | 2804 | 2450 | 0 | 0 | 3245 | 11109 | 0 | 0 | 68012 | 93799 | 43177 | 85616 | 74061 | 107364 | 0 | 0 | 1761 | 2058 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 11 | 21 | 1772 | 2079
+  r40:  | Banca múltiple | 040136 | Intercam Banco | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1
+  r41:  | Banca múltiple | 040137 | Bancoppel | 30382 | 1385 | 2303 | 0 | 0 | 941099 | 10638195 | 0 | 0 | 220062 | 0 | 941099 | 0 | 12271273 | 37618628 | 13432434 | 2930542 | 593309 | 153475 | 0 | 0 | 10186 | 34352 | 3721864 | 0 | 0 | 150052 | 70010 | 0 | 0 | 463432 | 477667 | 0 | 0 | 7249752 | 5020158 | 20068935 | 17549693 | 7863236 | 5567835 | 1714826 | 1215716 | 348795 | 244514 | 81915 | 71560 | 0 | 0 | 0 | 0 | 2383 | 7803 | 14801 | 19551 | 2162720 | 1559144
+  r42:  | Banca múltiple | 040138 | Ualá | 6990 | 1 | 0 | 0 | 0 | 2795202 | 0 | 0 | 31926 | 20500 | 0 | 2677722 | 0 | 181129 | 2795201 | 2911277 | 340217 | 11818 | 0 | 0 | 0 | 6 | 0 | 352041 | 8676 | 23250 | 8387 | 12034 | 0 | 0 | 1013380 | 1664342 | 0 | 0 | 44067 | 136285 | 1033649 | 1761552 | 1074510 | 1835911 | 105462 | 234755 | 3702 | 8116 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 4 | 0 | 0 | 109166 | 242875
+  r43:  | Banca múltiple | 040139 | BIAfirme | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 0 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+  r44:  | Banca múltiple | 040140 | Consubanco | 706 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 98111 | 11615 | 0 | 615415 | 0 | 392 | 725524 | 725533 | 0 | 429645 | 0 | 0 | 0 | 0 | 0 | 429645 | 21110 | 76623 | 5317 | 6039 | 0 | 0 | 254047 | 361368 | 0 | 0 | 228 | 142 | 280702 | 444172 | 280702 | 444172 | 0 | 0 | 182642 | 247003 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 182642 | 247003
+  r45:  | Banca múltiple | 040141 | Volkswagen Bank | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 9 | 0 | 0 | 0 | 0 | 0 | 0 | 9 | 0 | 0 | 0 | 0 | 0 | 0 | 39779 | 39779 | 3 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 17467 | 22312 | 17467 | 22312
+  r46:  | Banca múltiple | 040145 | Banco Base | 0 | 16 | 2 | 2 | 2 | 2 | 2 | 2 | 0 | 10239 | 0 | 0 | 0 | 31489 | 2 | 41728 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 0 | 0 | 4555 | 4459 | 0 | 0 | 0 | 0 | 0 | 0 | 4925 | 5817 | 0 | 0 | 9480 | 10276 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+  r47:  | Banca múltiple | 040147 | Bankaool | 91 | 29 | 879 | 1421 | 1421 | 159926 | 211279 | 221474 | 0 | 8300 | 110 | 28896 | 0 | 41127 | 134154 | 78433 | 0 | 129 | 32 | 0 | 0 | 0 | 7 | 168 | 0 | 0 | 3716 | 4297 | 59 | 51 | 5785 | 23111 | 0 | 0 | 13235 | 18017 | 30224 | 103221 | 22795 | 45476 | 0 | 0 | 49 | 80 | 11 | 21 | 0 | 0 | 0 | 0 | 0 | 0 | 3 | 4 | 63 | 105
+  r48:  | Banca múltiple | 040148 | Pagatodo | 0 | 0 | 0 | 72452 | 72452 | 0 | 0 | 460047 | 0 | 0 | 0 | 7575 | 0 | 940 | 11186 | 8515 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3291 | 4284 | 0 | 0 | 260 | 363 | 5316 | 5870 | 3551 | 4647 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+  r49:  | Banca múltiple | 040149 | Banfeliz | 27162 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 167 | 0 | 0 | 0 | 0 | 0 | 167 | 0 | 6564 | 0 | 0 | 20249 | 0 | 0 | 26813 | 0 | 0 | 68 | 99 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 68 | 99 | 0 | 0 | 2883 | 3681 | 0 | 0 | 0 | 0 | 18612 | 1637 | 0 | 0 | 0 | 0 | 21495 | 5318
+  r50:  | Banca múltiple | 040150 | Inmobiliario Mexicano | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 15088 | 0 | 0 | 0 | 2135 | 741 | 17223 | 0 | 0 | 0 | 0 | 0 | 1150 | 0 | 1150 | 0 | 0 | 6524 | 7941 | 0 | 0 | 0 | 0 | 0 | 0 | 755 | 997 | 311 | 430 | 7279 | 8938 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 485 | 665 | 0 | 0 | 485 | 665
+  r51:  | Banca múltiple | 040151 | Dondé Banco | 381 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 754 | 0 | 85418 | 0 | 16929 | 107504 | 103101 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 430 | 307 | 0 | 0 | 48306 | 37112 | 0 | 0 | 8776 | 7952 | 62404 | 45100 | 57512 | 45371 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+  r52:  | Banca múltiple | 040152 | Banco Bancrea | 0 | 19 | 23 | 0 | 0 | 19931 | 7702 | 0 | 0 | 9851 | 0 | 16 | 0 | 69196 | 10687 | 79063 | 0 | 45479 | 0 | 0 | 0 | 0 | 0 | 45479 | 0 | 0 | 5041 | 3676 | 0 | 0 | 1 | 15 | 0 | 0 | 21248 | 43076 | 4743 | 5025 | 26290 | 46767 | 0 | 0 | 13486 | 31993 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 13486 | 31993
+  r53:  | Banca múltiple | 040154 | Banco Covalto | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 13004 | 0 | 0 | 0 | 7083 | 0 | 20087 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2923 | 9628 | 0 | 0 | 0 | 0 | 0 | 0 | 1472 | 4478 | 0 | 0 | 4395 | 14106 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+  r54:  | Banca múltiple | 040155 | Industrial and Commercial Bank of China | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 51 | 0 | 0 | 0 | 508 | 0 | 559 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+  r55:  | Banca múltiple | 040156 | Sabadell | 0 | 0 | 0 | 0 | 0 | 6295 | 0 | 0 | 0 | 318 | 0 | 0 | 0 | 6748 | 0 | 7066 | 0 | 29 | 0 | 0 | 0 | 19 | 0 | 48 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1478 | 2611 | 0 | 0 | 1478 | 2611 | 0 | 0 | 9 | 20 | 0 | 0 | 0 | 0 | 0 | 0 | 4 | 15 | 0 | 0 | 13 | 35
+  r56:  | Banca múltiple | 040157 | Shinhan Bank | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 12 | 0 | 0 | 0 | 458 | 0 | 470 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+  r57:  | Banca múltiple | 040158 | Mizuho Bank | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 51 | 0 | 0 | 0 | 355 | 0 | 406 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+  r58:  | Banca múltiple | 040159 | Bank of China | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 8 | 0 | 0 | 0 | 0 | 41 | 0 | 49 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+  r59:  | Banca múltiple | 040160 | Banco S3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 975 | 0 | 975 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+  r60:  | Banca múltiple | 040162 | KEB Hana Bank | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 14 | 0 | 0 | 0 | 25 | 0 | 39 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+  r61:  | Banca múltiple | 040164 | BNP Paribas | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+  r62:  | Banca múltiple | 040165 | Banco Bineo | 0 | 0 | 0 | 0 | 0 | 48774 | 0 | 0 | 0 | 0 | 0 | 5441 | 0 | 12552 | 48722 | 17993 | 0 | 74 | 0 | 0 | 0 | 0 | 0 | 74 | 0 | 0 | 0 | 0 | 0 | 0 | 1365 | 4076 | 0 | 0 | 2623 | 9929 | 11096 | 37626 | 3988 | 14005 | 0 | 0 | 27 | 47 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 27 | 47
+  r63:  | Banca múltiple | 040167 | Hey Banco | 223 | 0 | 0 | 24876 | 22243 | 1386899 | 0 | 41461962 | 0 | 47626 | 0 | 479976 | 240063 | 764951 | 1386899 | 1532616 | 137681 | 4115 | 0 | 0 | 0 | 0 | 37609 | 179405 | 0 | 0 | 24125 | 22988 | 0 | 0 | 213281 | 266695 | 96579 | 143425 | 267111 | 487947 | 542408 | 837947 | 601096 | 921055 | 42190 | 94679 | 1496 | 2619 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 13464 | 24145 | 57150 | 121443
+  r64:  | Banca múltiple | 040169 | Openbank | 1 | 0 | 0 | 0 | 0 | 1936284 | 0 | 0 | 421935 | 1 | 0 | 308103 | 0 | 204024 | 942968 | 934063 | 50842 | 0 | 0 | 0 | 0 | 0 | 0 | 50842 | 147927 | 274008 | 1 | 0 | 0 | 0 | 121203 | 186900 | 0 | 0 | 56336 | 147688 | 338205 | 604763 | 325467 | 608596 | 11584 | 39258 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 11584 | 39258
+  r65:  | Banca múltiple | 040170 | Revolut Bank | 0 | 0 | 0 | 0 | 0 | 290162 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 244466 | 290162 | 244466 | 12044 | 0 | 0 | 0 | 0 | 0 | 0 | 12044 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 51261 | 193205 | 59830 | 230332 | 51261 | 193205 | 1426 | 10618 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1426 | 10618
+  r66:  | Banca múltiple | 040171 | Banco Plata | 0 | 0 | 0 | 0 | 0 | 6616140 | 0 | 0 | 24418 | 1478 | 0 | 9917 | 82139 | 78376 | 352552 | 196328 | 6158842 | 0 | 0 | 0 | 0 | 0 | 0 | 6158842 | 5917 | 18501 | 400 | 1078 | 0 | 0 | 3844 | 6073 | 39080 | 43059 | 25576 | 52800 | 135775 | 216777 | 74817 | 121511 | 2654085 | 3504757 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2654085 | 3504757
+== 202012 200 8,862,474 bytes
+sheets: Menú || Definición || Ficha técnica || Infografía || Bases de Datos || BD Infraestructura Mun || BD Infraestructura Edo || BD Tenencia Uso Banca Mun || BD Tenencia Uso Banca Edo || BD Tenencia Uso EACP Mun || BD Tenencia Uso EACP Edo || BD Género Mun || BD Género Edo || BD Datos históricos || Menú Mapas || Mapas Infraestructura Estado || Mapas Infraestructura Región || Mapas Tenencia Estado || Mapas Tenencia Región || Mapas Género || Lista || ListaAcceso || ListaUso || ListaGenero || ListaAccesoRegión || ListaUsoRegión
