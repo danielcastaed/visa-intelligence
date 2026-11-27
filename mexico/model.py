@@ -21,7 +21,7 @@ Granularidad: CF256 solo es trimestral, así que el share por marca es anual
 
 Uso:  python mexico/model.py   ->  escribe mexico/output.json
 """
-import json
+import json, math
 import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -221,10 +221,14 @@ def main():
             rows_.append({"letra": k, "banco": nm, "visa_pp": round((vb[0] - va[0]) * 100, 2), "mc_pp": round((vb[1] - va[1]) * 100, 2)})
         return rows_
 
+    DL = {k: v for k, v in inp.get("debito_letras", {}).items() if not k.startswith("_")}
+
     def nombre(k, producto):
         if k in banks and not (producto in ("debito", "total") and k in ("S", "P")):
             return banks[k]["banco"]
-        return "¿Mifel?" if k == "B" else f"Emisor {k}"
+        if k in DL and (producto in ("debito", "total") or k == "B"):
+            return DL[k]["banco"]
+        return f"Emisor {k}"
 
     # ---------- Heatmap y concentración por emisor (tarjetas vigentes)
     def issuer_views(producto):
@@ -292,8 +296,8 @@ def main():
         info = banks.get(k)
         emis_cr.append({
             "letra": k, "banco": nombre(k, "credito"),
-            "confianza": info["confianza"] if info else ("Baja" if k == "B" else "—"),
-            "evidencia": info["evidencia"] if info else rib["sin_identificar"].get(k, ""),
+            "confianza": info["confianza"] if info else (DL[k]["confianza"] if k in DL else "—"),
+            "evidencia": info["evidencia"] if info else (DL[k]["evidencia"] if k in DL else rib["sin_identificar"].get(k, "")),
             "visa": a[0], "mc": a[1], "otras": a[2], "total": tot, "total_inicial": sum(b),
             "pct_visa": round(a[0] / tot * 100, 1) if tot else None,
             "saldo_pct_ult": round(info["saldo"][2] / rib["totales_saldo_mdp"]["2025"] * 100, 1) if info else None})
@@ -337,6 +341,115 @@ def main():
                          "peso_saldo": round(w * 100, 1), "periodo": last["periodo"]},
                 "saldo_fuente": F["saldo_sistema_fuente"]}
 
+    # ---------- CNBV: cruce de letras y mercado unificado (bancos + SOFIPO + neobancos)
+    def cnbv_views():
+        path = os.path.join(HERE, "data", "cnbv_tarjetas.json")
+        C = inp.get("cnbv")
+        if not C or not os.path.exists(path):
+            return None
+        per = load(os.path.join("data", "cnbv_tarjetas.json"))["periodos"]
+        pers = sorted(p for p in per if f"{p[:4]}-{int(p[4:]) - 2:02d}-01" in fechas)
+        fecha = lambda p: f"{p[:4]}-{int(p[4:]) - 2:02d}-01"
+        idx = {}
+        for p in pers:
+            for sec in ("banca", "eacp"):
+                for x in per[p].get(sec, []):
+                    idx[(p, x["clave"])] = x
+        def cnbv(claves, p, key):
+            return sum((idx.get((p, c)) or {}).get(key, 0) for c in claves)
+        # Cruce
+        cruce = []
+        for k, claves in C["cruce"].items():
+            for prod, key in (("credito", "tc"), ("debito", "td")):
+                ser = cf[prod]["letras"].get(k)
+                if not ser:
+                    continue
+                pares = [(cnbv(claves, p, key), sum(triple(ser, fecha(p)))) for p in pers]
+                pares = [(a, b) for a, b in pares if a > 0 and b > 0]
+                if not pares or max(b for _, b in pares) < 20000:
+                    continue
+                err = sum(abs(math.log(a / b)) for a, b in pares) / len(pares)
+                a, b = pares[-1]
+                g_c = (pares[-1][0] / pares[0][0] - 1) * 100 if len(pares) > 1 else None
+                g_b = (pares[-1][1] / pares[0][1] - 1) * 100 if len(pares) > 1 else None
+                veredicto = "Confirmado" if err < 0.15 else ("Consistente" if err < 0.35 else "Difiere en nivel")
+                if a / b < 0.05:
+                    veredicto = "Sin dato CNBV"
+                elif a / b > 3:
+                    veredicto = "Banxico subreporta"
+                cruce.append({"letra": k, "banco": nombre(k, prod), "producto": prod, "cnbv": a, "banxico": b,
+                              "ratio": round(a / b, 2), "err": round(err, 3), "crec_cnbv": round(g_c, 1) if g_c is not None else None,
+                              "crec_banxico": round(g_b, 1) if g_b is not None else None, "trimestres": len(pares),
+                              "veredicto": veredicto})
+        cruce.sort(key=lambda r: (r["producto"], -r["banxico"]))
+        # Mercado unificado: CF256 + emisores que solo reporta la CNBV
+        F = C["fuera_cf256"]
+        quarters = [fecha(p) for p in pers]
+        last_p = pers[-1]
+        if fechas[-1] not in quarters:
+            quarters.append(fechas[-1])
+        serie, comp = [], []
+        bien = inp["cnbv"]["cruce"].get("AD") and "AD"
+        for d in quarters:
+            p = next((q for q in pers if fecha(q) == d), last_p)
+            arr = p != next((q for q in pers if fecha(q) == d), None)
+            ct, dt = triple(cf["credito"]["totales"], d), triple(cf["debito"]["totales"], d)
+            add = {"cr_v": 0, "cr_m": 0, "db_v": 0, "db_m": 0}
+            for e in F:
+                x = idx.get((p, e["clave"])) or {}
+                for prod, key, pre in (("credito", "tc", "cr"), ("debito", "td", "db")):
+                    m = e.get(prod)
+                    if m:
+                        add[f"{pre}_{'v' if m.startswith('Visa') else 'm'}"] += x.get(key, 0)
+            ad = triple(cf["debito"]["letras"]["AD"], d) if "AD" in cf["debito"]["letras"] else (0, 0, 0)
+            cr_b, db_b = sum(ct), sum(dt)
+            cr_u, db_u = cr_b + add["cr_v"] + add["cr_m"], db_b + add["db_v"] + add["db_m"]
+            tv_b, tv_u = ct[0] + dt[0], ct[0] + dt[0] + add["cr_v"] + add["db_v"]
+            db_x = db_u - sum(ad)
+            # Escenario 100% CNBV: conteo CNBV de cada banco × mezcla de marca de su letra en CF256
+            cn = {"cr": [0, 0, 0], "db": [0, 0, 0]}
+            cub = {"cr": 0, "db": 0}
+            for k, claves in C["cruce"].items():
+                for prod, key, pre in (("credito", "tc", "cr"), ("debito", "td", "db")):
+                    ser = cf[prod]["letras"].get(k)
+                    n = cnbv(claves, p, key)
+                    if not ser or n == 0:
+                        continue
+                    mix = triple(ser, d)
+                    if sum(mix) == 0 or n / sum(mix) < 0.05:
+                        continue
+                    for j in range(3):
+                        cn[pre][j] += n * mix[j] / sum(mix)
+                    cub[pre] += n
+            cub["cr"] += add["cr_v"] + add["cr_m"]; cub["db"] += add["db_v"] + add["db_m"]
+            cn["cr"][1] += add["cr_m"]; cn["cr"][0] += add["cr_v"]
+            cn["db"][1] += add["db_m"]; cn["db"][0] += add["db_v"]
+            tot_cn = {pre: sum(per[p].get("banca", []) and [x[key] for x in per[p]["banca"]] or [0]) for pre, key in (("cr", "tc"), ("db", "td"))}
+            serie.append({"corte": qlabel(d) + ("†" if arr else ""), "cnbv": f"{p[4:]}/{p[:4]}",
+                          "cr_visa_banxico": round(ct[0] / cr_b * 100, 2), "cr_visa_unif": round((ct[0] + add["cr_v"]) / cr_u * 100, 2),
+                          "cr_mc_banxico": round(ct[1] / cr_b * 100, 2), "cr_mc_unif": round((ct[1] + add["cr_m"]) / cr_u * 100, 2),
+                          "db_visa_banxico": round(dt[0] / db_b * 100, 2), "db_visa_unif": round((dt[0] + add["db_v"]) / db_u * 100, 2),
+                          "db_mc_banxico": round(dt[1] / db_b * 100, 2), "db_mc_unif": round((dt[1] + add["db_m"]) / db_u * 100, 2),
+                          "db_visa_unif_exbien": round((dt[0] + add["db_v"] - ad[0]) / db_x * 100, 2),
+                          "tot_visa_banxico": round(tv_b / (cr_b + db_b) * 100, 2), "tot_visa_unif": round(tv_u / (cr_u + db_u) * 100, 2),
+                          "cr_total_banxico": cr_b, "cr_total_unif": cr_u, "db_total_banxico": db_b, "db_total_unif": db_u,
+                          "cr_visa_cnbv": round(cn["cr"][0] / sum(cn["cr"]) * 100, 2), "cr_mc_cnbv": round(cn["cr"][1] / sum(cn["cr"]) * 100, 2),
+                          "db_visa_cnbv": round(cn["db"][0] / sum(cn["db"]) * 100, 2), "db_mc_cnbv": round(cn["db"][1] / sum(cn["db"]) * 100, 2),
+                          "cobertura_cr": round(cub["cr"] / tot_cn["cr"] * 100, 1), "cobertura_db": round(cub["db"] / tot_cn["db"] * 100, 1),
+                          "cr_add": add["cr_v"] + add["cr_m"], "db_add": add["db_v"] + add["db_m"], "bienestar": sum(ad)})
+        for e in F:
+            x = idx.get((last_p, e["clave"])) or {}
+            hist_tc = [{"p": p, "v": (idx.get((p, e["clave"])) or {}).get("tc", 0)} for p in pers]
+            comp.append({"nombre": e["nombre"], "sector": e["sector"], "credito": x.get("tc", 0), "debito": x.get("td", 0),
+                         "marca_credito": e.get("credito"), "marca_debito": e.get("debito"),
+                         "tc_hist": hist_tc})
+        top_cnbv = sorted(({"nombre": x["nombre"], "sector": x["sector"], "tc": x["tc"], "td": x["td"]}
+                           for (p, c), x in idx.items() if p == last_p and (x["tc"] > 0 or x["td"] > 0)),
+                          key=lambda r: -(r["tc"]))
+        return {"cruce": cruce, "serie": serie, "fuera_cf256": comp, "periodos": pers,
+                "corte_cnbv": f"{last_p[4:]}/{last_p[:4]}", "ranking_tc": top_cnbv[:25],
+                "fuente": "CNBV, Base de Datos de Inclusión Financiera (BD Banca, BD EACP)"}
+
     out = {
         "meta": {"corte_tarjetas": qlabel(last_cut), "corte_tarjetas_inicial": qlabel(first_cut),
                  "corte_facturacion": f"{MESES[int(last_bill[5:7]) - 1]}-{last_bill[:4]}",
@@ -347,6 +460,7 @@ def main():
         "contribucion": {k: contrib_list(k) for k in ("credito", "debito", "total")}, "emisores": emisores,
         "emisores_credito": emis_cr, "emisores_debito": emis_db, "emisores_total": emis_total,
         "fintech": fintech_view(),
+        "cnbv": cnbv_views(),
     }
     with open(os.path.join(HERE, "output.json"), "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))

@@ -284,7 +284,7 @@ button.tab:disabled{opacity:.4;cursor:not-allowed;background:var(--bg)}
       <span class="leg"><span class="leg-sq" style="background:var(--amex)"></span>Otras</span>
     </div>
     <div class="chart-wrap" id="banco-wrap"><canvas id="bancoChart"></canvas></div>
-    <div class="note">Banxico publica cada emisor como una letra; el nombre del banco es una inferencia (ver Identificación de Emisores). En débito solo se sugiere el banco si la misma letra está identificada en crédito; no está verificado que las letras coincidan entre productos.</div>
+    <div class="note">Banxico publica cada emisor como una letra; el nombre del banco es una inferencia (ver Identificación de Emisores). Las letras son las mismas en crédito y débito; las identificaciones se validaron contra la CNBV (ver Cruce de identificación).</div>
   </div>
 
   <div class="slabel">Neobancos y Fintech</div>
@@ -297,6 +297,32 @@ button.tab:disabled{opacity:.4;cursor:not-allowed;background:var(--bg)}
       <div><div class="mini-title">Share de facturación de crédito (escenario saldo)</div><div class="card-sub" id="fin-fact-sub"></div><div id="fin-fact"></div></div>
     </div>
     <div class="note" id="fin-note"></div>
+  </div>
+
+  <div class="slabel">Mercado Unificado · Banxico + CNBV</div>
+  <div class="card">
+    <div class="card-title">Todo el mercado: bancos, SOFIPO y neobancos</div>
+    <div class="card-sub" id="uni-sub"></div>
+    <div class="mkt-grid" id="uni-kpis" style="margin:10px 0 14px"></div>
+    <div class="mini-title" id="uni-chart-title"></div>
+    <div class="leg-row" id="uni-leg"></div>
+    <div class="chart-wrap"><canvas id="uniChart"></canvas></div>
+    <div class="row-2s" style="margin-top:16px">
+      <div><div class="mini-title">Tarjetas de crédito fuera de CF256 (CNBV)</div><div class="card-sub">Millones de tarjetas por trimestre · todas Mastercard</div><div class="chart-wrap" style="height:240px"><canvas id="uniFinChart"></canvas></div></div>
+      <div><div class="mini-title">Composición del ajuste al último corte CNBV</div><div class="card-sub" id="uni-comp-sub"></div><div style="overflow-x:auto"><table class="tbl" id="uni-comp"></table></div></div>
+    </div>
+    <div class="note" id="uni-note"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Cruce de identificación: letras de Banxico vs CNBV</div>
+    <div class="card-sub" id="cruce-sub"></div>
+    <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px">
+      <button class="tab active" data-cruceprod="credito">Crédito</button>
+      <button class="tab" data-cruceprod="debito">Débito</button>
+    </div>
+    <div style="overflow-x:auto"><table class="tbl" id="cruce-table"></table></div>
+    <div class="note">Error = desviación promedio (en logaritmo) entre la serie de la CNBV y la de la letra en Banxico, trimestre a trimestre. <b>Confirmado</b> &lt; 0.15 · <b>Consistente</b> &lt; 0.35 · <b>Difiere en nivel</b>: la trayectoria es parecida pero las dos fuentes cuentan distinto (Banxico incluye adicionales y plásticos vigentes; la CNBV cuenta contratos). Las letras son las mismas en crédito y débito: la mezcla de marca de cada letra coincide entre productos.</div>
   </div>
 
   <div class="slabel">Mapa de Calor</div>
@@ -421,7 +447,7 @@ button.tab:disabled{opacity:.4;cursor:not-allowed;background:var(--bg)}
       <li>La identificación de letras, sobre todo C = Banamex y E = Santander (juntos ~43% del saldo y mayoritariamente MC).</li>
       <li>Que el saldo sea un buen proxy de facturación (mezcla gasto mensual con deuda revolvente).</li>
       <li>Débito sin ponderar: probablemente sobreestima a emisores con muchas tarjetas inactivas.</li>
-      <li>Cobertura: CF256 solo incluye bancos que reportan a Banxico. Nu (banco desde ago-2026) y Plata (banco desde mar-2026) aún no aparecen al 2T26; cuando entren habrá un quiebre fuerte hacia Mastercard en plásticos de crédito (ver Neobancos y Fintech). Mercado Pago no es banco y no aparece.</li>
+      <li>Cobertura: CF256 solo incluye bancos que reportan a Banxico. Nu (banco desde ago-2026), Plata (banco desde mar-2026) y las SOFIPO (Stori, Klar) no aparecen al 2T26; las SOFIPO reportan a la CNBV, no a Banxico. La sección Mercado Unificado las suma con datos de la CNBV. Mercado Pago no es banco y no aparece en ninguna de las dos fuentes.</li>\n      <li>Cruce con la CNBV: la Base de Datos de Inclusión Financiera (trimestral, desde sep-2023 por institución) publica tarjetas de crédito y débito con nombre para bancos y SOFIPO. Comparando trimestre a trimestre con las letras de CF256 se confirmaron las identificaciones y se resolvieron letras de débito como AD = Banco del Bienestar (débito social Mastercard), Q = Banco Azteca y B = Banjercito.</li>
     </ul>
     <h3>Validación sugerida</h3>
     <p>Contrastar con el volumen interno de VisaNet México por producto y año.</p>
@@ -435,7 +461,7 @@ button.tab:disabled{opacity:.4;cursor:not-allowed;background:var(--bg)}
 <script>
 const D = __DATA__;
 const S = {periodo: 'anual', tipo: 'total', esc: 'saldo', voltab: 'marca', vigtab: 'hist', yoytab: 'fact',
-           heatmarca: 'total', rango: '60'};
+           heatmarca: 'total', rango: '60', cruceprod: 'credito'};
 const charts = {};
 const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const nf = (v, d) => v.toLocaleString('es-MX', {minimumFractionDigits: d, maximumFractionDigits: d});
@@ -712,7 +738,7 @@ function renderTables() {
     D.emisores_credito.map(r => `<tr><td><b>${r.letra}</b></td><td>${r.banco}</td><td><span class="conf ${confCls(r.confianza)}">${r.confianza}</span></td><td class="n">${fN(r.total)}</td><td class="n">${r.pct_visa == null ? '—' : f1(r.pct_visa) + '%'}</td><td class="n">${fN(r.total_inicial)}</td><td class="n">${r.saldo_pct_ult == null ? '—' : f1(r.saldo_pct_ult) + '%'}</td><td class="ev">${r.evidencia}</td></tr>`).join('') + '</tbody>';
   const PT = {credito: D.emisores_credito, debito: D.emisores_debito, total: D.emisores_total}[S.tipo];
   document.getElementById('emis-prod-title').textContent = 'Emisores · ' + TIPO[S.tipo];
-  document.getElementById('emis-prod-sub').textContent = 'Tarjetas vigentes por emisor y marca al ' + D.meta.corte_tarjetas + (S.tipo === 'credito' ? '' : ' · el banco solo se sugiere si la misma letra está identificada en crédito') + (S.tipo === 'total' ? ' · total = crédito + débito sumados por letra' : '');
+  document.getElementById('emis-prod-sub').textContent = 'Tarjetas vigentes por emisor y marca al ' + D.meta.corte_tarjetas + (S.tipo === 'credito' ? '' : ' · letras de solo débito identificadas con la CNBV') + (S.tipo === 'total' ? ' · total = crédito + débito sumados por letra' : '');
   document.getElementById('emis-db').innerHTML = '<thead><tr><th>Letra</th><th>Banco</th><th class="n">Tarjetas ' + D.meta.corte_tarjetas + '</th><th class="n">Visa</th><th class="n">Mastercard</th><th class="n">Otras</th><th class="n">% Visa</th></tr></thead><tbody>' +
     PT.map(r => `<tr><td><b>${r.letra}</b></td><td>${r.banco}</td><td class="n">${fN(r.total)}</td><td class="n">${fN(r.visa)}</td><td class="n">${fN(r.mc)}</td><td class="n">${fN(r.otras)}</td><td class="n">${f1(r.pct_visa)}%</td></tr>`).join('') + '</tbody>';
 }
@@ -733,6 +759,58 @@ function renderFintech() {
   document.getElementById('fin-fact-sub').textContent = 'Visa · Mastercard · sumando la cartera de tarjetas de Nu (' + f1(Fa.peso_saldo) + '% del saldo del sistema)';
   document.getElementById('fin-fact').innerHTML = pair({v: Fa.visa, m: Fa.mc}, {v: Fa.visa_pro, m: Fa.mc_pro}, 'Modelo ' + Fa.periodo, 'Pro forma con Nu');
   document.getElementById('fin-note').textContent = 'Pro forma ilustrativo: la CNBV cuenta contratos y Banxico tarjetas vigentes (con adicionales), así que no son estrictamente comparables. Plata no tiene saldo público a la mano y no entra en el pro forma de facturación (lo movería más hacia Mastercard). Mercado Pago (Visa en crédito) no reporta tarjetas de crédito por separado. Saldo del sistema: ' + F.saldo_fuente + '.';
+}
+
+function renderUnificado() {
+  const U = D.cnbv;
+  if (!U) return;
+  const Sr = U.serie, L = Sr[Sr.length - 1], lab = Sr.map(s => s.corte);
+  const tipo = S.tipo;
+  const pre = tipo === 'credito' ? 'cr' : (tipo === 'debito' ? 'db' : 'tot');
+  document.getElementById('uni-sub').textContent = 'Share de plásticos por marca sumando a la serie de Banxico (CF256) los emisores que solo reporta la CNBV: Nu, Plata, Stori y Klar · ' + TIPO[tipo] + ' · CNBV al ' + U.corte_cnbv + (L.corte.includes('†') ? ' († último trimestre de Banxico con la cifra CNBV más reciente)' : '');
+  const k = (lbl, v, sub) => `<div><div class="kpi-lbl">${lbl}</div><div class="kpi-val">${v}</div><div class="kpi-delta">${sub || ''}</div></div>`;
+  const tiles = [];
+  if (tipo !== 'total') {
+    tiles.push(k('Visa · solo Banxico', f1(L[pre + '_visa_banxico']) + '%', 'Mastercard ' + f1(L[pre + '_mc_banxico']) + '%'));
+    tiles.push(k('Visa · mercado unificado', f1(L[pre + '_visa_unif']) + '%', 'Mastercard ' + f1(L[pre + '_mc_unif']) + '% · ' + chip(L[pre + '_visa_unif'] - L[pre + '_visa_banxico'])));
+    tiles.push(k('Visa · 100% CNBV', f1(L[pre + '_visa_cnbv']) + '%', 'Mastercard ' + f1(L[pre + '_mc_cnbv']) + '% · cobertura ' + f1(L['cobertura_' + pre]) + '%'));
+    tiles.push(tipo === 'credito' ? k('Tarjetas agregadas', fM(L.cr_add), 'Banxico ' + fM(L.cr_total_banxico) + ' → ' + fM(L.cr_total_unif))
+                                  : k('Visa · débito sin Bienestar', f1(L.db_visa_unif_exbien) + '%', fM(L.bienestar) + ' tarjetas sociales (MC) fuera'));
+  } else {
+    tiles.push(k('Visa · solo Banxico', f1(L.tot_visa_banxico) + '%', 'crédito + débito'));
+    tiles.push(k('Visa · mercado unificado', f1(L.tot_visa_unif) + '%', chip(L.tot_visa_unif - L.tot_visa_banxico)));
+    tiles.push(k('Tarjetas agregadas', fM(L.cr_add + L.db_add), fM(L.cr_add) + ' crédito · ' + fM(L.db_add) + ' débito'));
+    tiles.push(k('Tarjetas del Bienestar', fM(L.bienestar), 'débito social Mastercard (letra AD)'));
+  }
+  document.getElementById('uni-kpis').innerHTML = tiles.join('');
+  document.getElementById('uni-chart-title').textContent = 'Share Visa de plásticos · ' + TIPO[tipo];
+  const ds = [line('Solo Banxico', Sr.map(s => s[pre + '_visa_banxico']), css('--muted'), {borderDash: [5, 4]}),
+              line('Mercado unificado', Sr.map(s => s[pre + '_visa_unif']), css('--visa'))];
+  if (tipo !== 'total') ds.push(line('100% CNBV', Sr.map(s => s[pre + '_visa_cnbv']), css('--credito')));
+  if (tipo === 'debito') ds.push(line('Unificado sin Bienestar', Sr.map(s => s.db_visa_unif_exbien), css('--debito'), {borderDash: [2, 3]}));
+  document.getElementById('uni-leg').innerHTML = ds.map(d => `<span class="leg"><span class="leg-sq" style="background:${d.borderColor}"></span>${d.label}</span>`).join('');
+  mk('uniChart', {type: 'line', data: {labels: lab, datasets: ds}, options: opts(deepMerge({scales: pctAxis()}, tipPct))});
+  const pal = [css('--mc'), '#FF9F1C', '#9B5DE5', '#00BBF9'];
+  mk('uniFinChart', {type: 'line', data: {labels: U.periodos.map(p => p.slice(4) + '/' + p.slice(2, 4)),
+    datasets: U.fuera_cf256.map((e, i) => line(e.nombre, e.tc_hist.map(h => +(h.v / 1e6).toFixed(2)), pal[i % pal.length]))},
+    options: opts({plugins: {legend: {display: true, labels: {color: css('--muted'), boxWidth: 10, font: {size: 11}}}, tooltip: {callbacks: {label: (c) => `${c.dataset.label}: ${f2(c.raw)}M`}}}, scales: {y: {ticks: {callback: (x) => x + 'M'}}}})});
+  document.getElementById('uni-comp-sub').textContent = 'Tarjetas por entidad al ' + U.corte_cnbv;
+  const tc = U.fuera_cf256.reduce((a, e) => a + e.credito, 0), td = U.fuera_cf256.reduce((a, e) => a + (e.marca_debito ? e.debito : 0), 0);
+  document.getElementById('uni-comp').innerHTML = '<thead><tr><th>Entidad</th><th>Figura</th><th class="n">Crédito</th><th class="n">Débito</th><th>Marca</th></tr></thead><tbody>' +
+    U.fuera_cf256.map(e => `<tr><td><b>${e.nombre}</b></td><td>${e.sector}</td><td class="n">${fN(e.credito)}</td><td class="n">${e.marca_debito ? fN(e.debito) : '—'}</td><td>${e.marca_credito}</td></tr>`).join('') +
+    `<tr><td><b>Total</b></td><td></td><td class="n"><b>${fN(tc)}</b></td><td class="n"><b>${fN(td)}</b></td><td></td></tr></tbody>`;
+  document.getElementById('uni-note').innerHTML = 'Son participaciones de <b>plásticos</b>, no de facturación: una tarjeta nueva de Nu factura mucho menos que una de BBVA. Para facturación ver el pro forma de Neobancos y Fintech. <b>Mercado unificado</b> = conteos de Banxico + conteos CNBV de los emisores ausentes. <b>100% CNBV</b> = conteo de la CNBV de cada banco × la mezcla de marca de su letra en Banxico + emisores ausentes; es más consistente entre emisores porque todo viene de la misma fuente. La CNBV publica el detalle por institución desde sep-2023 (antes solo hay datos municipales y estatales). Nu migró su cartera a la SOFIPO durante 2023, por eso la serie arranca en 4M. Fuente: ' + U.fuente + '.';
+  renderCruce();
+}
+function renderCruce() {
+  const U = D.cnbv;
+  if (!U) return;
+  const R = U.cruce.filter(r => r.producto === S.cruceprod);
+  const ok = R.filter(r => r.veredicto === 'Confirmado' || r.veredicto === 'Consistente').length;
+  document.getElementById('cruce-sub').textContent = ok + ' de ' + R.length + ' letras de ' + TIPO[S.cruceprod].toLowerCase() + ' cuadran con la CNBV · ' + U.periodos.length + ' trimestres (' + U.periodos[0].slice(4) + '/' + U.periodos[0].slice(0, 4) + ' a ' + U.corte_cnbv + ')';
+  const cls = {Confirmado: 'chip-up', Consistente: 'chip-neu', 'Difiere en nivel': 'chip-down', 'Sin dato CNBV': 'chip-neu', 'Banxico subreporta': 'chip-down'};
+  document.getElementById('cruce-table').innerHTML = '<thead><tr><th>Letra</th><th>Banco</th><th class="n">Banxico</th><th class="n">CNBV</th><th class="n">CNBV / Banxico</th><th class="n">Crec. Banxico</th><th class="n">Crec. CNBV</th><th class="n">Error</th><th>Veredicto</th></tr></thead><tbody>' +
+    R.map(r => `<tr><td><b>${r.letra}</b></td><td>${r.banco}</td><td class="n">${fN(r.banxico)}</td><td class="n">${fN(r.cnbv)}</td><td class="n">${f2(r.ratio)}x</td><td class="n">${f1(r.crec_banxico)}%</td><td class="n">${f1(r.crec_cnbv)}%</td><td class="n">${r.err.toFixed(2)}</td><td><span class="chip ${cls[r.veredicto]}">${r.veredicto}</span></td></tr>`).join('') + '</tbody>';
 }
 
 // ───────── Deep dive
@@ -762,7 +840,7 @@ function renderDeep() {
 }
 
 // ───────── Controles
-const VIEW_RENDER = {dashboard: () => { renderSnapshot(); renderMS(); renderProducto(); renderVol(); renderVig(); renderYoY(); renderEsc(); renderContrib(); renderBancos(); renderFintech(); renderHeat(); renderConc(); renderTables(); }, deepdive: renderDeep, metodologia: () => {}};
+const VIEW_RENDER = {dashboard: () => { renderSnapshot(); renderMS(); renderProducto(); renderVol(); renderVig(); renderYoY(); renderEsc(); renderContrib(); renderBancos(); renderFintech(); renderUnificado(); renderHeat(); renderConc(); renderTables(); }, deepdive: renderDeep, metodologia: () => {}};
 let vista = 'dashboard';
 function renderAll() {
   document.getElementById('sel-esc').disabled = S.tipo === 'debito';
@@ -779,7 +857,7 @@ function bind(attr, key, fn) {
 }
 bind('data-periodo', 'periodo'); bind('data-tipo', 'tipo');
 bind('data-voltab', 'voltab', renderVol); bind('data-vigtab', 'vigtab', renderVig); bind('data-yoytab', 'yoytab', renderYoY);
-bind('data-heatmarca', 'heatmarca', renderHeat); bind('data-rango', 'rango', renderDeep);
+bind('data-heatmarca', 'heatmarca', renderHeat); bind('data-cruceprod', 'cruceprod', renderCruce); bind('data-rango', 'rango', renderDeep);
 document.getElementById('sel-esc').addEventListener('change', (e) => { S.esc = e.target.value; renderAll(); });
 function setVista(v) {
   vista = v; setGroup('data-vista', v);

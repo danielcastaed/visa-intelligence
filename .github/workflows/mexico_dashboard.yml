@@ -8,6 +8,7 @@ on:
     branches: [main]
     paths:
       - "mexico/fetch_banxico.py"
+      - "mexico/fetch_cnbv.py"
       - "mexico/model.py"
       - "mexico/inputs.json"
       - "report/generate_mexico.py"
@@ -35,7 +36,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install requests
+        run: pip install requests openpyxl cryptography certifi
 
       # Descarga CF256 (tarjetas por marca y emisor) y CF914 (montos) de Banxico.
       # Si Banxico no responde, el job falla y la página publicada se queda con los datos anteriores.
@@ -44,6 +45,12 @@ jobs:
         env:
           BANXICO_TOKEN: ${{ secrets.BANXICO_TOKEN }}
         run: python mexico/fetch_banxico.py
+
+      # CNBV, Base de Datos de Inclusión Financiera: tarjetas por institución (bancos y SOFIPO).
+      # Incremental: solo baja trimestres nuevos. Si la CNBV falla, se sigue con el último archivo guardado.
+      - name: Fetch CNBV data
+        continue-on-error: true
+        run: python mexico/fetch_cnbv.py
 
       - name: Run model
         run: python mexico/model.py
@@ -57,7 +64,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/mexico/index.html mexico/data mexico/output.json
           if git diff --cached --quiet; then
-            echo "Sin cambios en los datos de Banxico."
+            echo "Sin cambios en los datos de Banxico ni de la CNBV."
             exit 0
           fi
           git commit -m "chore: update Mexico dashboard $(date +'%Y-%m-%d')"
