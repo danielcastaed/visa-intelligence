@@ -1,143 +1,518 @@
-Traceback (most recent call last):
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 470, in _make_request
-    self._validate_conn(conn)
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 1125, in _validate_conn
-    conn.connect()
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/urllib3/connection.py", line 878, in connect
-    wrapped_socket, is_verified = _ssl_wrap_socket_and_match_hostname(
-                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/urllib3/connection.py", line 1080, in _ssl_wrap_socket_and_match_hostname
-    ssl_sock = ssl_wrap_socket(
-               ^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/urllib3/util/ssl_.py", line 437, in ssl_wrap_socket
-    ssl_sock = _ssl_wrap_socket_impl(sock, context, tls_in_tls, server_hostname)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/urllib3/util/ssl_.py", line 481, in _ssl_wrap_socket_impl
-    return ssl_context.wrap_socket(sock, server_hostname=server_hostname)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/ssl.py", line 517, in wrap_socket
-    return self.sslsocket_class._create(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/ssl.py", line 1117, in _create
-    self.do_handshake()
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/ssl.py", line 1395, in do_handshake
-    self._sslobj.do_handshake()
-ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 793, in urlopen
-    response = self._make_request(
-               ^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 494, in _make_request
-    raise new_e
-urllib3.exceptions.SSLError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/requests/adapters.py", line 696, in send
-    resp = conn.urlopen(
-           ^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 847, in urlopen
-    retries = retries.increment(
-              ^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/urllib3/util/retry.py", line 555, in increment
-    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='www.cnbv.gob.mx', port=443): Max retries exceeded with url: /Inclusi%C3%B3n/BasesDeDatos/Base_de_Datos_de_Inclusion_Financiera_202603.xlsx (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)')))
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/home/runner/work/visa-intelligence/visa-intelligence/probe/probe_cnbv.py", line 9, in <module>
-    r=requests.get(url,headers=UA,timeout=300)
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/requests/api.py", line 87, in get
-    return request("get", url, params=params, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/requests/api.py", line 71, in request
-    return session.request(method=method, url=url, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/requests/sessions.py", line 651, in request
-    resp = self.send(prep, **send_kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/requests/sessions.py", line 784, in send
-    r = adapter.send(request, **kwargs)
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/requests/adapters.py", line 727, in send
-    raise SSLError(e, request=request)
-requests.exceptions.SSLError: HTTPSConnectionPool(host='www.cnbv.gob.mx', port=443): Max retries exceeded with url: /Inclusi%C3%B3n/BasesDeDatos/Base_de_Datos_de_Inclusion_Financiera_202603.xlsx (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)')))
-
-Traceback (most recent call last):
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 470, in _make_request
-    self._validate_conn(conn)
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 1125, in _validate_conn
-    conn.connect()
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/urllib3/connection.py", line 878, in connect
-    wrapped_socket, is_verified = _ssl_wrap_socket_and_match_hostname(
-                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/urllib3/connection.py", line 1080, in _ssl_wrap_socket_and_match_hostname
-    ssl_sock = ssl_wrap_socket(
-               ^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/urllib3/util/ssl_.py", line 437, in ssl_wrap_socket
-    ssl_sock = _ssl_wrap_socket_impl(sock, context, tls_in_tls, server_hostname)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/urllib3/util/ssl_.py", line 481, in _ssl_wrap_socket_impl
-    return ssl_context.wrap_socket(sock, server_hostname=server_hostname)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/ssl.py", line 517, in wrap_socket
-    return self.sslsocket_class._create(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/ssl.py", line 1117, in _create
-    self.do_handshake()
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/ssl.py", line 1395, in do_handshake
-    self._sslobj.do_handshake()
-ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 793, in urlopen
-    response = self._make_request(
-               ^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 494, in _make_request
-    raise new_e
-urllib3.exceptions.SSLError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/requests/adapters.py", line 696, in send
-    resp = conn.urlopen(
-           ^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 847, in urlopen
-    retries = retries.increment(
-              ^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/urllib3/util/retry.py", line 555, in increment
-    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='www.cnbv.gob.mx', port=443): Max retries exceeded with url: /Inclusi%C3%B3n/BasesDeDatos/Base_de_Datos_de_Inclusion_Financiera_202012.xlsm (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)')))
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/home/runner/work/visa-intelligence/visa-intelligence/probe/probe_cnbv.py", line 9, in <module>
-    r=requests.get(url,headers=UA,timeout=300)
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/requests/api.py", line 87, in get
-    return request("get", url, params=params, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/requests/api.py", line 71, in request
-    return session.request(method=method, url=url, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/requests/sessions.py", line 651, in request
-    resp = self.send(prep, **send_kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/requests/sessions.py", line 784, in send
-    r = adapter.send(request, **kwargs)
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/requests/adapters.py", line 727, in send
-    raise SSLError(e, request=request)
-requests.exceptions.SSLError: HTTPSConnectionPool(host='www.cnbv.gob.mx', port=443): Max retries exceeded with url: /Inclusi%C3%B3n/BasesDeDatos/Base_de_Datos_de_Inclusion_Financiera_202012.xlsm (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)')))
+intermediarios agregados: 2
+== 202603 200 7,563,869 bytes application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+-- sheet 'MENU' dims=45x9
+    |  |  |  |  |  |  |  | Marzo 2026
+    |  |  |  |  |  |  |  | Cierre a marzo 2026
+    |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  | 
+-- sheet 'Definición IF' dims=33x21
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+-- sheet 'Indicadores IF' dims=57x32
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+-- sheet 'Ficha técnica' dims=250x35
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+-- sheet 'BD Infraestructura Mun' dims=2491x48
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  | 65316 | 17612 | 69810 | 1415931 | 803206 | 128557974 | 194313002 | 340520410 | 11377 | 64721 | 1414804 | 802528 | 116459944 | 180396272 | 340200370 | 3245 | 3967 | 898 | 557 | 0 | 12510987 | 204833 | 2334 | 1003 | 226 | 118 | 481657 | 1350358
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  | Infraestructura y transacciones |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    | Información general |  |  |  |  |  |  |  |  |  |  | Todos los sectores |  |  |  |  |  |  |  | Banca múltiple |  |  |  |  |  |  | Banca de desarrollo |  |  |  |  |  |  | Sociedades Cooperativas de Ahorro y Prés |  |  |  |  | 
+-- sheet 'BD Infraestructura Edo' dims=2476x47
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | 65316 | 17612 | 69810 | 1415931 | 803206 | 128557974 | 194313002 | 340520410 | 11377 | 64721 | 1414804 | 802528 | 116459944 | 180396272 | 340200370 | 3245 | 3967 | 898 | 557 | 0 | 12510987 | 204833 | 2334 | 1003 | 226 | 118 | 481657 | 1350358 | 115167
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | Infraestructura y transacciones |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  | Información general |  |  |  |  |  |  |  |  | Todos los sectores |  |  |  |  |  |  |  | Banca múltiple |  |  |  |  |  |  | Banca de desarrollo |  |  |  |  |  |  | Sociedades Cooperativas de Ahorro y Prés |  |  |  |  |  | 
+-- sheet 'BD Infraestructura Banca' dims=2482x12
+    |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+    |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  | Infraestructura y transacciones |  |  |  |  |  |  | 
+    | Información general |  |  | Banca |  |  |  |  |  |  | 
+-- sheet 'BD Captación Mun' dims=2491x50
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  | 2149810 | 3231029 | 1457 | 58888249 | 390313 | 101850297 | 205132578 | 12488729 | 3684678 | 36011325 | 16948522 | 218695887 | 2149809 | 2345038 | 1457 | 22563083 | 390313 | 98067579 | 146347749 | 125517279 | 1 | 885991 | 0 | 36325166 | 0 | 3782718 | 58784829 | 40993876
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  | Captación |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    | Información general |  |  |  |  |  |  |  |  |  |  | Todos los sectores |  |  |  |  |  |  |  |  |  |  |  | Banca múltiple |  |  |  |  |  |  |  | Banca de desarrollo |  |  |  |  |  |  | 
+-- sheet 'BD Captación Edo' dims=2476x49
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | 2149810 | 3231029 | 1457 | 58888249 | 390313 | 101850297 | 205132578 | 12488729 | 3684678 | 36011325 | 16948522 | 218695887 | 2149809 | 2345038 | 1457 | 22563083 | 390313 | 98067579 | 146347749 | 125517279 | 1 | 885991 | 0 | 36325166 | 0 | 3782718 | 58784829 | 40993876 | 11090266
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | Captación |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  | Información general |  |  |  |  |  |  |  |  | Todos los sectores |  |  |  |  |  |  |  |  |  |  |  | Banca múltiple |  |  |  |  |  |  |  | Banca de desarrollo |  |  |  |  |  |  |  | Sociedades Cooperativas de Ahorro y Prés
+-- sheet 'BD Captación Banca' dims=2482x12
+    |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+    |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  | Captación |  |  |  |  |  |  | 
+    | Información general |  |  | Todos los sectores |  |  |  |  |  |  | 
+-- sheet 'BD Crédito Mun' dims=2491x50
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  | 45823255 | 14744413 | 6737467 | 4874390 | 3632941 | 1288648 | 1741791 | 12978940 | 4843081 | 32735 | 877461 | 96697661 | 45800690 | 14495799 | 6734236 | 4874372 | 3632941 | 1257221 | 1738069 | 78533328 | 22565 | 248614 | 3231 | 18 | 0 | 31427 | 3722 | 309577
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  | Crédito |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    | Información general |  |  |  |  |  |  |  |  |  |  | Todos los sectores |  |  |  |  |  |  |  |  |  |  |  | Banca múltiple |  |  |  |  |  |  |  | Banca de desarrollo |  |  |  |  |  |  | 
+-- sheet 'BD Crédito Edo' dims=2476x49
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | 45823255 | 14744413 | 6737467 | 4874390 | 3632941 | 1288648 | 1741791 | 12978940 | 4843081 | 32735 | 877461 | 96697661 | 45800690 | 14495799 | 6734236 | 4874372 | 3632941 | 1257221 | 1738069 | 78533328 | 22565 | 248614 | 3231 | 18 | 0 | 31427 | 3722 | 309577 | 37113
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | Crédito |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  | Información general |  |  |  |  |  |  |  |  | Todos los sectores |  |  |  |  |  |  |  |  |  |  |  | Banca múltiple |  |  |  |  |  |  |  | Banca de desarrollo |  |  |  |  |  |  |  | Sociedades Cooperativas de Ahorro y Prés
+-- sheet 'BD Crédito Banca' dims=63x12
+    |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+    |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  | Crédito |  |  |  |  |  |  | 
+    | Información general |  |  | Todos los sectores |  |  |  |  |  |  | 
+-- sheet 'BD por sexo Banca Mun' dims=2491x108
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  | 910540 | 1233876 | 1595839 | 1567766 | 887 | 570 | 37746193 | 21142043 | 161581 | 228673 | 50247522 | 49326174 | 110864297 | 92345876 | 90662562 | 73499102 | 910540 | 1233875 | 1370175 | 907552 | 887 | 570 | 11179170 | 11383900 | 161581 | 228673 | 47885283 | 47906524
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  | Captación por sexo |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    | Información general |  |  |  |  |  |  |  |  |  |  | Banca |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | Banca múltiple |  |  |  |  |  |  |  |  |  |  | 
+-- sheet 'BD por sexo EACP Mun' dims=2491x58
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  | 6690301 | 5796738 | 1901594 | 1772367 | 17686332 | 18123254 | 26278227 | 25692359 | 6017913 | 5071352 | 854507 | 403687 | 3036875 | 2502653 | 9909295 | 7977692 | 672388 | 725386 | 1047087 | 1368680 | 14649457 | 15620601 | 16368932 | 17714667 | 2487741 | 2353490 | 15826 | 16908
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  | Captación por sexo |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | Crédito por sexo |  |  | 
+    | Información general |  |  |  |  |  |  |  |  |  |  | Entidades de Ahorro y Crédito Popular (E |  |  |  |  |  |  |  | Sociedades Cooperativas de Ahorro y Prés |  |  |  |  |  |  |  | Sociedades Financieras Populares |  |  |  |  |  |  |  | Entidades de Ahorro y Crédito Popular (E |  |  | 
+-- sheet 'BD por sexo Banca' dims=63x36
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  | Captación por sexo |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | Crédito por sexo |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    | Información general |  |  | Banca |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | Banca |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+-- sheet 'BD Datos históricos' dims=2475x65
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  | * Para la contabilización de módulos úni |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  | * En el periodo de diciembre de 2020, se |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  | * Debido al proceso de revisión y mejora |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    | Periodo |  |  | Infraestructura
+Banca, Socap y Sofipo |  |  |  |  |  |  |  | Captación
+Banca |  |  |  |  |  |  |  | Captación
+EACP |  |  |  | Crédito
+Banca |  |  |  |  |  |  |  | Crédito
+EACP |  |  |  |  |  | Cuentas de captación
+Banca | 
+-- sheet 'BD Banca' dims=67x66
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  | No sumar | 14622 | 68688 | 1415702 | 803085 | 116459944 | 192907259 | 340405203 | 2149810 | 3231029 | 1457 | 58888249 | 390313 | 101850297 | 205132578 | 166511155 | 45823255 | 14744413 | 6737467 | 4874390 | 3632941 | 1288648 | 1741791 | 78842905 | 910540 | 1233876 | 1595839 | 1567766 | 887 | 570 | 37746193 | 21142043 | 161581 | 228673 | 50247522 | 49326174
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  | Infraestructura y transacciones |  |  |  |  |  |  |  | Captación |  |  |  |  |  |  |  | Crédito |  |  |  |  |  |  |  | Captación por sexo |  |  |  |  |  |  |  |  |  |  | 
+    | Información general |  |  | Banca |  |  |  |  |  |  |  | Banca |  |  |  |  |  |  |  | Banca |  |  |  |  |  |  |  | Banca |  |  |  |  |  |  |  |  |  |  | 
+-- sheet 'BD EACP' dims=200x44
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  | No sumar | 2990 | 1122 | 229 | 121 | 12098030 | 1405743 | 115207 | 12488729 | 3684678 | 36011325 | 16948522 | 52184732 | 12978940 | 4843081 | 32735 | 877461 | 17854756 | 6690301 | 5796738 | 1901594 | 1772367 | 17686332 | 18123254 | 26278227 | 25692359 | 2487741 | 2353490 | 15826 | 16908 | 544136 | 327617 | 15308 | 13367 | 1824 | 1339
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  | Infraestructura y transacciones |  |  |  |  |  |  |  | Captación |  |  |  |  | Crédito |  |  |  |  | Captación por sexo |  |  |  |  |  |  |  | Crédito por sexo |  |  |  |  |  | Personal contratado por sexo |  |  | 
+    | Información general |  |  | Entidades de Ahorro y Crédito Popular (E |  |  |  |  |  |  |  | Entidades de Ahorro y Crédito Popular (E |  |  |  |  | Entidades de Ahorro y Crédito Popular (E |  |  |  |  | Entidades de Ahorro y Crédito Popular (E |  |  |  |  |  |  |  | Entidades de Ahorro y Crédito Popular (E |  |  |  |  |  | Entidades de Ahorro y Crédito Popular (E |  |  | 
+== 202012 200 8,862,474 bytes application/vnd.ms-excel.sheet.macroEnabled.12
+-- sheet 'Menú' dims=1x1
+-- sheet 'Definición' dims=33x21
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+-- sheet 'Ficha técnica' dims=62x22
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+-- sheet 'Infografía' dims=54x27
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+-- sheet 'Bases de Datos' dims=60x23
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+-- sheet 'BD Infraestructura Mun' dims=2478x31
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    | Información general |  |  |  |  |  |  |  |  |  | Número de puntos de acceso |  |  |  |  |  |  |  |  |  | Indicadores demográficos
+(Puntos de acce |  |  |  |  |  |  |  |  | 
+-- sheet 'BD Infraestructura Edo' dims=2476x31
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  | Información general |  |  |  |  |  |  |  |  | Número de puntos de acceso |  |  |  |  |  |  |  |  |  | Indicadores demográficos
+(Puntos de acce |  |  |  |  |  |  |  |  | 
+-- sheet 'BD Tenencia Uso Banca Mun' dims=2478x43
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | Tenencia
+Número de contratos - Banca |  |  |  |  |  |  |  |  |  |  |  |  |  | Uso
+Transacciones - Banca |  | Indicadores Demográficos 
+(Contratos por |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    | Información general |  |  |  |  |  |  |  |  |  | Captación |  |  |  |  |  |  | Crédito |  |  |  |  |  |  | Transacciones |  | Captación |  |  |  |  |  |  | Crédito |  |  |  |  | 
+-- sheet 'BD Tenencia Uso Banca Edo' dims=2476x43
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | Tenencia
+Número de contratos - Banca |  |  |  |  |  |  |  |  |  |  |  |  |  | Uso
+Transacciones - Banca |  | Indicadores Demográficos 
+(Contratos por |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  | Información general |  |  |  |  |  |  |  |  | Captación |  |  |  |  |  |  | Crédito |  |  |  |  |  |  | Transacciones |  | Captación |  |  |  |  |  |  | Crédito |  |  |  |  | 
+-- sheet 'BD Tenencia Uso EACP Mun' dims=2478x47
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | Tenencia
+Número de contratos - EACP |  |  |  |  |  | Uso
+Transacciones - EACP |  | Indicadores Demográficos 
+(Contratos por |  |  |  |  |  | Indicadores
+(Transacciones por cada 10,0 |  | Número de usuarios - EACP |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    | Información general |  |  |  |  |  |  |  |  |  | Captación |  |  |  | Crédito |  | Transacciones |  | Captación |  |  |  | Crédito |  | Transacciones |  | Clientes - Sofipo |  | Socios - Socap |  | Total de usuarios - EACP |  |  |  |  |  |  |  | 
+-- sheet 'BD Tenencia Uso EACP Edo' dims=2476x47
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | Tenencia
+Número de contratos - EACP |  |  |  |  |  | Uso
+Transacciones - EACP |  | Indicadores Demográficos 
+(Contratos por |  |  |  |  |  | Indicadores
+(Transacciones por cada 10,0 |  | Número de usuarios - EACP |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  | Información general |  |  |  |  |  |  |  |  | Captación |  |  |  | Crédito |  | Transacciones |  | Captación |  |  |  | Crédito |  | Transacciones |  | Clientes - Sofipo |  | Socios - Socap |  | Total de usuarios - EACP |  |  |  |  |  |  |  | 
+-- sheet 'BD Género Mun' dims=2478x106
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | Número de contratos de captación
+Banca |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | Saldo de contratos de captación
+Banca
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    | Información general |  |  |  |  |  |  |  |  |  | Ahorro |  |  |  | Plazo |  |  |  | N1 |  |  |  | N2 |  |  |  | N3 |  |  |  | Transaccionales tradicionales |  |  |  | Total |  |  |  | Ahorro
+-- sheet 'BD Género Edo' dims=46x106
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  | Número de contratos
+Banca |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | Saldo de contratos
+Banca
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  | Información general |  |  |  |  |  |  |  |  | Ahorro |  |  |  | Plazo |  |  |  | N1 |  |  |  | N2 |  |  |  | N3 |  |  |  | Transaccionales tradicionales |  |  |  | Total |  |  |  | Ahorro
+-- sheet 'BD Datos históricos' dims=2475x49
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  | * En el periodo de diciembre de 2020, se |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+    | Periodo |  |  | Infraestructura
+Banca, Socap y Sofipo |  |  |  |  |  |  |  | Captación
+Banca |  |  |  |  |  |  |  | Captación
+EACP |  |  |  | Crédito
+Banca |  |  |  |  |  |  |  | Crédito
+EACP |  |  |  |  | Cuentas de captación
+Banca |  | 
+-- sheet 'Menú Mapas' dims=1x1
+-- sheet 'Mapas Infraestructura Estado' dims=50x13
+    |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  | Sucursales |  | 
+    |  |  |  |  |  |  |  |  |  | Estado | Índice | Densidad
+    |  |  |  |  |  |  |  |  |  | Colima | 2.8043834670808523 | Alta
+    |  |  |  |  |  |  |  |  |  | Jalisco | 2.454339991645556 | Alta
+    |  |  |  |  |  |  |  |  |  | Ciudad de México | 2.4219795973392673 | Alta
+    |  |  |  |  |  |  |  |  |  | Baja California Sur | 2.2759525530832465 | Alta
+    |  |  |  |  |  |  |  |  |  | Querétaro | 2.2719859631758315 | Alta
+    |  |  |  |  |  |  |  |  |  | Nayarit | 2.2470417639831304 | Alta
+-- sheet 'Mapas Infraestructura Región' dims=50x13
+    |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  | Sucursales |  | 
+    |  |  |  |  |  |  |  |  |  | Región | Índice | 
+    |  |  |  |  |  |  |  |  |  | Ciudad de México | 2.4219795973392673 | 
+    |  |  |  |  |  |  |  |  |  | Occidente y Bajío | 2.1691500228242955 | 
+    |  |  |  |  |  |  |  |  |  | Noreste | 1.837385206017362 | 
+    |  |  |  |  |  |  |  |  |  | Noroeste | 1.5963772415693656 | 
+    |  |  |  |  |  |  |  |  |  | Sur | 1.4807861906342503 | 
+    |  |  |  |  |  |  |  |  |  | Centro Sur y Oriente | 1.3442440322524605 | 
+-- sheet 'Mapas Tenencia Estado' dims=50x13
+    |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  | Tarjeta de crédito - Banca |  | 
+    |  |  |  |  |  |  |  |  |  | Estado | Índice | Densidad
+    |  |  |  |  |  |  |  |  |  | Ciudad de México | 7053.729391477626 | Alta
+    |  |  |  |  |  |  |  |  |  | Baja California Sur | 3693.971403325568 | Alta
+    |  |  |  |  |  |  |  |  |  | Nuevo León | 3672.1520540441184 | Alta
+    |  |  |  |  |  |  |  |  |  | Jalisco | 3630.9376660615317 | Alta
+    |  |  |  |  |  |  |  |  |  | Sinaloa | 3417.4607759896107 | Alta
+    |  |  |  |  |  |  |  |  |  | Colima | 3321.90007765985 | Alta
+-- sheet 'Mapas Tenencia Región' dims=50x13
+    |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  | Tarjeta de crédito - Banca |  | 
+    |  |  |  |  |  |  |  |  |  | Región | Índice | 
+    |  |  |  |  |  |  |  |  |  | Ciudad de México | 7053.729391477626 | 
+    |  |  |  |  |  |  |  |  |  | Occidente y Bajío | 2989.646454569957 | 
+    |  |  |  |  |  |  |  |  |  | Noreste | 2984.5295310963247 | 
+    |  |  |  |  |  |  |  |  |  | Noroeste | 2973.862943276057 | 
+    |  |  |  |  |  |  |  |  |  | Centro Sur y Oriente | 2387.917342806105 | 
+    |  |  |  |  |  |  |  |  |  | Sur | 1785.3615968311444 | 
+-- sheet 'Mapas Género' dims=50x13
+    |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  |  |  | 
+    |  |  |  |  |  |  |  |  |  | Captación total - Banca |  | 
+    |  |  |  |  |  |  |  |  |  | Estado | Porcentaje - Mujeres | 
+    |  |  |  |  |  |  |  |  |  | Guerrero | 0.5753107361984932 | 
+    |  |  |  |  |  |  |  |  |  | Oaxaca | 0.5642790808273528 | 
+    |  |  |  |  |  |  |  |  |  | Tlaxcala | 0.5548097718285707 | 
+    |  |  |  |  |  |  |  |  |  | Hidalgo | 0.5476647364370606 | 
+    |  |  |  |  |  |  |  |  |  | Michoacán | 0.5406642795217533 | 
+    |  |  |  |  |  |  |  |  |  | Puebla | 0.539490868884453 | 
+-- sheet 'Lista' dims=76x176
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | Rural |  |  | Urbana |  |  | Total |  |  |  |  | 
+    | Estados | Forma | Municipios | 50 mil y menos | Más de 50 mil | Población adulta | Población adulta
+Rural | Población adulta
+Urbana | Población adulta 
+Mujeres | Población adulta 
+Hombres | % Población adulta Mujeres | % Población adulta 
+Hombres | - | - | - | - | - | Sucursales | Cajeros | Corresponsales | TPV | Celular | - | - | - | - | - | Mun Prc | Pob Prc |  | Mun Prc | Pob Prc |  | Mun Prc | Pob Prc |  | Municipios rurales con acceso | Población rural con acceso | Municipios urbanos con acceso
+   0 | Nacional | Nacional | 2465 | 2020 | 445 | 93985354 | 19502492 | 74482862 | 48732991 | 45252363 | 0.5185168638083759 | 0.4814831361916241 |  |  |  |  |  | 1.7167568470295913 | 6.321729660134067 | 4.911616335455841 | 156.69132873617733 | 5298.505233060036 |  |  |  |  |  | 0.7272277227722772 | 0.9217916869290345 |  | 1 | 1 |  | 0.7764705882352941 | 0.9837713331377143 |  | 1469 | 17977235 | 445
+   1 | Aguascalientes | Aguas | 11 | 5 | 6 | 1038904 | 81980 | 956924 | 538387 | 500517 | 0.5182259381040019 | 0.4817740618959981 |  |  |  |  |  | 1.6267143066154333 | 7.151767632042999 | 5.775317064906863 | 186.97588997635972 | 4589.3172035144735 |  |  |  |  |  | 1 | 1 |  | 1 | 1 |  | 1 | 1 |  | 5 | 81980 | 6
+   2 | Baja California | BC | 5 | 0 | 5 | 2882498 | 0 | 2882498 | 1432330 | 1450168 | 0.4969058087811336 | 0.5030941912188664 |  |  |  |  |  | 1.342585493554549 | 7.781445121557761 | 7.233309442018694 | 187.31322623641023 | 5238.171891186047 |  |  |  |  |  | 0 | 0 |  | 1 | 1 |  | 1 | 1 |  | 0 | 0 | 5
+   3 | Baja California Sur | BCS | 5 | 1 | 4 | 597552 | 13498 | 584054 | 293482 | 304070 | 0.4911405199882186 | 0.5088594800117814 |  |  |  |  |  | 2.2759525530832465 | 11.965485848930303 | 8.099713497737435 | 408.5669531689292 | 5872.0077917905055 |  |  |  |  |  | 1 | 1 |  | 1 | 1 |  | 1 | 1 |  | 1 | 13498 | 4
+   4 | Campeche | Campeche | 11 | 6 | 5 | 682951 | 119169 | 563782 | 350650 | 332301 | 0.513433613831739 | 0.486566386168261 |  |  |  |  |  | 1.8742193803069327 | 6.252278713992658 | 4.934468212214346 | 115.82090076740498 | 5157.807807587953 |  |  |  |  |  | 1 | 1 |  | 1 | 1 |  | 1 | 1 |  | 6 | 119169 | 5
+   5 | Coahuila | Coahuila | 38 | 26 | 12 | 2316332 | 254478 | 2061854 | 1174267 | 1142065 | 0.5069510760978996 | 0.49304892390210037 |  |  |  |  |  | 1.6362075902763509 | 8.556631778173422 | 7.658660330211732 | 176.47729254700965 | 5202.660931161854 |  |  |  |  |  | 0.9230769230769231 | 0.9875391978874402 |  | 1 | 1 |  | 0.9473684210526315 | 0.9986310252589007 |  | 24 | 251307 | 12
+   6 | Colima | Colima | 10 | 6 | 4 | 556272 | 88594 | 467678 | 284755 | 271517 | 0.5118988552362873 | 0.4881011447637127 |  |  |  |  |  | 2.8043834670808523 | 7.33454137544223 | 9.401875341559526 | 199.56064659015735 | 5212.432047631374 |  |  |  |  |  | 1 | 1 |  | 1 | 1 |  | 1 | 1 |  | 6 | 88594 | 4
+   7 | Chiapas | Chiapas | 123 | 96 | 27 | 3745908 | 1385216 | 2360692 | 1946645 | 1799263 | 0.5196723998560563 | 0.4803276001439437 |  |  |  |  |  | 1.0838493630916723 | 2.8057282773629253 | 3.5024885822075715 | 60.54606786925894 | 3489.2741626329316 |  |  |  |  |  | 0.6979166666666666 | 0.8130017268065053 |  | 1 | 1 |  | 0.7642276422764228 | 0.9308490758448953 |  | 67 | 1126183 | 27
+-- sheet 'ListaAcceso' dims=72x41
+   1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+   Clave 
+Estado | Estado | Imagen | Población Adulta | Sucursales | Corresponsales | Cajeros | TPV | Establecimientos con TPV | Cuentas ligadas a un celular |  |  |  | Seleccionado | Índice | Densidad |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+   1 | Aguascalientes | Freeform 23 | 1038904 | 169 | 600 | 743 | 19425 | 12918 | 476786 |  |  |  | 169 | 1.6267143066154333 | Media |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+   2 | Baja California | Freeform 52 | 2882498 | 387 | 2085 | 2243 | 53993 | 28261 | 1509902 |  |  |  | 387 | 1.342585493554549 | Baja |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+   3 | Baja California Sur | Freeform 44 | 597552 | 136 | 484 | 715 | 24414 | 12691 | 350883 |  |  |  | 136 | 2.2759525530832465 | Alta |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+   4 | Campeche | Freeform 38 | 682951 | 128 | 337 | 427 | 7910 | 4952 | 352253 |  |  |  | 128 | 1.8742193803069327 | Media |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+   5 | Coahuila | Freeform 32 | 2316332 | 379 | 1774 | 1982 | 40878 | 22834 | 1205109 |  |  |  | 379 | 1.6362075902763509 | Media |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+   6 | Colima | Freeform 46 | 556272 | 156 | 523 | 408 | 11101 | 5995 | 289953 |  |  |  | 156 | 2.8043834670808523 | Alta |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+   7 | Chiapas | Freeform 39 | 3745908 | 406 | 1312 | 1051 | 22680 | 15628 | 1307050 |  |  |  | 406 | 1.0838493630916723 | Baja |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+-- sheet 'ListaUso' dims=72x41
+   1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+   Clave 
+Estado | Estado | Imagen | Población Adulta | Ahorro - Banca | Plazo - Banca | N1 - Banca | N2 - Banca | N3 - Banca | Transaccionales tradicionales - Banca | Tarjeta de débito - Banca | Ahorro - EACP | Plazo - EACP | Vista - EACP | Tarjeta de débito - EACP | Tarjeta de crédito - Banca | Personal - Banca | Nómina - Banca | ABCD - Banca | Grupal - Banca | Hipotecario - Banca | Automotriz - Banca | Consumo - EACP | Vivienda - EACP | Captación total - Banca | Captación total - EACP | Crédito total - Banca | Crédito total - EACP |  |  |  | Seleccionado | Índice | Densidad |  |  |  |  |  | 
+   1 | Aguascalientes | Freeform 23 | 1038904 | 1 | 39067 | 1 | 293555 | 6473 | 857899 | 1284434 | 82319 | 13579 | 111736 | 1290 | 317609 | 120783 | 62200 | 48347 | 9293 | 27575 | 13049 | 28720 | 286 | 1196996 | 207634 | 598856 | 29006 |  |  |  | 317609 | 3057.1544627800067 | Alta |  |  |  |  |  | 
+   2 | Baja California | Freeform 52 | 2882498 | 31 | 48536 | 9 | 602303 | 6217 | 2822194 | 4340787 | 7065 | 9218 | 43742 | 6 | 881505 | 202654 | 149677 | 60317 | 64817 | 62713 | 32346 | 1808 | 94 | 3479290 | 60025 | 1454029 | 1902 |  |  |  | 881505 | 3058.128748051169 | Alta |  |  |  |  |  | 
+   3 | Baja California Sur | Freeform 44 | 597552 | 3 | 10352 | 12 | 90946 | 2608 | 641522 | 944233 | 536 | 1078 | 11363 | 272 | 220734 | 60806 | 41500 | 8892 | 22844 | 16624 | 7451 | 2383 | 84 | 745443 | 12977 | 378851 | 2467 |  |  |  | 220734 | 3693.971403325568 | Alta |  |  |  |  |  | 
+   4 | Campeche | Freeform 38 | 682951 | 2 | 12060 | 3 | 123862 | 725 | 571666 | 918335 | 24934 | 5934 | 51504 | 489 | 150574 | 99454 | 39497 | 31868 | 25312 | 11319 | 6745 | 6344 | 28 | 708318 | 82372 | 364769 | 6372 |  |  |  | 150574 | 2204.7555388307505 | Baja |  |  |  |  |  | 
+   5 | Coahuila | Freeform 32 | 2316332 | 2 | 58069 | 15 | 456426 | 9225 | 2051401 | 3776779 | 110611 | 15003 | 89226 | 21042 | 612635 | 262994 | 180005 | 96198 | 74975 | 50335 | 28190 | 33065 | 188 | 2575138 | 214840 | 1305332 | 33253 |  |  |  | 612635 | 2644.8497020288974 | Media |  |  |  |  |  | 
+   6 | Colima | Freeform 46 | 556272 | 2 | 13477 | 8 | 109747 | 1126 | 466560 | 1244451 | 208055 | 12205 | 93815 | 5662 | 184788 | 58017 | 32549 | 14896 | 9147 | 12047 | 5598 | 65361 | 777 | 590920 | 314075 | 317042 | 66138 |  |  |  | 184788 | 3321.90007765985 | Alta |  |  |  |  |  | 
+   7 | Chiapas | Freeform 39 | 3745908 | 3 | 54322 | 31 | 686197 | 3889 | 1843174 | 3655795 | 123255 | 38902 | 243585 | 463 | 430153 | 422395 | 95952 | 126249 | 124154 | 16919 | 16469 | 43914 | 256 | 2587616 | 405742 | 1232291 | 44170 |  |  |  | 430153 | 1148.3277218767787 | Baja |  |  |  |  |  | 
+-- sheet 'ListaGenero' dims=73x41
+   1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+   Clave 
+Estado | Estado | Imagen |  |  | Plazo - Banca | N1 - Banca | N2 - Banca | N3 - Banca | Transaccionales tradicionales - Banca | Captación total - Banca | Plazo - Banca múltiple | N1 - Banca múltiple | N2 - Banca múltiple | N3 - Banca múltiple | Transaccionales tradicionales - Banca mú | Captación total - Banca múltiple | Crédito hipotecario - Banca múltiple | Plazo - Banca de desarrollo | N2 - Banca de desarrollo | Transaccionales tradicionales - Banca de | Captación total - Banca de desarrollo | Tarjeta de débito - Banca | Tarjeta de débito - Banca múltiple | Tarjeta de débito - Banca de desarrollo | Tarjeta de crédito - Banca | Tarjeta de crédito - Banca múltiple | Tarjeta de crédito - Banca de desarrollo |  |  |  |  |  |  |  |  |  |  |  | 
+   1 | Aguascalientes | Freeform 23 |  |  | 0.5974727348993288 | 0 | 0.576138404342685 | 0.499613780318245 | 0.4756033196557234 | 0.5049292602220282 | 0.5993905425259836 | 0 | 0.5610033232768293 | 0.499613780318245 | 0.4713664908007002 | 0.4977087982497813 | 0.3712880372939838 | 0.5467625899280576 | 0.9103996224040277 | 0.7084706990513355 | 0.789331952356292 | 0.5065483624757147 | 0.47489671537167344 | 0.8364845023735104 | 0.46836642843284126 | 0.46850759470311615 | 0.020202020202020204 |  |  |  |  |  |  |  |  |  |  |  | 
+   2 | Baja California | Freeform 52 |  |  | 0.5622395668083846 | 0 | 0.5110682533987163 | 0.46614122567154576 | 0.48848088224613945 | 0.4934743933587445 | 0.5644902885987051 | 0 | 0.48228746199121575 | 0.46614122567154576 | 0.4876019333177698 | 0.4877197376406821 | 0.3828850060950833 | 0.5023364485981309 | 0.9195648881934279 | 0.5865056876514312 | 0.7852053710075206 | 0.48580571592605243 | 0.4718489194334967 | 0.777341439033844 | 0.5061391899600685 | 0.5063249525714169 | 0.1412556053811659 |  |  |  |  |  |  |  |  |  |  |  | 
+   3 | Baja California Sur | Freeform 44 |  |  | 0.5562325725498296 | 0 | 0.4783608613840686 | 0.43328220858895705 | 0.46975948133203366 | 0.4718653097750307 | 0.5607165844239433 | 0 | 0.4412399641011958 | 0.43328220858895705 | 0.4705169820934036 | 0.4681332096432718 | 0.378509618377638 | 0.4404432132963989 | 0.8417428469666389 | 0.4193724718486936 | 0.6181341660625662 | 0.4501432760121922 | 0.4440972903930476 | 0.5687811358352707 | 0.48160814989994544 | 0.4819616608473581 | 0.11004784688995216 |  |  |  |  |  |  |  |  |  |  |  | 
+   4 | Campeche | Freeform 38 |  |  | 0.5982521635839131 | 0 | 0.42119782860194 | 0.38068965517241377 | 0.44950869560558493 | 0.44692491031676823 | 0.6017200191113234 | 0 | 0.4010816249528361 | 0.38068965517241377 | 0.4492704258779062 | 0.44459067933854163 | 0.3378090563941106 | 0.570779712339137 | 0.48927114736655436 | 0.4588922544353094 | 0.482043243741644 | 0.4738628327454821 | 0.454180905630524 | 0.5848304706751194 | 0.47312201244425456 | 0.4736884336092649 | 0.1111111111111111 |  |  |  |  |  |  |  |  |  |  |  | 
+   5 | Coahuila | Freeform 32 |  |  | 0.5542823642274689 | 0.3333333333333333 | 0.4650106533156801 | 0.4351219512195122 | 0.4504952030953196 | 0.4553840940375755 | 0.555471097115141 | 0.3333333333333333 | 0.45504948784513055 | 0.4351219512195122 | 0.4498065858598486 | 0.4530248031932765 | 0.32905193866902144 | 0.49082125603864735 | 0.7340085942295888 | 0.5444108345937028 | 0.6395783000219636 | 0.4883196237827635 | 0.4797089626392205 | 0.7042879919442813 | 0.46589095165370975 | 0.4661272068064722 | 0.11302211302211303 |  |  |  |  |  |  |  |  |  |  |  | 
+   6 | Colima | Freeform 46 |  |  | 0.5701601274948774 | 0.625 | 0.5391636575847102 | 0.4266666666666667 | 0.483137821809316 | 0.4956799483675757 | 0.5748285599031868 | 0.625 | 0.49171264547546184 | 0.4266666666666667 | 0.4837105639772841 | 0.48700161476355247 | 0.38903805203221925 | 0.4961636828644501 | 0.7501738353034668 | 0.46464572143330146 | 0.6319587330106935 | 0.4747428443012115 | 0.45525737632768554 | 0.681651766709238 | 0.4939770824726577 | 0.49441968536929115 | 0.07253886010362694 |  |  |  |  |  |  |  |  |  |  |  | 
+   7 | Chiapas | Freeform 39 |  |  | 0.627887481371088 | 0.06451612903225806 | 0.5152256474927651 | 0.41100823045267487 | 0.5205566017187712 | 0.5212078738469986 | 0.6285403926617316 | 0.06451612903225806 | 0.4179189950164414 | 0.41100823045267487 | 0.5141230587588915 | 0.49731217547540996 | 0.3969341161121983 | 0.6197076612903226 | 0.6893821074723022 | 0.6278224431126054 | 0.6706747888358949 | 0.5162079034391626 | 0.47709293668759833 | 0.6204025213540785 | 0.5030176302336478 | 0.5033702202717174 | 0.0967741935483871 |  |  |  |  |  |  |  |  |  |  |  | 
+-- sheet 'ListaAccesoRegión' dims=53x57
+   1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+   Clave Región | Región | Imagen | Población Adulta | Sucursales | Corresponsales | Cajeros | TPV | Establecimientos con TPV | Cuentas ligadas a un celular |  |  | Seleccionado | Índice | Concentración |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+   1 | Centro Sur y Oriente | Freeform 34 | 28521607 | 3834 | 10576 | 12997 | 290025 | 175656 | 12879140 |  |  | 3834 | 1.3442440322524605 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+   2 | Ciudad de México | Freeform 39 | 7547545 | 1828 | 3381 | 8522 | 277967 | 130602 | 10247549 |  |  | 1828 | 2.4219795973392673 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+   3 | Noreste | Freeform 5 | 11445613 | 2103 | 8665 | 9729 | 225343 | 110455 | 5623514 |  |  | 2103 | 1.837385206017362 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+   4 | Noroeste | Freeform 9 | 12083610 | 1929 | 8091 | 9021 | 228686 | 130071 | 6337979 |  |  | 1929 | 1.5963772415693656 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+   5 | Occidente y Bajío | Freeform 4 | 19597538 | 4251 | 9150 | 11947 | 270557 | 173874 | 8375117 |  |  | 4251 | 2.1691500228242955 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+   6 | Sur | Freeform 35 | 14789441 | 2190 | 6299 | 7199 | 180091 | 96312 | 6334890 |  |  | 2190 | 1.4807861906342503 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+   7 | Nacional | - | 93985354 | 16135 | 46162 | 59415 | 1472669 | 816970 | 49798189 |  |  | 16135 | 1.7167568470295913 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+-- sheet 'ListaUsoRegión' dims=67x57
+   1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40
+    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+   Clave Región | Región | Imagen | Población Adulta | Ahorro - Banca | Plazo - Banca | N1 - Banca | N2 - Banca | N3 - Banca | Transaccionales tradicionales - Banca | Tarjeta de débito - Banca | Ahorro - EACP | Plazo - EACP | Vista - EACP | Tarjeta de débito - EACP | Tarjeta de crédito - Banca | Personal - Banca | Nómina - Banca | ABCD - Banca | Grupal - Banca | Hipotecario - Banca | Automotriz - Banca | Consumo - EACP | Vivienda - EACP | Captación total - Banca | Captación total - EACP | Crédito total - Banca | Crédito total - EACP |  |  |  | Seleccionado | Índice |  |  |  |  |  |  | 
+   1 | Centro Sur y Oriente | Freeform 34 | 28521607 | 3402 | 671344 | 154 | 4609971 | 29941 | 19513328 | 30834397 | 1542933 | 258361 | 1684282 | 60629 | 6810724 | 3953689 | 1256886 | 1537398 | 992492 | 279753 | 200439 | 406375 | 3549 | 24828140 | 3485576 | 15031381 | 409924 |  |  |  | 6810724 | 2387.917342806105 |  |  |  |  |  |  | 
+   2 | Ciudad de México | Freeform 39 | 7547545 | 5835 | 1160842 | 10873 | 7354068 | 49566 | 17060414 | 31829785 | 243954 | 142139 | 80104 | 58651 | 5323834 | 1070922 | 513675 | 304423 | 120473 | 211481 | 126649 | 75753 | 349 | 25641598 | 466197 | 7671457 | 76102 |  |  |  | 5323834 | 7053.729391477626 |  |  |  |  |  |  | 
+   3 | Noreste | Freeform 5 | 11445613 | 20 | 398540 | 226 | 3238782 | 73672 | 10846699 | 20397209 | 1007112 | 130871 | 687265 | 92330 | 3415977 | 1117829 | 692633 | 396230 | 261221 | 264521 | 149530 | 332486 | 2567 | 14557939 | 1825248 | 6297941 | 335053 |  |  |  | 3415977 | 2984.5295310963247 |  |  |  |  |  |  | 
+   4 | Noroeste | Freeform 9 | 12083610 | 53 | 238294 | 628 | 2677365 | 60335 | 11330448 | 17741511 | 504814 | 69139 | 363662 | 11574 | 3593500 | 1104730 | 682957 | 320741 | 272587 | 256150 | 130921 | 165499 | 1968 | 14307123 | 937615 | 6361586 | 167467 |  |  |  | 3593500 | 2973.862943276057 |  |  |  |  |  |  | 
+   5 | Occidente y Bajío | Freeform 4 | 19597538 | 26 | 579142 | 135 | 3568154 | 65116 | 15142762 | 23920429 | 5406680 | 721736 | 4380366 | 160311 | 5858971 | 2088564 | 834898 | 660928 | 289243 | 330159 | 168187 | 1533621 | 24629 | 19355335 | 10508782 | 10230950 | 1558250 |  |  |  | 5858971 | 2989.646454569957 |  |  |  |  |  |  | 
+   6 | Sur | Freeform 35 | 14789441 | 15 | 291478 | 89 | 2761036 | 24315 | 9440353 | 16180525 | 1108306 | 191683 | 1131995 | 8781 | 2640450 | 1953737 | 570546 | 567094 | 501862 | 146425 | 93866 | 297345 | 4113 | 12517286 | 2431984 | 6473980 | 301458 |  |  |  | 2640450 | 1785.3615968311444 |  |  |  |  |  |  | 
+   7 | Nacional | - | 93985354 | 9351 | 3339640 | 12105 | 24209376 | 302945 | 83334004 | 140904858 | 9843100 | 1515118 | 8374809 | 392276 | 27643910 | 11406894 | 4581115 | 3786814 | 2437922 | 1488497 | 870740 | 2816666 | 37212 | 111207421 | 19733027 | 52215892 | 2853878 |  |  |  | 27643910 | 2941.2997688980345 |  |  |  |  |  |  | 
