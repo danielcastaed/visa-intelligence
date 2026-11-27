@@ -309,6 +309,12 @@ button.tab:disabled{opacity:.4;cursor:not-allowed;background:var(--bg)}
 
   <div class="slabel">Mercado Unificado · Banxico + CNBV</div>
   <div class="card">
+    <div class="card-title">Mercado total por emisor</div>
+    <div class="card-sub" id="tot-sub"></div>
+    <div style="overflow-x:auto;max-height:620px;overflow-y:auto"><table class="tbl" id="tot-table"></table></div>
+    <div class="note" id="tot-note"></div>
+  </div>
+  <div class="card">
     <div class="card-title">Todo el mercado: bancos, SOFIPO y neobancos</div>
     <div class="card-sub" id="uni-sub"></div>
     <div class="mkt-grid" id="uni-kpis" style="margin:10px 0 14px"></div>
@@ -316,7 +322,7 @@ button.tab:disabled{opacity:.4;cursor:not-allowed;background:var(--bg)}
     <div class="leg-row" id="uni-leg"></div>
     <div class="chart-wrap"><canvas id="uniChart"></canvas></div>
     <div class="row-2s" style="margin-top:16px">
-      <div><div class="mini-title">Tarjetas de crédito fuera de CF256 (CNBV)</div><div class="card-sub">Millones de tarjetas por trimestre · todas Mastercard</div><div class="chart-wrap" style="height:240px"><canvas id="uniFinChart"></canvas></div></div>
+      <div><div class="mini-title">Tarjetas de crédito fuera de CF256 (CNBV)</div><div class="card-sub">Millones de tarjetas por trimestre · Mastercard salvo el crédito de Banco Azteca (Visa)</div><div class="chart-wrap" style="height:240px"><canvas id="uniFinChart"></canvas></div></div>
       <div><div class="mini-title">Composición del ajuste al último corte CNBV</div><div class="card-sub" id="uni-comp-sub"></div><div style="overflow-x:auto"><table class="tbl" id="uni-comp"></table></div></div>
     </div>
     <div class="note" id="uni-note"></div>
@@ -712,8 +718,9 @@ function renderContrib() {
 
 const issuerLabel = (r) => (/^Emisor /.test(r.banco) || r.banco === 'Sin identificar' ? 'Emisor ' + r.letra : r.banco + ' (' + r.letra + ')');
 function renderBancos() {
-  const src = ({credito: D.emisores_credito, debito: D.emisores_debito, total: D.emisores_total}[S.tipo]).filter(r => r.total > 0).slice(0, 15);
-  document.getElementById('banco-sub').textContent = TIPO[S.tipo] + ' · ' + D.meta.corte_tarjetas + ' · millones de tarjetas · top ' + src.length + ' emisores';
+  const UNI = S.mercado === 'unif' && D.unificado;
+  const src = (UNI ? D.unificado.emisores[S.tipo] : {credito: D.emisores_credito, debito: D.emisores_debito, total: D.emisores_total}[S.tipo]).filter(r => r.total > 0).slice(0, 15);
+  document.getElementById('banco-sub').textContent = TIPO[S.tipo] + ' · ' + (UNI ? 'mercado unificado, conteos CNBV al ' + D.unificado.corte_emisores : 'Banxico ' + D.meta.corte_tarjetas) + ' · millones de tarjetas · top ' + src.length + ' emisores';
   document.getElementById('banco-wrap').style.height = (src.length * 26 + 40) + 'px';
   mk('bancoChart', {type: 'bar', data: {labels: src.map(issuerLabel), datasets: [
     bar('Visa', src.map(r => +(r.visa / 1e6).toFixed(3)), css('--visa'), {stack: 's'}),
@@ -785,13 +792,30 @@ function renderFintech() {
   document.getElementById('fin-note').textContent = 'Pro forma ilustrativo: la CNBV cuenta contratos y Banxico tarjetas vigentes (con adicionales), así que no son estrictamente comparables. Plata no tiene saldo público a la mano y no entra en el pro forma de facturación (lo movería más hacia Mastercard). Mercado Pago (Visa en crédito) no reporta tarjetas de crédito por separado. Saldo del sistema: ' + F.saldo_fuente + '.';
 }
 
+function renderTotalEmisores() {
+  const U = D.unificado;
+  if (!U) return;
+  const R = U.emisores[S.tipo];
+  const T = R.reduce((a, r) => a + r.total, 0), TV = R.reduce((a, r) => a + r.visa, 0), TM = R.reduce((a, r) => a + r.mc, 0), TO = R.reduce((a, r) => a + r.otras, 0);
+  const SM = R.reduce((a, r) => a + r.sin_marca, 0);
+  document.getElementById('tot-sub').textContent = TIPO[S.tipo] + ' · todos los emisores de tarjetas en México (bancos, SOFIPO, neobancos y Mercado Pago) · conteos CNBV al ' + U.corte_emisores + ' · marca de cada banco según su letra en Banxico';
+  const big = R.filter(r => r.total >= 50000), small = R.filter(r => r.total < 50000 && r.total > 0), nom = R.filter(r => r.total === 0);
+  const sum = (L, k) => L.reduce((a, r) => a + r[k], 0);
+  const tr = (r) => `<tr><td><b>${r.banco}</b></td><td>${r.sector}</td><td class="n">${fN(Math.round(r.total))}</td><td class="n">${f1(r.total / T * 100)}%</td><td class="n">${fN(Math.round(r.visa))}</td><td class="n">${fN(Math.round(r.mc))}</td><td class="n">${r.pct_visa == null ? '—' : f1(r.pct_visa) + '%'}</td><td class="ev">${r.fuente}</td></tr>`;
+  const rest = small.length ? `<tr><td><b>Otros ${small.length} emisores</b></td><td>—</td><td class="n">${fN(Math.round(sum(small, 'total')))}</td><td class="n">${f1(sum(small, 'total') / T * 100)}%</td><td class="n">${fN(Math.round(sum(small, 'visa')))}</td><td class="n">${fN(Math.round(sum(small, 'mc')))}</td><td class="n">${f1(sum(small, 'visa') / sum(small, 'total') * 100)}%</td><td class="ev">${small.map(r => r.banco).join(', ')}</td></tr>` : '';
+  document.getElementById('tot-table').innerHTML = '<thead><tr><th>Emisor</th><th>Figura</th><th class="n">Tarjetas</th><th class="n">Share</th><th class="n">Visa</th><th class="n">Mastercard</th><th class="n">% Visa</th><th>Fuente de la marca</th></tr></thead><tbody>' +
+    big.map(tr).join('') + rest +
+    `<tr style="border-top:2px solid var(--border)"><td><b>Total mercado</b></td><td></td><td class="n"><b>${fN(Math.round(T))}</b></td><td class="n"><b>100%</b></td><td class="n"><b>${fN(Math.round(TV))}</b></td><td class="n"><b>${fN(Math.round(TM))}</b></td><td class="n"><b>${f1(TV / T * 100)}%</b></td><td class="ev">Mastercard ${f1(TM / T * 100)}% · otras ${f1(TO / T * 100)}%</td></tr></tbody>`;
+  document.getElementById('tot-note').innerHTML = 'Share de <b>plásticos</b>. ' + (SM ? fN(SM) + ' tarjetas de emisores sin marca confirmada (' + nom.concat(R.filter(r => r.sin_marca > 0 && r.total > 0)).map(r => r.banco).slice(0, 8).join(', ') + ') quedan fuera del total. ' : '') + U.externos.map(e => '<b>' + e.nombre + '</b>: ' + e.fuente).join(' ') + ' Para facturación ver el snapshot con Mercado = Unificado.';
+}
+
 function renderUnificado() {
   const U = D.cnbv;
   if (!U) return;
   const Sr = U.serie, L = Sr[Sr.length - 1], lab = Sr.map(s => s.corte);
   const tipo = S.tipo;
   const pre = tipo === 'credito' ? 'cr' : (tipo === 'debito' ? 'db' : 'tot');
-  document.getElementById('uni-sub').textContent = 'Share de plásticos por marca sumando a la serie de Banxico (CF256) los emisores que solo reporta la CNBV: Nu, Plata, Stori y Klar · ' + TIPO[tipo] + ' · CNBV al ' + U.corte_cnbv + (L.corte.includes('†') ? ' († último trimestre de Banxico con la cifra CNBV más reciente)' : '');
+  document.getElementById('uni-sub').textContent = 'Share de plásticos por marca sumando a la serie de Banxico (CF256) los emisores que solo reporta la CNBV (' + U.fuera_cf256.map(e => e.nombre.replace(' (crédito)', '')).join(', ') + ') · ' + TIPO[tipo] + ' · CNBV al ' + U.corte_cnbv + (L.corte.includes('†') ? ' († último trimestre de Banxico con la cifra CNBV más reciente)' : '');
   const k = (lbl, v, sub) => `<div><div class="kpi-lbl">${lbl}</div><div class="kpi-val">${v}</div><div class="kpi-delta">${sub || ''}</div></div>`;
   const tiles = [];
   if (tipo !== 'total') {
@@ -864,7 +888,7 @@ function renderDeep() {
 }
 
 // ───────── Controles
-const VIEW_RENDER = {dashboard: () => { renderSnapshot(); renderMS(); renderProducto(); renderVol(); renderVig(); renderYoY(); renderEsc(); renderContrib(); renderBancos(); renderFintech(); renderUnificado(); renderHeat(); renderConc(); renderTables(); }, deepdive: renderDeep, metodologia: () => {}};
+const VIEW_RENDER = {dashboard: () => { renderSnapshot(); renderMS(); renderProducto(); renderVol(); renderVig(); renderYoY(); renderEsc(); renderContrib(); renderBancos(); renderFintech(); renderTotalEmisores(); renderUnificado(); renderHeat(); renderConc(); renderTables(); }, deepdive: renderDeep, metodologia: () => {}};
 let vista = 'dashboard';
 function renderAll() {
   document.getElementById('sel-esc').disabled = S.tipo === 'debito';

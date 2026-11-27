@@ -405,7 +405,7 @@
         "nombre": "Banco Plata",
         "sector": "Banco desde mar-2026",
         "credito": "Mastercard",
-        "debito": null
+        "debito": "Mastercard"
       },
       {
         "clave": "027032",
@@ -420,6 +420,32 @@
         "sector": "SOFIPO",
         "credito": "Mastercard",
         "debito": "Mastercard"
+      },
+      {
+        "clave": "040170",
+        "nombre": "Revolut",
+        "sector": "Banco desde nov-2025",
+        "credito": "Mastercard",
+        "debito": "Mastercard"
+      },
+      {
+        "clave": "040127",
+        "nombre": "Banco Azteca (crédito)",
+        "sector": "Banco",
+        "credito": "Visa",
+        "debito": null,
+        "nota": "Su débito es la letra Q de Banxico; su crédito no aparece en CF256. Tarjetas de crédito Azteca: Visa (Oro Garantizada, Black Infinite)."
+      }
+    ],
+    "fuera_ambas": [
+      {
+        "nombre": "Mercado Pago",
+        "sector": "IFPE / Mercado Lending (no es banco)",
+        "credito": "Visa",
+        "debito": "Mastercard",
+        "tarjetas_credito": 1000000,
+        "tarjetas_debito": null,
+        "fuente": "Última cifra pública: más de 1M de tarjetas de crédito Visa emitidas (prensa). No reporta a Banxico ni a la CNBV; actualizar a mano."
       }
     ]
   }

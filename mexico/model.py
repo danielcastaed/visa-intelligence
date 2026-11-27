@@ -489,48 +489,83 @@ def main():
             base = rt["2019"] if y <= 2019 else (rt["2019"] + (rt["2024"] - rt["2019"]) * (y - 2019) / 5 if y <= 2024 else rt["2025"])
             return sis * base / rt["2025"]
 
-        def conteos(p, d):
-            """Tarjetas por marca con conteos CNBV. Devuelve (credito[v,m,o], debito[v,m,o], fintech_tc, cobertura)."""
+        ext = C.get("fuera_ambas", [])
+        def externos(p):
+            """Emisores que no reportan a nadie (Mercado Pago): rampa lineal desde su lanzamiento hasta la cifra pública."""
+            outl = []
+            for e in ext:
+                n_last = e.get("tarjetas_credito") or 0
+                y0, q0 = 2023, 2   # lanzamiento de la tarjeta de crédito de Mercado Pago: 2T23
+                i0 = y0 * 4 + q0; il = int(pers[-1][:4]) * 4 + (int(pers[-1][4:]) // 3); ip = int(p[:4]) * 4 + (int(p[4:]) // 3)
+                f = 0 if ip <= i0 else min(1.0, (ip - i0) / max(il - i0, 1))
+                outl.append((e, n_last * f, (e.get("tarjetas_debito") or 0) * f))
+            return outl
+
+        def conteos(p, d, detalle=False):
+            """Tarjetas por marca con conteos CNBV (+ externos). Devuelve crédito y débito [v,m,o], crédito fuera de Banxico {v,m},
+            cobertura, tarjetas del Bienestar y, si detalle, la tabla por emisor."""
             out = {"tc": [0.0, 0.0, 0.0], "td": [0.0, 0.0, 0.0]}
-            asign = {"tc": 0, "td": 0}; total = {"tc": 0, "td": 0}; ftc = 0; bien = [0.0, 0.0, 0.0]
-            claves = {c for (q, c) in idx if q == p}
-            for c in claves:
+            asign = {"tc": 0, "td": 0}; total = {"tc": 0, "td": 0}; fuera = {"v": 0.0, "m": 0.0}; bien = [0.0, 0.0, 0.0]
+            tab = {}
+            def put(c, nombre, sector, fuente, key, vmo):
+                rw = tab.setdefault(c, {"nombre": nombre, "sector": sector, "fuente": {}, "tc": [0, 0, 0], "td": [0, 0, 0]})
+                rw["fuente"][key] = fuente
+                for j in range(3):
+                    rw[key][j] += vmo[j]
+            for c in sorted({c for (q, c) in idx if q == p}):
                 x = idx[(p, c)]
                 for key, prod in (("tc", "credito"), ("td", "debito")):
                     n = x[key]
+                    if not n:
+                        continue
                     total[key] += n
-                    if c in fin:
-                        m = fin[c].get(prod)
-                        if m and n:
-                            out[key][0 if m.startswith("Visa") else 1] += n; asign[key] += n
-                            if key == "tc": ftc += n
+                    if c in fin and fin[c].get(prod):
+                        m = fin[c][prod]
+                        j = 0 if m.startswith("Visa") else 1
+                        out[key][j] += n; asign[key] += n
+                        if key == "tc":
+                            fuera["v" if j == 0 else "m"] += n
+                        put(c, fin[c]["nombre"].replace(" (crédito)", ""), fin[c]["sector"], "Marca conocida (" + m + ")", key, [n if j == 0 else 0, n if j == 1 else 0, 0])
                         continue
                     k = letra_de.get(c)
                     ser = cf[prod]["letras"].get(k) if k else None
-                    if not ser:
-                        continue
-                    mix = triple(ser, d)
+                    mix = triple(ser, d) if ser else (0, 0, 0)
                     if sum(mix) == 0:
+                        put(c, x["nombre"], x["sector"], "Sin marca confirmada", key, [0, 0, 0])
+                        tab[c].setdefault("sin_marca", {})[key] = n
                         continue
+                    fuente = f"Letra {k} de Banxico"
                     if n < 0.05 * sum(mix):          # hueco de la CNBV (p. ej. débito de Banamex): se usa Banxico
-                        n = sum(mix); total[key] += n
+                        total[key] += sum(mix) - n; n = sum(mix); fuente = f"Banxico, letra {k} (CNBV sin dato)"
+                    vmo = [n * mix[j] / sum(mix) for j in range(3)]
                     for j in range(3):
-                        out[key][j] += n * mix[j] / sum(mix)
+                        out[key][j] += vmo[j]
                         if k == "AD" and key == "td":
-                            bien[j] += n * mix[j] / sum(mix)
+                            bien[j] += vmo[j]
                     asign[key] += n
+                    put(c, x["nombre"], x["sector"], fuente, key, vmo)
+            for e, ntc, ntd in externos(p):
+                for key, n, prod in (("tc", ntc, "credito"), ("td", ntd, "debito")):
+                    if not n:
+                        continue
+                    j = 0 if e[prod].startswith("Visa") else 1
+                    out[key][j] += n; asign[key] += n; total[key] += n
+                    if key == "tc":
+                        fuera["v" if j == 0 else "m"] += n
+                    put("ext:" + e["nombre"], e["nombre"], e["sector"], "Estimación pública (" + e[prod] + ")", key, [n if j == 0 else 0, n if j == 1 else 0, 0])
             cob = {k: (asign[k] / total[k] * 100 if total[k] else 0) for k in total}
-            return out["tc"], out["td"], ftc, cob, bien
+            return out["tc"], out["td"], fuera, cob, bien, (tab if detalle else None)
 
         def row(label, year, d, cre, deb, extra):
             p = max(q for q in pers if fecha(q) <= d)
             base, _ = share_row(label, year, d, cre, deb, cf, rib, extra)
-            tc, td, ftc, cob, bien = conteos(p, d)
-            # pesos de las fintech dentro del crédito
-            s_f = ftc * saldo_x_tarjeta if saldo_x_tarjeta else 0
+            tc, td, fuera, cob, bien, _ = conteos(p, d)
+            # emisores de crédito fuera de Banxico (fintech, Azteca crédito, Mercado Pago): entran por saldo estimado
+            nf = fuera["v"] + fuera["m"]
+            fv = fuera["v"] / nf if nf else 0
+            s_f = nf * saldo_x_tarjeta if saldo_x_tarjeta else 0
             w_s = s_f / (saldo_sistema(year) + s_f) if s_f else 0
-            bank_tc = sum(tc) - ftc
-            w_c = ftc / sum(tc) if sum(tc) else 0
+            w_c = nf / sum(tc) if sum(tc) else 0
             cre_u = cre / (1 - w_s) if w_s < 1 else cre
             r = dict(base)
             r.update({"fact_credito": round(cre_u / 1000, 4), "fact_credito_bancos": base["fact_credito"],
@@ -541,8 +576,8 @@ def main():
                       "cobertura_cr": round(cob["tc"], 1), "cobertura_db": round(cob["td"], 1)})
             dv, dm = td[0] / sum(td), td[1] / sum(td)
             pv, pm = tc[0] / sum(tc), tc[1] / sum(tc)
-            sc = {"saldo": (base["cr_visa_saldo"] / 100 * (1 - w_s), base["cr_mc_saldo"] / 100 * (1 - w_s) + w_s),
-                  "cartera": (base["cr_visa_cartera"] / 100 * (1 - w_c), base["cr_mc_cartera"] / 100 * (1 - w_c) + w_c),
+            sc = {"saldo": (base["cr_visa_saldo"] / 100 * (1 - w_s) + w_s * fv, base["cr_mc_saldo"] / 100 * (1 - w_s) + w_s * (1 - fv)),
+                  "cartera": (base["cr_visa_cartera"] / 100 * (1 - w_c) + w_c * fv, base["cr_mc_cartera"] / 100 * (1 - w_c) + w_c * (1 - fv)),
                   "plast": (pv, pm)}
             T = cre_u + deb
             for esc, (v, m) in sc.items():
@@ -568,7 +603,33 @@ def main():
                 continue
             anu.append(row(r0["periodo"], r0["anio"], d, bill.get("credito", "anual", str(r0["anio"])),
                            bill.get("debito", "anual", str(r0["anio"])), {"completo": r0["completo"]}))
-        return {"anual": anu, "trimestral": tri, "saldo_x_tarjeta_mxn": round(saldo_x_tarjeta * 1e6) if saldo_x_tarjeta else None,
+        # Tabla por emisor al último corte CNBV (marca: letra de Banxico al último trimestre de Banxico)
+        _, _, _, cobl, _, tab = conteos(pers[-1], fechas[-1], detalle=True)
+        emis = []
+        for c, rw in tab.items():
+            tc, td = rw["tc"], rw["td"]
+            sm = rw.get("sin_marca", {})
+            emis.append({"clave": c, "banco": rw["nombre"], "letra": "", "sector": rw["sector"],
+                         "fuente": " · ".join(f"{'crédito' if k == 'tc' else 'débito'}: {v}" for k, v in rw["fuente"].items()),
+                         "tc_visa": round(tc[0]), "tc_mc": round(tc[1]), "tc_otras": round(tc[2]), "tc_sin_marca": sm.get("tc", 0),
+                         "td_visa": round(td[0]), "td_mc": round(td[1]), "td_otras": round(td[2]), "td_sin_marca": sm.get("td", 0)})
+        def prod_rows(kind):
+            o = []
+            for e in emis:
+                if kind == "total":
+                    v, m, ot, sm = e["tc_visa"] + e["td_visa"], e["tc_mc"] + e["td_mc"], e["tc_otras"] + e["td_otras"], e["tc_sin_marca"] + e["td_sin_marca"]
+                else:
+                    pre = "tc" if kind == "credito" else "td"
+                    v, m, ot, sm = e[pre + "_visa"], e[pre + "_mc"], e[pre + "_otras"], e[pre + "_sin_marca"]
+                tt = v + m + ot
+                if tt + sm <= 0:
+                    continue
+                o.append({"banco": e["banco"], "letra": "", "sector": e["sector"], "fuente": e["fuente"], "visa": v, "mc": m, "otras": ot,
+                          "total": tt, "sin_marca": sm, "pct_visa": round(v / tt * 100, 1) if tt else None})
+            return sorted(o, key=lambda r: -(r["total"] + r["sin_marca"]))
+        emisores_u = {k: prod_rows(k) for k in ("credito", "debito", "total")}
+        return {"anual": anu, "trimestral": tri, "emisores": emisores_u, "corte_emisores": f"{pers[-1][4:]}/{pers[-1][:4]}",
+                "externos": [{"nombre": e["nombre"], "fuente": e["fuente"]} for e in ext], "saldo_x_tarjeta_mxn": round(saldo_x_tarjeta * 1e6) if saldo_x_tarjeta else None,
                 "desde": qlabel(d0)}
 
     out = {
