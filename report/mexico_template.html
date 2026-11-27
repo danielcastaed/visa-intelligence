@@ -139,6 +139,14 @@ button.tab:disabled{opacity:.4;cursor:not-allowed;background:var(--bg)}
   <button class="tab" data-vista="deepdive">Deep Dive</button>
   <button class="tab" data-vista="metodologia">Metodología</button>
   <span class="sep"></span>
+  <span class="filter-label" title="Solo bancos que reportan a Banxico, o mercado completo con bancos, SOFIPO y neobancos contados por la CNBV">Mercado</span>
+  <button class="tab" data-mercado="banxico">Bancos Banxico</button>
+  <button class="tab active" data-mercado="unif">Unificado (CNBV)</button>
+  <span class="sep"></span>
+  <span class="filter-label" title="Tarjetas de débito del Banco del Bienestar (programas sociales, Mastercard). Son ~40–58M plásticos de bajo gasto.">Tarjetas Bienestar</span>
+  <button class="tab active" data-bien="incl">Incluir</button>
+  <button class="tab" data-bien="excl">Excluir</button>
+  <span class="sep"></span>
   <span class="filter-label">Período</span>
   <button class="tab" data-periodo="trimestral">Trimestral</button>
   <button class="tab active" data-periodo="anual">Anual</button>
@@ -447,7 +455,10 @@ button.tab:disabled{opacity:.4;cursor:not-allowed;background:var(--bg)}
       <li>La identificación de letras, sobre todo C = Banamex y E = Santander (juntos ~43% del saldo y mayoritariamente MC).</li>
       <li>Que el saldo sea un buen proxy de facturación (mezcla gasto mensual con deuda revolvente).</li>
       <li>Débito sin ponderar: probablemente sobreestima a emisores con muchas tarjetas inactivas.</li>
-      <li>Cobertura: CF256 solo incluye bancos que reportan a Banxico. Nu (banco desde ago-2026), Plata (banco desde mar-2026) y las SOFIPO (Stori, Klar) no aparecen al 2T26; las SOFIPO reportan a la CNBV, no a Banxico. La sección Mercado Unificado las suma con datos de la CNBV. Mercado Pago no es banco y no aparece en ninguna de las dos fuentes.</li>\n      <li>Cruce con la CNBV: la Base de Datos de Inclusión Financiera (trimestral, desde sep-2023 por institución) publica tarjetas de crédito y débito con nombre para bancos y SOFIPO. Comparando trimestre a trimestre con las letras de CF256 se confirmaron las identificaciones y se resolvieron letras de débito como AD = Banco del Bienestar (débito social Mastercard), Q = Banco Azteca y B = Banjercito.</li>
+      <li>Cobertura: CF256 solo incluye bancos que reportan a Banxico. Nu (banco desde ago-2026), Plata (banco desde mar-2026) y las SOFIPO (Stori, Klar) no aparecen al 2T26; las SOFIPO reportan a la CNBV, no a Banxico. La sección Mercado Unificado las suma con datos de la CNBV. Mercado Pago no es banco y no aparece en ninguna de las dos fuentes.</li>
+      <li>Cruce con la CNBV: la Base de Datos de Inclusión Financiera (trimestral, desde sep-2023 por institución) publica tarjetas de crédito y débito con nombre para bancos y SOFIPO. Comparando trimestre a trimestre con las letras de CF256 se confirmaron las identificaciones y se resolvieron letras de débito como AD = Banco del Bienestar (débito social Mastercard), Q = Banco Azteca y B = Banjercito.</li>
+      <li><b>Mercado unificado (selector Mercado).</b> La CNBV define el universo de emisores y sus conteos de tarjetas: bancos, SOFIPO y neobancos con nombre. Banxico aporta la marca: los conteos de cada banco se reparten con la mezcla Visa/Mastercard de su letra en CF256. Nu, Plata, Stori y Klar son 100% Mastercard. Donde la CNBV no trae dato (débito de Banamex) se usa el conteo de Banxico. <b>Crédito:</b> las fintech entran con su saldo estimado: sus tarjetas × el saldo por tarjeta de Nu (27,497 mdp ÷ 10.1M ≈ 2,700 MXN, CNBV ago-2026). Ese saldo se suma al del sistema bancario (721,733 mdp a abr-2026, escalado hacia atrás con los Indicadores Básicos), y la facturación de crédito se eleva en la misma proporción. <b>Débito:</b> mezcla de plásticos con conteos CNBV más las fintech; la facturación de débito no se ajusta. La serie unificada arranca en 3T23, cuando la CNBV empieza a publicar por institución. El último trimestre de Banxico usa la cifra CNBV más reciente.</li>
+      <li><b>Tarjetas del Bienestar (selector).</b> Son tarjetas de programas sociales (Mastercard) con poco gasto con tarjeta. Como el share de débito se aproxima con la mezcla de plásticos, incluirlas sobrestima a Mastercard en facturación. La CNBV cuenta 58M y Banxico 40M, y esa diferencia explica casi toda la brecha de débito entre ambas fuentes: sin ellas, Visa tiene ~75–77% del débito en las dos.</li>
     </ul>
     <h3>Validación sugerida</h3>
     <p>Contrastar con el volumen interno de VisaNet México por producto y año.</p>
@@ -461,7 +472,7 @@ button.tab:disabled{opacity:.4;cursor:not-allowed;background:var(--bg)}
 <script>
 const D = __DATA__;
 const S = {periodo: 'anual', tipo: 'total', esc: 'saldo', voltab: 'marca', vigtab: 'hist', yoytab: 'fact',
-           heatmarca: 'total', rango: '60', cruceprod: 'credito'};
+           heatmarca: 'total', rango: '60', cruceprod: 'credito', mercado: 'unif', bien: 'incl'};
 const charts = {};
 const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const nf = (v, d) => v.toLocaleString('es-MX', {minimumFractionDigits: d, maximumFractionDigits: d});
@@ -472,7 +483,20 @@ const fN = (v) => v.toLocaleString('es-MX');
 const TIPO = {credito: 'Crédito', debito: 'Débito', total: 'Total'};
 const ESC = {saldo: 'ponderado por saldo', cartera: 'ponderado por tarjetas comparables', plast: 'solo plásticos'};
 
-const rows = () => (S.periodo === 'trimestral' && D.trimestral.length ? D.trimestral : D.anual);
+const SRC = () => (S.mercado === 'unif' && D.unificado ? D.unificado : D);
+function sinBien(r) {
+  if (r.db_visa_xb == null) return r;
+  const o = Object.assign({}, r, {db_visa: r.db_visa_xb, db_mc: r.db_mc_xb, tarj_db_mc: Math.max(r.tarj_db_mc - (r.bienestar_tarjetas || 0), 0)});
+  ['saldo', 'cartera', 'plast'].forEach(e => { o['tot_visa_' + e] = r['tot_visa_' + e + '_xb']; o['tot_mc_' + e] = r['tot_mc_' + e + '_xb']; });
+  return o;
+}
+const _cache = {};
+const rows = () => {
+  const s = SRC(), base = (S.periodo === 'trimestral' && s.trimestral.length ? s.trimestral : s.anual);
+  if (S.bien !== 'excl') return base;
+  const k = S.mercado + S.periodo;
+  return _cache[k] || (_cache[k] = base.map(sinBien));
+};
 const lastFull = (R) => { const f = R.filter(r => r.completo); return f.length ? f[f.length - 1] : R[R.length - 1]; };
 const lag = () => (S.periodo === 'trimestral' ? 4 : 1);
 function shareFields(tipo, esc) {
@@ -846,7 +870,8 @@ function renderAll() {
   document.getElementById('sel-esc').disabled = S.tipo === 'debito';
   const trimOk = D.trimestral.length > 0;
   document.querySelectorAll('[data-periodo="trimestral"]').forEach(b => { b.disabled = !trimOk; b.title = trimOk ? '' : 'Disponible después de la próxima actualización de datos'; });
-  document.getElementById('filter-note').textContent = (S.periodo === 'trimestral' ? 'Trimestral' : 'Anual') + ' · ' + (S.tipo === 'debito' ? 'débito: mezcla de plásticos' : 'crédito ' + ESC[S.esc]);
+  const U = S.mercado === 'unif' && D.unificado;
+  document.getElementById('filter-note').textContent = (U ? 'Mercado unificado desde ' + D.unificado.desde + ' (bancos + SOFIPO + neobancos) · ' : 'Solo bancos Banxico · ') + (S.periodo === 'trimestral' ? 'Trimestral' : 'Anual') + ' · ' + (S.tipo === 'debito' ? 'débito: mezcla de plásticos' : 'crédito ' + ESC[S.esc]) + (S.bien === 'excl' ? ' · sin tarjetas del Bienestar' : '') + (U ? ' · las secciones por banco usan Banxico' : '');
   VIEW_RENDER[vista]();
 }
 function setGroup(attr, val) { document.querySelectorAll('[' + attr + ']').forEach(b => b.classList.toggle('active', b.getAttribute(attr) === val)); }
@@ -855,7 +880,7 @@ function bind(attr, key, fn) {
     if (b.disabled) return; S[key] = b.getAttribute(attr); setGroup(attr, S[key]); (fn || renderAll)();
   }));
 }
-bind('data-periodo', 'periodo'); bind('data-tipo', 'tipo');
+bind('data-periodo', 'periodo'); bind('data-mercado', 'mercado'); bind('data-bien', 'bien'); bind('data-tipo', 'tipo');
 bind('data-voltab', 'voltab', renderVol); bind('data-vigtab', 'vigtab', renderVig); bind('data-yoytab', 'yoytab', renderYoY);
 bind('data-heatmarca', 'heatmarca', renderHeat); bind('data-cruceprod', 'cruceprod', renderCruce); bind('data-rango', 'rango', renderDeep);
 document.getElementById('sel-esc').addEventListener('change', (e) => { S.esc = e.target.value; renderAll(); });

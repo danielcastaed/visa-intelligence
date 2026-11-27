@@ -137,6 +137,20 @@ def share_row(label, year, cut, cre, deb, cf, rib, extra):
     return r, cs
 
 
+def add_sin_bienestar(r, bien, cre, deb):
+    """Agrega campos *_xb: débito y total excluyendo las tarjetas sociales del Banco del Bienestar."""
+    dv, dm, do = r["tarj_db_visa"] - bien[0], r["tarj_db_mc"] - bien[1], r["tarj_db_otras"] - bien[2]
+    s = dv + dm + do
+    r["bienestar_tarjetas"] = round(sum(bien))
+    r["db_visa_xb"], r["db_mc_xb"] = round(dv / s * 100, 2), round(dm / s * 100, 2)
+    T = cre + deb
+    for esc in ("saldo", "cartera", "plast"):
+        v, m = r[f"cr_visa_{esc}"] / 100, r[f"cr_mc_{esc}"] / 100
+        r[f"tot_visa_{esc}_xb"] = round((cre * v + deb * dv / s) / T * 100, 2)
+        r[f"tot_mc_{esc}_xb"] = round((cre * m + deb * dm / s) / T * 100, 2)
+    return r
+
+
 def main():
     inp = load("inputs.json")
     cf = load(os.path.join("data", "banxico_cf256.json"))
@@ -159,6 +173,7 @@ def main():
         full = cut == q4 and (y < int(last_bill[:4]) or last_bill.endswith("12-31"))
         label = str(y) if full else f"{y}*"
         r, cs = share_row(label, y, cut, cre, deb, cf, rib, {"completo": full})
+        add_sin_bienestar(r, triple(cf["debito"]["letras"].get("AD", {}), cut), cre, deb)
         anual.append(r)
         contrib_by[label] = cs
         cut_by_label[label] = cut
@@ -175,6 +190,7 @@ def main():
             continue
         full = last_bill >= f"{y}-{Q_END[q]}"
         r, _ = share_row(qlabel(d) + ("" if full else "*"), y, d, cre, deb, cf, rib, {"completo": full, "trimestre": key})
+        add_sin_bienestar(r, triple(cf["debito"]["letras"].get("AD", {}), d), cre, deb)
         trimestral.append(r)
 
     # ---------- Histórico de tarjetas (plásticos), trimestral desde 2006
@@ -450,6 +466,111 @@ def main():
                 "corte_cnbv": f"{last_p[4:]}/{last_p[:4]}", "ranking_tc": top_cnbv[:25],
                 "fuente": "CNBV, Base de Datos de Inclusión Financiera (BD Banca, BD EACP)"}
 
+    # ---------- Mercado unificado como serie principal (CNBV = universo y conteos; Banxico = marca y facturación)
+    def unificado():
+        C = inp.get("cnbv")
+        path = os.path.join(HERE, "data", "cnbv_tarjetas.json")
+        if not C or not os.path.exists(path):
+            return None
+        per = load(os.path.join("data", "cnbv_tarjetas.json"))["periodos"]
+        fecha = lambda p: f"{p[:4]}-{int(p[4:]) - 2:02d}-01"
+        pers = sorted(p for p in per if fecha(p) in fechas)
+        if not pers:
+            return None
+        idx = {(p, x["clave"]): x for p in pers for sec in ("banca", "eacp") for x in per[p].get(sec, [])}
+        letra_de = {c: k for k, cl in C["cruce"].items() for c in cl}
+        fin = {e["clave"]: e for e in C["fuera_cf256"]}
+        F = inp.get("fintech", {})
+        nu = next((e for e in F.get("entidades", []) if e["nombre"].startswith("Nu") and e.get("saldo_tdc_mdp")), None)
+        saldo_x_tarjeta = nu["saldo_tdc_mdp"] / nu["tarjetas_credito"] if nu else None   # mdp por tarjeta
+        sis = F.get("saldo_sistema_tdc_mdp")
+        rt = rib["totales_saldo_mdp"]
+        def saldo_sistema(y):
+            base = rt["2019"] if y <= 2019 else (rt["2019"] + (rt["2024"] - rt["2019"]) * (y - 2019) / 5 if y <= 2024 else rt["2025"])
+            return sis * base / rt["2025"]
+
+        def conteos(p, d):
+            """Tarjetas por marca con conteos CNBV. Devuelve (credito[v,m,o], debito[v,m,o], fintech_tc, cobertura)."""
+            out = {"tc": [0.0, 0.0, 0.0], "td": [0.0, 0.0, 0.0]}
+            asign = {"tc": 0, "td": 0}; total = {"tc": 0, "td": 0}; ftc = 0; bien = [0.0, 0.0, 0.0]
+            claves = {c for (q, c) in idx if q == p}
+            for c in claves:
+                x = idx[(p, c)]
+                for key, prod in (("tc", "credito"), ("td", "debito")):
+                    n = x[key]
+                    total[key] += n
+                    if c in fin:
+                        m = fin[c].get(prod)
+                        if m and n:
+                            out[key][0 if m.startswith("Visa") else 1] += n; asign[key] += n
+                            if key == "tc": ftc += n
+                        continue
+                    k = letra_de.get(c)
+                    ser = cf[prod]["letras"].get(k) if k else None
+                    if not ser:
+                        continue
+                    mix = triple(ser, d)
+                    if sum(mix) == 0:
+                        continue
+                    if n < 0.05 * sum(mix):          # hueco de la CNBV (p. ej. débito de Banamex): se usa Banxico
+                        n = sum(mix); total[key] += n
+                    for j in range(3):
+                        out[key][j] += n * mix[j] / sum(mix)
+                        if k == "AD" and key == "td":
+                            bien[j] += n * mix[j] / sum(mix)
+                    asign[key] += n
+            cob = {k: (asign[k] / total[k] * 100 if total[k] else 0) for k in total}
+            return out["tc"], out["td"], ftc, cob, bien
+
+        def row(label, year, d, cre, deb, extra):
+            p = max(q for q in pers if fecha(q) <= d)
+            base, _ = share_row(label, year, d, cre, deb, cf, rib, extra)
+            tc, td, ftc, cob, bien = conteos(p, d)
+            # pesos de las fintech dentro del crédito
+            s_f = ftc * saldo_x_tarjeta if saldo_x_tarjeta else 0
+            w_s = s_f / (saldo_sistema(year) + s_f) if s_f else 0
+            bank_tc = sum(tc) - ftc
+            w_c = ftc / sum(tc) if sum(tc) else 0
+            cre_u = cre / (1 - w_s) if w_s < 1 else cre
+            r = dict(base)
+            r.update({"fact_credito": round(cre_u / 1000, 4), "fact_credito_bancos": base["fact_credito"],
+                      "tarj_cr_visa": round(tc[0]), "tarj_cr_mc": round(tc[1]), "tarj_cr_otras": round(tc[2]),
+                      "tarj_db_visa": round(td[0]), "tarj_db_mc": round(td[1]), "tarj_db_otras": round(td[2]),
+                      "corte_cnbv": f"{p[4:]}/{p[:4]}", "arrastre_cnbv": fecha(p) != d,
+                      "peso_fintech_saldo": round(w_s * 100, 2), "peso_fintech_tarjetas": round(w_c * 100, 2),
+                      "cobertura_cr": round(cob["tc"], 1), "cobertura_db": round(cob["td"], 1)})
+            dv, dm = td[0] / sum(td), td[1] / sum(td)
+            pv, pm = tc[0] / sum(tc), tc[1] / sum(tc)
+            sc = {"saldo": (base["cr_visa_saldo"] / 100 * (1 - w_s), base["cr_mc_saldo"] / 100 * (1 - w_s) + w_s),
+                  "cartera": (base["cr_visa_cartera"] / 100 * (1 - w_c), base["cr_mc_cartera"] / 100 * (1 - w_c) + w_c),
+                  "plast": (pv, pm)}
+            T = cre_u + deb
+            for esc, (v, m) in sc.items():
+                r[f"cr_visa_{esc}"] = round(v * 100, 2); r[f"cr_mc_{esc}"] = round(m * 100, 2)
+                r[f"tot_visa_{esc}"] = round((cre_u * v + deb * dv) / T * 100, 2)
+                r[f"tot_mc_{esc}"] = round((cre_u * m + deb * dm) / T * 100, 2)
+            r["db_visa"], r["db_mc"] = round(dv * 100, 2), round(dm * 100, 2)
+            return add_sin_bienestar(r, bien, cre_u, deb)
+
+        d0 = fecha(pers[0])
+        tri = []
+        for r0 in trimestral:
+            d = next(x for x in fechas if qlabel(x) == r0["corte_tarjetas"])
+            if d < d0:
+                continue
+            y, q = r0["anio"], int(r0["trimestre"][-1])
+            tri.append(row(r0["periodo"], y, d, bill.get("credito", "trimestral", r0["trimestre"]),
+                           bill.get("debito", "trimestral", r0["trimestre"]), {"completo": r0["completo"], "trimestre": r0["trimestre"]}))
+        anu = []
+        for r0 in anual:
+            d = cut_by_label[r0["periodo"]]
+            if d < d0:
+                continue
+            anu.append(row(r0["periodo"], r0["anio"], d, bill.get("credito", "anual", str(r0["anio"])),
+                           bill.get("debito", "anual", str(r0["anio"])), {"completo": r0["completo"]}))
+        return {"anual": anu, "trimestral": tri, "saldo_x_tarjeta_mxn": round(saldo_x_tarjeta * 1e6) if saldo_x_tarjeta else None,
+                "desde": qlabel(d0)}
+
     out = {
         "meta": {"corte_tarjetas": qlabel(last_cut), "corte_tarjetas_inicial": qlabel(first_cut),
                  "corte_facturacion": f"{MESES[int(last_bill[5:7]) - 1]}-{last_bill[:4]}",
@@ -461,6 +582,7 @@ def main():
         "emisores_credito": emis_cr, "emisores_debito": emis_db, "emisores_total": emis_total,
         "fintech": fintech_view(),
         "cnbv": cnbv_views(),
+        "unificado": unificado(),
     }
     with open(os.path.join(HERE, "output.json"), "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
